@@ -9,3 +9,8 @@ Route::get('/', function () {
 Route::get('/dangky', function () {
     return view('dangky');
 });
+
+
+Route::get('/dangnhap', function () {
+    return view('dangnhap');
+});
