@@ -27,7 +27,7 @@
                 $user = $users[0];
                 $_SESSION['Username'] = $user['Username'];
                 $_SESSION['DisplayName'] = $user['Fullname'] == '' ? $user['Username'] : $user['Fullname'];
-                $_SESSION['Avatar'] = !empty($user['Avatar']) ? $user['Avatar'] : '/assets/img/user.png';
+                $_SESSION['Avatar'] = !empty($user['Avatar']) ? $user['Avatar'] : '/assets/user.png';
                 $_SESSION['Role'] = $user['AccountTypeID'];
                 // header('Location: admin/index.php');
             } else {
