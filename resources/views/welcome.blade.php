@@ -10,17 +10,16 @@
     <!-- <link rel="stylesheet" href="./assets/css/sign.css" /> -->
     <title>Đăng ký và đăng nhập</title>
     <!-- <link rel="icon" href="/assets/img/favicon.png" /> -->
-     
+
 </head>
 
 <?php
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Đăng nhập
         if (isset($_POST['SignIn'])) {
-            $username = isset($_POST['username']) ? $_POST['username'] : '';
+            $email_or_phone = isset($_POST['email_or_phone']) ? $_POST['email_or_phone'] : '';
             $password = isset($_POST['password']) ? $_POST['password'] : '';
-
-            $sql = "SELECT * FROM users WHERE (Username = '$username' OR Phone = '$username' OR Email = '$username') AND Password = sha1('$password') AND Status = 1";
+            $sql = "SELECT * FROM users WHERE (Phone = '$email_or_phone' OR Email = '$email_or_phone') AND Password = sha1('$password') AND Status = 1";
             $users = Database::GetData($sql);
             if ($users != null) {
                 session_start();
@@ -31,19 +30,19 @@
                 $_SESSION['Role'] = $user['AccountTypeID'];
                 // header('Location: admin/index.php');
             } else {
-                $message = "<p style='color: #dc3545'>Tên đăng nhập hoặc mật khẩu không hợp lệ!</p>";
+                $message = "<p style='color: #dc3545'>Email hoặc số điện thoại hoặc mật khẩu không hợp lệ!</p>";
             }
         }
 
         // Đăng ký
         if (isset($_POST['SignUp'])) {
-            $username = isset($_POST['username']) ? $_POST['username'] : '';
+            $phone = isset($_POST['phone']) ? $_POST['phone'] : '';
             $password1 = isset($_POST['password1']) ? $_POST['password1'] : '';
             $password2 = isset($_POST['password2']) ? $_POST['password2'] : '';
             $email = isset($_POST['email']) ? $_POST['email'] : '';
 
             if ($password1 == $password2) {
-                $sql = "INSERT INTO users VALUES ('$username', sha1('$password1'), '', '', '$email', '', 0, 1, NOW(3), 3)";
+                $sql = "INSERT INTO users (Username, Password, Email, Phone, Status, AccountTypeID, CreatedAt) VALUES ('', sha1('$password1'), '$email', '$phone', 1, 3, NOW(3))";
                 $check = Database::NonQuery($sql);
                 if ($check) {
                     $message = "<p style='color: #0d6efd'>Đăng ký thành công</p>";
@@ -61,11 +60,12 @@
     <div class="container">
         <div class="forms-container">
             <div class="signin-signup">
+                <!-- filepath: c:\laragon\www\DA2\resources\views\welcome.blade.php -->
                 <form action="#" method="POST" class="sign-in-form">
                     <h2 class="title">Đăng nhập</h2>
                     <div class="input-field">
-                        <i class="fas fa-user"></i>
-                        <input name="username" type="text" placeholder="Tài khoản / Email / Điện thoại" required />
+                        <i class="fas fa-envelope"></i>
+                        <input name="email_or_phone" type="text" placeholder="Email / Điện thoại" required />
                     </div>
                     <div class="input-field">
                         <i class="fas fa-lock"></i>
@@ -74,12 +74,27 @@
                     <?=isset($message) ? $message : ''?>
                     <input name="SignIn" type="submit" value="Đăng nhập" class="btn solid" />
                 </form>
-
                 <form action="#" method="POST" class="sign-up-form">
                     <h2 class="title">Đăng ký</h2>
                     <div class="input-field">
-                        <i class="fas fa-user"></i>
-                        <input name="username" type="text" placeholder="Tên đăng nhập" required />
+                        <i class="fas fa-envelope"></i>
+                        <input name="email" type="email" placeholder="Email" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-phone"></i>
+                        <input name="phone" type="text" placeholder="Số điện thoại" maxlength="10" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-add"></i>
+                        <input name="add" type="text" placeholder="Địa chỉ" maxlength="200" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-namefr"></i>
+                        <input name="namefr" type="text" placeholder="Tên" maxlength="30" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-namels"></i>
+                        <input name="namels" type="text" placeholder="Họ" maxlength="20" required />
                     </div>
                     <div class="input-field">
                         <i class="fas fa-lock"></i>
@@ -89,16 +104,11 @@
                         <i class="fas fa-lock"></i>
                         <input name="password2" type="password" placeholder="Nhập lại mật khẩu" required />
                     </div>
-                    <div class="input-field">
-                        <i class="fas fa-envelope"></i>
-                        <input name="email" type="email" placeholder="yourmail@gmail.com" required />
-                    </div>
                     <?=isset($message) ? $message : ''?>
                     <input name="SignUp" type="submit" class="btn" value="Đăng ký" />
                 </form>
             </div>
         </div>
-
         <div class="panels-container">
             <div class="panel left-panel">
                 <div class="content">
@@ -108,7 +118,6 @@
                 </div>
                 <img src="./assets/log.svg" class="image" alt="" />
             </div>
-
             <div class="panel right-panel">
                 <div class="content">
                     <h3>Xin chào!</h3>
@@ -119,10 +128,8 @@
             </div>
         </div>
     </div>
-
     <!-- <script src="./assets/js/sign.js"></script> -->
 </body>
-
 <style>
     @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800&display=swap");
 * {
