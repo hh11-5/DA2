@@ -35,17 +35,11 @@
             padding: 10px;
             border-radius: 5px;
         }
-        /* Nút điều hướng Slider */
         .carousel-control-prev, .carousel-control-next {
             width: 60px;
             height: 60px;
             background: rgba(0, 0, 0, 0.7);
             border-radius: 50%;
-        }
-        .carousel-control-prev-icon, .carousel-control-next-icon {
-            filter: invert(1);
-            width: 30px;
-            height: 30px;
         }
         .carousel-control-prev:hover, .carousel-control-next:hover {
             background: rgba(0, 0, 0, 1);
@@ -73,14 +67,6 @@
             margin-top: 40px;
             border-radius: 10px;
         }
-        .news-banner h2 {
-            font-size: 2.5rem;
-            font-weight: bold;
-        }
-        .news-banner p {
-            font-size: 1.2rem;
-            margin-top: 10px;
-        }
         /* Footer */
         .footer {
             background: #343a40;
@@ -92,6 +78,7 @@
     </style>
 </head>
 <body>
+
     <!-- Header -->
     <div class="header">
         <h1>Chào mừng đến với Web Bán Đồng Hồ</h1>
@@ -122,62 +109,79 @@
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#highlightCarousel" data-bs-slide-to="0" class="active"></button>
             <button type="button" data-bs-target="#highlightCarousel" data-bs-slide-to="1"></button>
-            <button type="button" data-bs-target="#highlightCarousel" data-bs-slide-to="2"></button>
         </div>
         <div class="carousel-inner">
             <div class="carousel-item active">
                 <img src="https://via.placeholder.com/1200x500/FF5733/FFFFFF?text=Sản+Phẩm+Nổi+Bật+1" class="d-block w-100" alt="Sản phẩm 1">
                 <div class="carousel-caption d-none d-md-block">
                     <h3>Đồng Hồ Cao Cấp</h3>
-                    <p>Thiết kế tinh tế, sang trọng.</p>
                 </div>
             </div>
             <div class="carousel-item">
                 <img src="https://via.placeholder.com/1200x500/3498DB/FFFFFF?text=Sản+Phẩm+Nổi+Bật+2" class="d-block w-100" alt="Sản phẩm 2">
                 <div class="carousel-caption d-none d-md-block">
                     <h3>Đồng Hồ Thể Thao</h3>
-                    <p>Phong cách mạnh mẽ, nam tính.</p>
                 </div>
             </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#highlightCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="carousel-control-prev-icon"></span>
         </button>
         <button class="carousel-control-next" type="button" data-bs-target="#highlightCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="carousel-control-next-icon"></span>
         </button>
     </div>
 
     <div class="container mt-4">
-        <h2 class="text-center mb-4">Danh sách sản phẩm</h2>
         <div class="row">
-            @for ($i = 0; $i < 6; $i++)
-                <div class="col-md-4 mb-4">
-                    <div class="card product-card">
-                        <img src="https://via.placeholder.com/150?text=?" class="card-img-top" alt="Sản phẩm">
-                        <div class="card-body">
-                            <h5 class="card-title">Sản phẩm ?</h5>
-                            <p class="card-text">Giá: ? VNĐ</p>
-                            <a href="#" class="btn btn-primary">Xem chi tiết</a>
+            <!-- Sidebar -->ok
+            <div class="col-md-3 sidebar">
+                <h4>Bộ lọc sản phẩm</h4>
+                
+                <h5>Thể loại</h5>
+                <ul class="list-group mb-3">
+                    <li class="list-group-item"><input type="checkbox"> Đồng hồ nam</li>
+                    <li class="list-group-item"><input type="checkbox"> Đồng hồ nữ</li>
+                </ul>
+
+                <h5>Khoảng giá</h5>
+                <input type="range" class="form-range mb-3" id="priceRange" min="0" max="50000000" step="1000000" oninput="updatePriceValue()">
+                <p>Giá: <span id="priceValue">0</span> - 50,000,000 VNĐ</p>
+
+                <h5>Sắp xếp giá</h5>
+                <select class="form-select mb-3">
+                    <option value="asc">Giá từ thấp đến cao</option>
+                    <option value="desc">Giá từ cao đến thấp</option>
+                </select>
+
+                <button class="btn btn-primary w-100">Áp dụng bộ lọc</button>
+            </div>
+
+            <!-- Danh sách sản phẩm -->
+            <div class="col-md-9">
+                <h2 class="text-center mb-4">Danh sách sản phẩm</h2>
+                <div class="row">
+                    @for ($i = 0; $i < 6; $i++)
+                        <div class="col-md-4 mb-4">
+                            <div class="card product-card">
+                                <img src="https://via.placeholder.com/150?text=?" class="card-img-top">
+                                <div class="card-body">
+                                    <h5>Sản phẩm ?</h5>
+                                    <p>Giá: ? VNĐ</p>
+                                    <a href="#" class="btn btn-primary">Xem chi tiết</a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    @endfor
                 </div>
-            @endfor
+            </div>
         </div>
     </div>
 
-    <!-- Banner News -->
-    <div class="news-banner">
-        <h2>Tin tức mới nhất về đồng hồ</h2>
-        <p>Cập nhật xu hướng, công nghệ và đánh giá sản phẩm.</p>
-        <a href="#" class="btn btn-light mt-3">Xem tin tức</a>
-    </div>
-
-    <!-- Footer -->
-    <div class="footer">
-        <p>&copy; 2025 Web Bán Đồng Hồ. Tất cả các quyền được bảo lưu.</p>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function updatePriceValue() {
+            document.getElementById("priceValue").innerText = document.getElementById("priceRange").value;
+        }
+    </script>
 </body>
 </html>
