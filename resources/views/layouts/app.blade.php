@@ -38,8 +38,26 @@
                     </form>
                 </div>
                 <div class="col-md-3 text-end">
-                    <a href="/login" class="btn btn-outline-dark me-2">Đăng nhập / Đăng ký</a>
-                    <a href="/cart" class="btn btn-dark">
+                    @auth
+                        <div class="dropdown">
+                            <button class="btn btn-outline-dark dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                                Xin chào, {{ Auth::user()->khachHang->tenkh }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Thông tin tài khoản</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="{{ route('auth.logout') }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item">Đăng xuất</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    @else
+                        <a href="{{ route('auth') }}" class="btn btn-outline-dark me-2">Đăng nhập / Đăng ký</a>
+                    @endauth
+                    <a href="/cart" class="btn btn-dark ms-2">
                         <i class="fas fa-shopping-cart"></i>
                         <span class="badge bg-danger">0</span>
                     </a>
