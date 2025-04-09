@@ -6,6 +6,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dangky', function () {
-    return view('dangky');
+Route::get('/index', function () {
+    return view('index');
 });
