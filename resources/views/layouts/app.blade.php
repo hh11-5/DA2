@@ -17,6 +17,13 @@
             background-color: #f8f9fa;
             padding: 40px 0;
         }
+
+        footer.footer {
+    background: linear-gradient(135deg, #94a3b8, #475569); /* Xám xanh */
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+}
     </style>
 </head>
 <body>
