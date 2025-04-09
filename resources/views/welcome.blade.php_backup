@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,7 +13,7 @@
 </head>
 
 <?php
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    /*if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Đăng nhập
         if (isset($_POST['SignIn'])) {
             $email_or_phone = isset($_POST['email_or_phone']) ? $_POST['email_or_phone'] : '';
@@ -54,6 +53,7 @@
             }
         }
     }
+        */
 ?>
 
 <body>
