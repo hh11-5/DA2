@@ -11,7 +11,7 @@
         <div class="carousel-item active">
             <img src="https://via.placeholder.com/1200x500/FF5733/FFFFFF?text=Sản+Phẩm+Nổi+Bật+1" class="d-block w-100" alt="Sản phẩm 1">
             <div class="carousel-caption d-none d-md-block">
-                <h3>Đồng Hồ Cao Cấp</h3>
+                <!-- <h3>Đồng Hồ Cao Cấp</h3> -->
             </div>
         </div>
         <div class="carousel-item">
@@ -121,5 +121,5 @@
     .product-card:hover {
         transform: scale(1.05);
     }
-</style>ok
+</style>
 @endsection
