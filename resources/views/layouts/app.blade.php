@@ -7,6 +7,21 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+         /* Navbar cố định */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Giữ nội dung không bị che */
+body {
+    padding-top: 80px;
+}
+
         .dropdown:hover .dropdown-menu {
             display: block;
         }
@@ -19,11 +34,27 @@
         }
 
         footer.footer {
-    background: linear-gradient(135deg, #94a3b8, #475569); /* Xám xanh */
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-}
+        background: linear-gradient(135deg, #94a3b8, #475569); /* Xám xanh */
+        box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.2);
+        color: #fff;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+    }
+
+    footer.footer a {
+        color: #e2e8f0;
+    }
+
+    footer.footer a:hover {
+        text-decoration: underline;
+        color: #facc15;
+    }
+
+    footer.footer h5 {
+        color: #f1f5f9;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
     </style>
 </head>
 <body>
@@ -138,31 +169,35 @@
                 <div class="col-md-4">
                     <h5>Chính sách</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-dark text-decoration-none">Chính sách bảo hành</a></li>
-                        <li><a href="#" class="text-dark text-decoration-none">Chính sách đổi trả</a></li>
-                        <li><a href="#" class="text-dark text-decoration-none">Chính sách vận chuyển</a></li>
+                    <li><a href="#" class="text-dark text-decoration-none">Chính sách vận chuyển</a></li>
+                        <li><a href="#" class="text-dark text-decoration-none">Chính sách hoàn tiền</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <h5>Thông tin</h5>
+                    <h5>Về chúng tôi</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-dark text-decoration-none">Về chúng tôi</a></li>
-                        <li><a href="#" class="text-dark text-decoration-none">Cửa hàng</a></li>
+                        <li><a href="#" class="text-dark text-decoration-none">Giới thiệu</a></li>
+                        <li><a href="#" class="text-dark text-decoration-none">Tuyển dụng</a></li>
                         <li><a href="#" class="text-dark text-decoration-none">Liên hệ</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <h5>Điều khoản</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-dark text-decoration-none">Điều khoản sử dụng</a></li>
-                        <li><a href="#" class="text-dark text-decoration-none">Chính sách bảo mật</a></li>
-                        <li><a href="#" class="text-dark text-decoration-none">FAQ</a></li>
+                    <h5>Follow chúng tôi</h5>
+                    <ul class="list-inline">
+                        <li class="list-inline-item"><a href="#"><i class="fab fa-facebook fa-lg"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="fab fa-instagram fa-lg"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="fab fa-twitter fa-lg"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="fab fa-youtube fa-lg"></i></a></li>
                     </ul>
                 </div>
+            </div>
+            <div class="text-center mt-4">
+                <p class="mb-0">&copy; 2025 Watch Store. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
 </body>
 </html>

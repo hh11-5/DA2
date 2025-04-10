@@ -17,7 +17,7 @@
             color: #fff;
             flex-direction: column;
             padding: 30px;
-            border-radius: 20px; /* Bo góc mềm */
+            border-radius: 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
@@ -38,7 +38,6 @@
             padding: 10px;
         }
 
-        /* CSS khác giữ nguyên */
         .carousel-item img {
             transition: transform 0.3s ease-in-out;
             object-fit: cover;
@@ -58,7 +57,6 @@
             font-weight: 600;
         }
 
-        /* Tối ưu bố cục trang */
         .section-spacing {
             margin-top: 40px;
             margin-bottom: 40px;
@@ -68,7 +66,35 @@
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
         }
+
+        .card:hover {
+            transform: translateY(5px); /* Hiệu ứng chìm xuống */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25); /* Đổ bóng đẹp mắt */
+        }
+
+        /* Phần nền gradient cho tin tức */
+        .news-section {
+            background: linear-gradient(180deg, #f0f4f8 0%, #d9e2ec 100%);
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        /* Navbar cố định */ok
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Giữ nội dung không bị che */
+body {
+    padding-top: 80px;
+}
     </style>
 
     <div class="container mt-4">
@@ -112,7 +138,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Có thể thêm các carousel-item khác ở đây -->
+                    <!-- Thêm sản phẩm khác nếu cần -->
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon p-2" aria-hidden="true"></span>
@@ -126,7 +152,7 @@
         </div>
 
         <!-- Tin tức -->
-        <div class="section-spacing">
+        <div class="section-spacing news-section">
             <h5 class="mb-4">Tin tức</h5>
             <div class="row">
                 <div class="col-md-4 mb-3">
