@@ -61,13 +61,13 @@
                                 </li>
                             </ul>
                         </div>
+                        <a href="{{ route('cart.index') }}" class="btn btn-dark ms-2">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="badge bg-danger">{{ count(session('cart', [])) }}</span>
+                        </a>
                     @else
                         <a href="{{ route('auth') }}" class="btn btn-outline-dark me-2">Đăng nhập / Đăng ký</a>
                     @endauth
-                    <a href="/cart" class="btn btn-dark ms-2">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="badge bg-danger">0</span>
-                    </a>
                 </div>
             </div>
         </div>
