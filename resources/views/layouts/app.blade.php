@@ -64,7 +64,7 @@ body {
             <div class="row align-items-center">
                 <div class="col-md-3">
                     <a href="/" class="navbar-brand">
-                        <img src="/images/logo.png" alt="Watch Store Logo" height="50">
+                        <img src="./assets/WebDH2.png.png" class="image" height="70 ">
                     </a>
                 </div>
                 <div class="col-md-6">

@@ -491,10 +491,39 @@ form.sign-in-form {
         left: 50%;
     }
 }
+    /* Thêm các rules mới này */
+.container.sign-up-mode .panels-container {
+    display: none;
+}
+
+.container.sign-up-mode:before {
+    display: none;
+}
+
+.container.sign-up-mode .signin-signup {
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+form.sign-up-form {
+    opacity: 0;
+    z-index: 1;
+    display: none;
+}
+
+.container.sign-up-mode form.sign-up-form {
+    opacity: 1;
+    z-index: 2;
+    display: flex;
+}
+
+.container.sign-up-mode form.sign-in-form {
+    display: none;
+}
 </style>
 
 <script>
-    const sign_in_btn = document.querySelector("#sign-in-btn");
+const sign_in_btn = document.querySelector("#sign-in-btn");
 const sign_up_btn = document.querySelector("#sign-up-btn");
 const container = document.querySelector(".container");
 

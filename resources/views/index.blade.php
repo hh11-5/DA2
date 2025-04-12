@@ -81,7 +81,7 @@
             padding: 30px;
         }
 
-        /* Navbar cố định */ok
+        /* Navbar cố định */okp
 .navbar {
     position: fixed;
     top: 0;
