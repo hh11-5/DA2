@@ -127,27 +127,20 @@ body {
             <h5 class="mb-4">Sản phẩm nổi bật</h5>
             <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
-                    <div class="carousel-item active">
+                    @foreach($sanphams as $key => $sanpham)
+                    <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
                         <div class="d-flex justify-content-center">
                             <div class="card" style="width: 18rem;">
-                                <img src="#" class="card-img-top" alt="Sản phẩm 1">
+                                <img src="{{ asset($sanpham->hinhsp) }}" class="card-img-top" alt="{{ $sanpham->tensp }}">
                                 <div class="card-body">
-                                    <h5 class="card-title">Đồng hồ nam cao cấp</h5>
-                                    <p class="card-text text-muted">Giá: 3.500.000đ</p>
+                                    <h5 class="card-title">{{ $sanpham->tensp }}</h5>
+                                    <p class="card-text text-muted">Giá: {{ number_format($sanpham->gia, 0, ',', '.') }}đ</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- Thêm sản phẩm khác nếu cần -->
+                    @endforeach
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon p-2" aria-hidden="true"></span>
-                    <span class="visually-hidden">Trước</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon p-2" aria-hidden="true"></span>
-                    <span class="visually-hidden">Sau</span>
-                </button>
             </div>
         </div>
 
@@ -156,31 +149,37 @@ body {
             <h5 class="mb-4">Tin tức</h5>
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <div class="card h-100">
-                        <img src="#" class="card-img-top" alt="Tin tức 1">
-                        <div class="card-body">
-                            <h6 class="card-title">Top đồng hồ hot 2025</h6>
-                            <p class="card-text text-muted">Khám phá những mẫu đồng hồ đang được ưa chuộng nhất hiện nay.</p>
+                    <a href="https://donghoduyanh.com/tu-van-giai-dap/top-20-mau-dong-ho-nam-trung-nien-dep-nhat-2025-ban-khong-the-bo-qua-n3606.html" target="_blank" class="text-decoration-none">
+                        <div class="card h-100">
+                            <img src="./Image/News1.jpg" class="card-img-top" alt="Tin tức 1">
+                            <div class="card-body">
+                                <h6 class="card-title">Top đồng hồ hot 2025</h6>
+                                <p class="card-text text-muted">Khám phá những mẫu đồng hồ đang được ưa chuộng nhất hiện nay.</p>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <div class="card h-100">
-                        <img src="#" class="card-img-top" alt="Tin tức 2">
-                        <div class="card-body">
-                            <h6 class="card-title">Đồng hồ cho doanh nhân</h6>
-                            <p class="card-text text-muted">Gợi ý mẫu đồng hồ đẳng cấp phù hợp khi đi họp, gặp đối tác.</p>
+                    <a href="https://luxshopping.vn/tin-tuc/top-8-thuong-hieu-dong-ho-doanh-nhan-sang-trong-ua-chuong-99931.aspx" target="_blank" class="text-decoration-none">
+                        <div class="card h-100">
+                            <img src="./Image/News2.jpg" class="card-img-top" alt="Tin tức 2">
+                            <div class="card-body">
+                                <h6 class="card-title">Đồng hồ cho doanh nhân</h6>
+                                <p class="card-text text-muted">Gợi ý mẫu đồng hồ đẳng cấp phù hợp khi đi họp, gặp đối tác.</p>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <div class="card h-100">
-                        <img src="#" class="card-img-top" alt="Tin tức 3">
-                        <div class="card-body">
-                            <h6 class="card-title">Mẹo bảo quản đồng hồ</h6>
-                            <p class="card-text text-muted">Những điều cần biết để giữ đồng hồ luôn như mới.</p>
+                    <a href="https://donghoduyanh.com/tu-van-giai-dap/6-meo-cham-soc-dong-ho:-cach-giu-dong-ho-cua-ban-luon-trong-tinh-trang-tot-nhat-n3591.html" target="_blank" class="text-decoration-none">
+                        <div class="card h-100">
+                            <img src="./Image/News3.jpeg" class="card-img-top" alt="Tin tức 3">
+                            <div class="card-body">
+                                <h6 class="card-title">Mẹo bảo quản đồng hồ</h6>
+                                <p class="card-text text-muted">Những điều cần biết để giữ đồng hồ luôn như mới.</p>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
