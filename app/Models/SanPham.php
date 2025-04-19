@@ -11,9 +11,8 @@ class SanPham extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'masp',
         'tensp',
-        'gia',
-        'hinhsp',
-        'idsp'
+        'gia'
     ];
 }

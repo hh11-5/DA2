@@ -51,6 +51,21 @@
         .card-img-top {
             object-fit: cover;
             height: 200px;
+            background-color: #f8f9fa;
+        }
+
+        /* Thêm icon ? cho placeholder */ ok
+        .card-img-top[src*="placeholder"] {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #dee2e6;
+            background-color: #f8f9fa;
+        }
+
+        .card-img-top[src*="placeholder"]::after {
+            content: "?";
         }
 
         .card-title {
@@ -81,20 +96,90 @@
             padding: 30px;
         }
 
-        /* Navbar cố định */okp
-.navbar {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    background-color: #fff;
-    z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
+        /* Navbar cố định */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: #fff;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
 
-/* Giữ nội dung không bị che */
-body {
-    padding-top: 80px;
-}
+        /* Giữ nội dung không bị che */
+        body {
+            padding-top: 80px;
+        }
+
+        /* CSS cho nút điều hướng sản phẩm */
+        #productCarousel .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: #333;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        #productCarousel .carousel-nav:hover {
+            background-color: #f8f9fa;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        #productCarousel .carousel-nav-prev {
+            left: -50px;
+        }
+
+        #productCarousel .carousel-nav-next {
+            right: -50px;
+        }
+
+        /* Ẩn outline khi focus */
+        #productCarousel .carousel-nav:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+        }
+
+        /* Điều chỉnh kích thước icon */  ok
+        #productCarousel .carousel-nav i {
+            font-size: 16px;
+        }
+
+        /* CSS cho layout 3 sản phẩm */
+        .carousel-inner .row {
+            margin: 0 -15px;
+        }
+
+        .carousel-inner .col-md-4 {
+            padding: 0 15px;
+        }
+
+        .card {
+            margin-bottom: 20px;
+            height: 100%;
+        }
+
+        /* Điều chỉnh responsive */
+        @media (max-width: 768px) {
+            .carousel-inner .col-md-4 {
+                margin-bottom: 20px;
+            }
+            
+            #productCarousel .carousel-nav-prev {
+                left: -20px;
+            }
+            
+            #productCarousel .carousel-nav-next {
+                right: -20px;
+            }
+        }
     </style>
 
     <div class="container mt-4">
@@ -125,22 +210,34 @@ body {
         <!-- Sản phẩm nổi bật -->
         <div class="section-spacing">
             <h5 class="mb-4">Sản phẩm nổi bật</h5>
-            <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div id="productCarousel" class="carousel slide position-relative" data-bs-ride="carousel">
                 <div class="carousel-inner">
-                    @foreach($sanphams as $key => $sanpham)
+                    @foreach($sanphams->chunk(3) as $key => $chunk)
                     <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
-                        <div class="d-flex justify-content-center">
-                            <div class="card" style="width: 18rem;">
-                                <img src="{{ asset($sanpham->hinhsp) }}" class="card-img-top" alt="{{ $sanpham->tensp }}">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ $sanpham->tensp }}</h5>
-                                    <p class="card-text text-muted">Giá: {{ number_format($sanpham->gia, 0, ',', '.') }}đ</p>
+                        <div class="row">
+                            @foreach($chunk as $sanpham)
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <img src="{{ asset('images/placeholder.png') }}" class="card-img-top" alt="Placeholder">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ $sanpham->tensp }}</h5>
+                                        <p class="card-text text-muted">Giá: {{ number_format($sanpham->gia, 0, ',', '.') }}đ</p>
+                                    </div>
                                 </div>
                             </div>
+                            @endforeach
                         </div>
                     </div>
                     @endforeach
                 </div>
+                
+                <!-- Nút điều hướng -->
+                <button class="carousel-nav carousel-nav-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-nav carousel-nav-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
             </div>
         </div>
 
