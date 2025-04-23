@@ -84,6 +84,8 @@
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
+            margin-bottom: 20px;
+            height: 100%;
         }
 
         .card:hover {
@@ -214,16 +216,51 @@
             #productCarousel .carousel-nav-next {
                 right: -20px;
             }
+        }
 
-            #newProductCarousel .carousel-nav {
-                width: 30px;
-                height: 30px;
-            }
+        /* CSS cho card sản phẩm */
+        .card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            height: 100%;
+            max-width: 280px; /* Giảm kích thước tối đa */
+            margin: 0 auto; /* Căn giữa card */
+        }
 
-            #newProductCarousel .carousel-nav i {
-                font-size: 14px;
+        .card:hover {
+            transform: translateY(5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+        }
+
+        .card-img-top {
+            height: 180px; /* Giảm chiều cao hình */
+            object-fit: cover;
+            background-color: #f8f9fa;
+        }
+
+        .card-title {
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 1rem; /* Giảm padding */
+        }
+
+        .card-title {
+            font-size: 1rem; /* Giảm kích thước chữ */
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .col {
+                margin-bottom: 20px;
             }
         }
+
     </style>
 
     <div class="container mt-4">
@@ -251,55 +288,23 @@
             </button>
         </div>
 
-        <!-- Sản phẩm mới nhất -->
+
+
+        <!-- Sản phẩm -->
         <div class="section-spacing">
-            <h5 class="mb-4">Sản phẩm mới nhất</h5>
-            <div id="newProductCarousel" class="carousel slide position-relative" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    @foreach($sanphams->chunk(3) as $key => $chunk)
-                    <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
-                        <div class="row">
-                            @foreach($chunk as $sanpham)
-                            <div class="col-md-4">
-                                <a href="{{ route('products.show', $sanpham->idsp) }}" class="text-decoration-none">
-                                    <div class="card h-100">
-                                        @if($sanpham->hinhsp)
-                                            <img src="{{ asset($sanpham->hinhsp) }}" class="card-img-top" alt="{{ $sanpham->tensp }}">
-                                        @else
-                                            <img src="{{ asset('images/placeholder.png') }}" class="card-img-top" alt="Placeholder">
-                                        @endif
-                                        <div class="card-body">
-                                            <h5 class="card-title text-dark">{{ $sanpham->tensp }}</h5>
-                                            <p class="card-text">
-                                                <span class="text-danger fw-bold">{{ number_format($sanpham->gia, 0, ',', '.') }}đ</span>
-                                            </p>
-                                            <p class="card-text">
-                                                <small class="text-muted">
-                                                    <i class="fas fa-clock me-1"></i>
-                                                    @if($sanpham->created_at)
-                                                        {{ $sanpham->created_at->diffForHumans() }}
-                                                    @else
-                                                        Mới cập nhật
-                                                    @endif
-                                                </small>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            @endforeach
+            <h5 class="mb-4">Sản phẩm</h5>
+            <div class="row row-cols-2 row-cols-md-3 g-3"> <!-- Thay đổi spacing -->
+                @foreach($sanphams as $sanpham)
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="{{ asset('images/placeholder.png') }}" class="card-img-top" alt="Placeholder">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $sanpham->tensp }}</h5>
+                            <p class="card-text text-muted">Giá: {{ number_format($sanpham->gia, 0, ',', '.') }}đ</p>
                         </div>
                     </div>
-                    @endforeach
                 </div>
-
-                <!-- Nút điều hướng -->
-                <button class="carousel-nav carousel-nav-prev" type="button" data-bs-target="#newProductCarousel" data-bs-slide="prev">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <button class="carousel-nav carousel-nav-next" type="button" data-bs-target="#newProductCarousel" data-bs-slide="next">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
+                @endforeach
             </div>
         </div>
 
@@ -307,39 +312,19 @@
         <div class="section-spacing news-section">
             <h5 class="mb-4">Tin tức</h5>
             <div class="row">
+                @foreach($tintuc as $item)
                 <div class="col-md-4 mb-3">
-                    <a href="https://donghoduyanh.com/tu-van-giai-dap/top-20-mau-dong-ho-nam-trung-nien-dep-nhat-2025-ban-khong-the-bo-qua-n3606.html" target="_blank" class="text-decoration-none">
+                    <a href="{{ $item['link'] }}" target="_blank" class="text-decoration-none">
                         <div class="card h-100">
-                            <img src="./Image/News1.jpg" class="card-img-top" alt="Tin tức 1">
+                            <img src="{{ $item['hinhanh'] }}" class="card-img-top" alt="{{ $item['tieude'] }}">
                             <div class="card-body">
-                                <h6 class="card-title">Top đồng hồ hot 2025</h6>
-                                <p class="card-text text-muted">Khám phá những mẫu đồng hồ đang được ưa chuộng nhất hiện nay.</p>
+                                <h6 class="card-title">{{ $item['tieude'] }}</h6>
+                                <p class="card-text text-muted">{{ $item['tomtat'] }}</p>
                             </div>
                         </div>
                     </a>
                 </div>
-                <div class="col-md-4 mb-3">
-                    <a href="https://luxshopping.vn/tin-tuc/top-8-thuong-hieu-dong-ho-doanh-nhan-sang-trong-ua-chuong-99931.aspx" target="_blank" class="text-decoration-none">
-                        <div class="card h-100">
-                            <img src="./Image/News2.jpg" class="card-img-top" alt="Tin tức 2">
-                            <div class="card-body">
-                                <h6 class="card-title">Đồng hồ cho doanh nhân</h6>
-                                <p class="card-text text-muted">Gợi ý mẫu đồng hồ đẳng cấp phù hợp khi đi họp, gặp đối tác.</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <a href="https://donghoduyanh.com/tu-van-giai-dap/6-meo-cham-soc-dong-ho:-cach-giu-dong-ho-cua-ban-luon-trong-tinh-trang-tot-nhat-n3591.html" target="_blank" class="text-decoration-none">
-                        <div class="card h-100">
-                            <img src="./Image/News3.jpeg" class="card-img-top" alt="Tin tức 3">
-                            <div class="card-body">
-                                <h6 class="card-title">Mẹo bảo quản đồng hồ</h6>
-                                <p class="card-text text-muted">Những điều cần biết để giữ đồng hồ luôn như mới.</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>
