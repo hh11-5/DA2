@@ -4,9 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\ProductController;
 
 // Trang chủ
-Route::get('/', [IndexController::class, 'index'])->name('home');
+Route::get('/', [IndexController::class, 'index'])->name('index');
 
 // Routes cho authentication
 Route::group(['prefix' => 'auth'], function () {
@@ -15,14 +16,13 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
     Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 });
-// Routes cho giỏ hàng - chỉ cho phép khách hàng đã đăng nhập
-Route::group(['middleware' => 'auth'], function () {
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
-    Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
-    Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
-});
-// Routes cần đăng nhập
-Route::middleware(['auth'])->group(function () {
-    Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
-});
+
+// Routes cho giỏ hàng
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
+Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+
+// Routes cho sản phẩm
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');

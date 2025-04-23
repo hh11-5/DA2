@@ -12,6 +12,7 @@ class CreateChitietgiohangTable extends Migration
             $table->uuid('idgh');
             $table->unsignedBigInteger('idsp');
             $table->integer('soluong');
+            $table->timestamp('ngaythem')->useCurrent();
             $table->primary(['idgh', 'idsp']);
             $table->foreign('idgh')->references('idgh')->on('giohang')->onDelete('cascade');
             $table->foreign('idsp')->references('idsp')->on('sanpham')->onDelete('cascade');

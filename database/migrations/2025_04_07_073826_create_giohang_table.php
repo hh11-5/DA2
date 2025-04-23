@@ -11,7 +11,6 @@ class CreateGiohangTable extends Migration
         Schema::create('giohang', function (Blueprint $table) {
             $table->uuid('idgh')->primary();
             $table->unsignedBigInteger('idkh');
-            $table->timestamp('ngaybovaogio')->useCurrent();
             $table->foreign('idkh')->references('idkh')->on('khachhang')->onDelete('cascade');
         });
     }

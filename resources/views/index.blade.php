@@ -75,6 +75,8 @@
         .section-spacing {
             margin-top: 40px;
             margin-bottom: 40px;
+            position: relative;
+            padding: 0 25px; /* Thêm padding để tránh nút bị cắt */
         }
 
         .card {
@@ -166,18 +168,60 @@
             height: 100%;
         }
 
+        /* CSS cho nút điều hướng sản phẩm */
+        #newProductCarousel .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: #333;
+            transition: all 0.3s ease;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #newProductCarousel .carousel-nav:hover {
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        #newProductCarousel .carousel-nav-prev {
+            left: -20px; /* Thay đổi từ -50px thành -20px */
+        }
+
+        #newProductCarousel .carousel-nav-next {
+            right: -20px; /* Thay đổi từ -50px thành -20px */
+        }
+
         /* Điều chỉnh responsive */
         @media (max-width: 768px) {
             .carousel-inner .col-md-4 {
                 margin-bottom: 20px;
             }
-            
+
             #productCarousel .carousel-nav-prev {
                 left: -20px;
             }
-            
+
             #productCarousel .carousel-nav-next {
                 right: -20px;
+            }
+
+            #newProductCarousel .carousel-nav {
+                width: 30px;
+                height: 30px;
+            }
+
+            #newProductCarousel .carousel-nav i {
+                font-size: 14px;
             }
         }
     </style>
@@ -207,35 +251,53 @@
             </button>
         </div>
 
-        <!-- Sản phẩm nổi bật -->
+        <!-- Sản phẩm mới nhất -->
         <div class="section-spacing">
-            <h5 class="mb-4">Sản phẩm nổi bật</h5>
-            <div id="productCarousel" class="carousel slide position-relative" data-bs-ride="carousel">
+            <h5 class="mb-4">Sản phẩm mới nhất</h5>
+            <div id="newProductCarousel" class="carousel slide position-relative" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     @foreach($sanphams->chunk(3) as $key => $chunk)
                     <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
                         <div class="row">
                             @foreach($chunk as $sanpham)
                             <div class="col-md-4">
-                                <div class="card">
-                                    <img src="{{ asset('images/placeholder.png') }}" class="card-img-top" alt="Placeholder">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ $sanpham->tensp }}</h5>
-                                        <p class="card-text text-muted">Giá: {{ number_format($sanpham->gia, 0, ',', '.') }}đ</p>
+                                <a href="{{ route('products.show', $sanpham->idsp) }}" class="text-decoration-none">
+                                    <div class="card h-100">
+                                        @if($sanpham->hinhsp)
+                                            <img src="{{ asset($sanpham->hinhsp) }}" class="card-img-top" alt="{{ $sanpham->tensp }}">
+                                        @else
+                                            <img src="{{ asset('images/placeholder.png') }}" class="card-img-top" alt="Placeholder">
+                                        @endif
+                                        <div class="card-body">
+                                            <h5 class="card-title text-dark">{{ $sanpham->tensp }}</h5>
+                                            <p class="card-text">
+                                                <span class="text-danger fw-bold">{{ number_format($sanpham->gia, 0, ',', '.') }}đ</span>
+                                            </p>
+                                            <p class="card-text">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-clock me-1"></i>
+                                                    @if($sanpham->created_at)
+                                                        {{ $sanpham->created_at->diffForHumans() }}
+                                                    @else
+                                                        Mới cập nhật
+                                                    @endif
+                                                </small>
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
                             @endforeach
                         </div>
                     </div>
                     @endforeach
                 </div>
-                
+
                 <!-- Nút điều hướng -->
-                <button class="carousel-nav carousel-nav-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                <button class="carousel-nav carousel-nav-prev" type="button" data-bs-target="#newProductCarousel" data-bs-slide="prev">
                     <i class="fas fa-chevron-left"></i>
                 </button>
-                <button class="carousel-nav carousel-nav-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                <button class="carousel-nav carousel-nav-next" type="button" data-bs-target="#newProductCarousel" data-bs-slide="next">
                     <i class="fas fa-chevron-right"></i>
                 </button>
             </div>

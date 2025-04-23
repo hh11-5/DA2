@@ -12,7 +12,7 @@ class CreateSanphamTable extends Migration
             $table->id('idsp');
             $table->string('masp', 20)->unique();
             $table->string('tensp', 80);
-            $table->binary('hinhsp')->nullable();
+            $table->string('hinhsp')->nullable();
             $table->decimal('gia', 18, 2);
             $table->string('xuatxu', 50)->nullable();
             $table->string('kieu', 20)->nullable();
@@ -23,6 +23,7 @@ class CreateSanphamTable extends Migration
             $table->integer('tgbaohanh_nam')->nullable();
             $table->unsignedBigInteger('idnhasx');
             $table->foreign('idnhasx')->references('idnhasx')->on('nhasanxuat')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
