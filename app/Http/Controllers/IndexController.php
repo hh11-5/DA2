@@ -8,7 +8,11 @@ class IndexController extends Controller
 {
     public function index()
     {
-        $sanphams = SanPham::select('tensp', 'gia')->take(6)->get(); // Chỉ lấy 6 sản phẩm
+        // Lấy 6 sản phẩm mới nhất dựa vào ngày thêm
+        $sanphams = SanPham::orderBy('created_at', 'desc')
+                           ->take(6)
+                           ->get();
+
         $tintuc = [
             [
                 'tieude' => 'Top đồng hồ hot 2025',

@@ -261,6 +261,24 @@
             }
         }
 
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .text-decoration-none:hover {
+            text-decoration: none;
+        }
+
+        .text-decoration-none:hover .card-title {
+            color: #0d6efd;
+        }
+
     </style>
 
     <div class="container mt-4">
@@ -288,21 +306,25 @@
             </button>
         </div>
 
-
-
-        <!-- Sản phẩm -->
+        <!-- Sản phẩm mới nhất -->
         <div class="section-spacing">
-            <h5 class="mb-4">Sản phẩm</h5>
-            <div class="row row-cols-2 row-cols-md-3 g-3"> <!-- Thay đổi spacing -->
+            <h5 class="mb-4">Sản phẩm mới nhất</h5>
+            <div class="row row-cols-2 row-cols-md-3 g-3">
                 @foreach($sanphams as $sanpham)
                 <div class="col">
-                    <div class="card h-100">
-                        <img src="{{ asset('images/placeholder.png') }}" class="card-img-top" alt="Placeholder">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $sanpham->tensp }}</h5>
-                            <p class="card-text text-muted">Giá: {{ number_format($sanpham->gia, 0, ',', '.') }}đ</p>
+                    <a href="{{ route('products.show', $sanpham->idsp) }}" class="text-decoration-none">
+                        <div class="card h-100">
+                            @if($sanpham->hinhsp)
+                                <img src="{{ asset($sanpham->hinhsp) }}" class="card-img-top" alt="{{ $sanpham->tensp }}">
+                            @else
+                                <img src="{{ asset('images/placeholder.png') }}" class="card-img-top" alt="Placeholder">
+                            @endif
+                            <div class="card-body">
+                                <h5 class="card-title text-dark">{{ $sanpham->tensp }}</h5>
+                                <p class="card-text text-muted">Giá: {{ number_format($sanpham->gia, 0, ',', '.') }}đ</p>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 @endforeach
             </div>
