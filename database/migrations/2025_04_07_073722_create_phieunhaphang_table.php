@@ -13,8 +13,10 @@ class CreatePhieunhaphangTable extends Migration
             $table->timestamp('ngaynhap')->useCurrent();
             $table->unsignedBigInteger('idnv')->nullable();
             $table->unsignedBigInteger('idnhacc')->nullable();
+            $table->unsignedBigInteger('idkho');
             $table->foreign('idnv')->references('idnv')->on('nhanvien')->onDelete('set null');
             $table->foreign('idnhacc')->references('idnhacc')->on('nhacungcap')->onDelete('set null');
+            $table->foreign('idkho')->references('idkho')->on('kho')->onDelete('cascade');
         });
     }
 

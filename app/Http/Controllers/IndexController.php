@@ -8,7 +8,11 @@ class IndexController extends Controller
 {
     public function index()
     {
-        $sanphams = SanPham::select('tensp', 'gia')->take(6)->get(); // Chỉ lấy 6 sản phẩm
+        // Lấy 6 sản phẩm mới nhất dựa vào ngày thêm
+        $sanphams = SanPham::orderBy('created_at', 'desc')
+                           ->take(6)
+                           ->get();
+
         $tintuc = [
             [
                 'tieude' => 'Top đồng hồ hot 2025',
@@ -29,7 +33,7 @@ class IndexController extends Controller
                 'link' => 'https://donghoduyanh.com/tu-van-giai-dap/6-meo-cham-soc-dong-ho:-cach-giu-dong-ho-cua-ban-luon-trong-tinh-trang-tot-nhat-n3591.html'
             ]
         ];
-        
+
         return view('index', compact('sanphams', 'tintuc'));
     }
 }

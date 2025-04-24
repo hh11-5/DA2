@@ -15,6 +15,7 @@ class CreateChitietkhoTable extends Migration
             $table->primary(['idkho', 'idsp']);
             $table->foreign('idkho')->references('idkho')->on('kho')->onDelete('cascade');
             $table->foreign('idsp')->references('idsp')->on('sanpham')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 

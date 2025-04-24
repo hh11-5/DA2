@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Watch Store</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -92,10 +93,17 @@ body {
                                 </li>
                             </ul>
                         </div>
-                        <a href="{{ route('cart.index') }}" class="btn btn-dark ms-2">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="badge bg-danger">{{ count(session('cart', [])) }}</span>
-                        </a>
+                        @if(!Auth::user()->nhanVien)
+                            <a href="{{ route('cart.index') }}" class="btn btn-outline-dark position-relative ms-2">
+                                <i class="fas fa-shopping-cart"></i>
+                                @if(session()->has('cart') && count(session('cart')) > 0)
+                                    <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">
+                                        {{ count(session('cart')) }}
+                                    </span>
+                                    <span class="ms-2">{{ number_format(session('cart_total', 0), 0, ',', '.') }}đ</span>
+                                @endif
+                            </a>
+                        @endif
                     @else
                         <a href="{{ route('auth') }}" class="btn btn-outline-dark me-2">Đăng nhập / Đăng ký</a>
                     @endauth
@@ -115,9 +123,9 @@ body {
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button">Thương hiệu</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Rolex</a></li>
-                            <li><a class="dropdown-item" href="#">Omega</a></li>
-                            <li><a class="dropdown-item" href="#">Seiko</a></li>
+                            @foreach(App\Models\NhaSanXuat::all() as $nhasx)
+                            <li><a class="dropdown-item" href="#">{{ $nhasx->tennhasx }}</a></li>
+                            @endforeach
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -147,12 +155,30 @@ body {
                         <a class="nav-link" href="/contact">Liên hệ</a>
                     </li>
                 </ul>
+                <ul class="navbar-nav ms-auto">
+                    <!-- Không cần code cart ở đây nữa -->
+                </ul>
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
     <main class="py-4">
+        <div class="container mt-3">
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+        </div>
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-12">
@@ -197,7 +223,8 @@ body {
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    @stack('scripts')
 </body>
 </html>

@@ -75,6 +75,8 @@
         .section-spacing {
             margin-top: 40px;
             margin-bottom: 40px;
+            position: relative;
+            padding: 0 25px; /* Thêm padding để tránh nút bị cắt */
         }
 
         .card {
@@ -168,16 +170,49 @@
             height: 100%;
         }
 
+        /* CSS cho nút điều hướng sản phẩm */
+        #newProductCarousel .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: #333;
+            transition: all 0.3s ease;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #newProductCarousel .carousel-nav:hover {
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        #newProductCarousel .carousel-nav-prev {
+            left: -20px; /* Thay đổi từ -50px thành -20px */
+        }
+
+        #newProductCarousel .carousel-nav-next {
+            right: -20px; /* Thay đổi từ -50px thành -20px */
+        }
+
         /* Điều chỉnh responsive */
         @media (max-width: 768px) {
             .carousel-inner .col-md-4 {
                 margin-bottom: 20px;
             }
-            
+
             #productCarousel .carousel-nav-prev {
                 left: -20px;
             }
-            
+
             #productCarousel .carousel-nav-next {
                 right: -20px;
             }
@@ -226,6 +261,24 @@
             }
         }
 
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .text-decoration-none:hover {
+            text-decoration: none;
+        }
+
+        .text-decoration-none:hover .card-title {
+            color: #0d6efd;
+        }
+
     </style>
 
     <div class="container mt-4">
@@ -253,21 +306,25 @@
             </button>
         </div>
 
-       
-
-        <!-- Sản phẩm -->
+        <!-- Sản phẩm mới nhất -->
         <div class="section-spacing">
-            <h5 class="mb-4">Sản phẩm</h5>
-            <div class="row row-cols-2 row-cols-md-3 g-3"> <!-- Thay đổi spacing -->
+            <h5 class="mb-4">Sản phẩm mới nhất</h5>
+            <div class="row row-cols-2 row-cols-md-3 g-3">
                 @foreach($sanphams as $sanpham)
                 <div class="col">
-                    <div class="card h-100">
-                        <img src="{{ asset('images/placeholder.png') }}" class="card-img-top" alt="Placeholder">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $sanpham->tensp }}</h5>
-                            <p class="card-text text-muted">Giá: {{ number_format($sanpham->gia, 0, ',', '.') }}đ</p>
+                    <a href="{{ route('products.show', $sanpham->idsp) }}" class="text-decoration-none">
+                        <div class="card h-100">
+                            @if($sanpham->hinhsp)
+                                <img src="{{ asset($sanpham->hinhsp) }}" class="card-img-top" alt="{{ $sanpham->tensp }}">
+                            @else
+                                <img src="{{ asset('images/placeholder.png') }}" class="card-img-top" alt="Placeholder">
+                            @endif
+                            <div class="card-body">
+                                <h5 class="card-title text-dark">{{ $sanpham->tensp }}</h5>
+                                <p class="card-text text-muted">Giá: {{ number_format($sanpham->gia, 0, ',', '.') }}đ</p>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 @endforeach
             </div>
