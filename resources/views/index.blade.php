@@ -80,17 +80,53 @@
         }
 
         .card {
-            border-radius: 16px;
+            border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
-            margin-bottom: 20px;
             height: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+            border: none;
         }
 
         .card:hover {
-            transform: translateY(5px); /* Hiệu ứng chìm xuống */
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25); /* Đổ bóng đẹp mắt */
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-img-top {
+            height: 220px;
+            object-fit: contain;
+            padding: 1rem;
+            background-color: #ffffff;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+
+        .card-body {
+            padding: 1.25rem;
+            background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #2d3748;
+        }
+
+        .card-text {
+            font-size: 1rem;
+            color: #4a5568;
+        }
+
+        /* Thêm hiệu ứng hover cho giá */
+        .card:hover .card-text {
+            color: #2b6cb0;
         }
 
         /* Phần nền gradient cho tin tức */
@@ -279,6 +315,28 @@
             color: #0d6efd;
         }
 
+        /* CSS cho thẻ thương hiệu */
+        .brand-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .brand-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            background-color: #f8f9fa;
+        }
+
+        .brand-name {
+            color: #2d3748;
+            font-weight: 600;
+            margin: 0;
+        }
     </style>
 
     <div class="container mt-4">
@@ -330,6 +388,31 @@
             </div>
         </div>
 
+        <!-- Sau phần sản phẩm mới nhất -->
+        <div class="section-spacing">
+            <h5 class="mb-4">Thương hiệu đồng hồ</h5>
+            <div class="row row-cols-2 row-cols-md-3 g-4 mb-4">
+                @foreach($thuonghieus as $th)
+                <div class="col">
+                    <div class="brand-card" data-brand-id="{{ $th->idnhasx }}">
+                        <div class="brand-content">
+                            <h5 class="brand-name">{{ $th->tennhasx }}</h5>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            <!-- Thêm container để hiển thị sản phẩm theo thương hiệu -->
+            <div id="brand-products" class="mt-4" style="display: none;">
+                <h5 id="brand-title" class="mb-4"></h5>
+                <div class="row row-cols-2 row-cols-md-3 g-3" id="brand-products-container">
+                </div>
+            </div>
+        </div>
+
+      =
+
         <!-- Tin tức -->
         <div class="section-spacing news-section">
             <h5 class="mb-4">Tin tức</h5>
@@ -350,4 +433,66 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+<script>
+document.querySelectorAll('.brand-card').forEach(card => {
+    card.addEventListener('click', function() {
+        const brandId = this.dataset.brandId;
+        const brandName = this.querySelector('.brand-name').textContent;
+        
+        // Lấy container hiển thị sản phẩm theo thương hiệu
+        const brandProductsSection = document.getElementById('brand-products');
+        const brandTitle = document.getElementById('brand-title');
+        const productsContainer = document.getElementById('brand-products-container');
+        
+        fetch(`/brands/${brandId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(products => {
+                // Cập nhật tiêu đề
+                brandTitle.textContent = `Sản phẩm ${brandName}`;
+                
+                if (products.length === 0) {
+                    productsContainer.innerHTML = `
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                Hiện chưa có sản phẩm nào của thương hiệu ${brandName}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    productsContainer.innerHTML = products.map(product => `
+                        <div class="col">
+                            <a href="/products/${product.idsp}" class="text-decoration-none">
+                                <div class="card h-100">
+                                    <img src="${product.hinhsp || '/images/placeholder.png'}" class="card-img-top" alt="${product.tensp}">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-dark">${product.tensp}</h5>
+                                        <p class="card-text text-muted">Giá: ${new Intl.NumberFormat('vi-VN').format(product.gia)}đ</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    `).join('');
+                }
+                
+                // Hiển thị phần sản phẩm
+                brandProductsSection.style.display = 'block';
+                
+                // Scroll đến phần sản phẩm của thương hiệu
+                brandProductsSection.scrollIntoView({ behavior: 'smooth' });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi tải sản phẩm');
+            });
+    });
+});
+</script>
 @endsection

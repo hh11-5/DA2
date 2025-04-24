@@ -5,6 +5,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\BrandController;
 
 // Trang chủ
 Route::get('/', [IndexController::class, 'index'])->name('index');
@@ -26,3 +27,6 @@ Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.
 // Routes cho sản phẩm
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+
+// Routes cho thương hiệu
+Route::get('/brands/{id}', [BrandController::class, 'show'])->name('brands.show');

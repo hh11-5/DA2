@@ -65,7 +65,7 @@ body {
             <div class="row align-items-center">
                 <div class="col-md-3">
                     <a href="/" class="navbar-brand">
-                        <img src="./Image/WebDH2.png.png" class="image" height="70 ">
+                        <img src="./images/WebDH2.png.png" class="image" height="70 ">
                     </a>
                 </div>
                 <div class="col-md-6">
@@ -225,6 +225,6 @@ body {
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    @stack('scripts')
+    @yield('scripts')
 </body>
 </html>
