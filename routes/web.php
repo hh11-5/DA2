@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\SearchController;
 
 // Trang chủ
 Route::get('/', [IndexController::class, 'index'])->name('index');
@@ -30,3 +31,8 @@ Route::get('/products/{id}', [ProductController::class, 'show'])->name('products
 
 // Routes cho thương hiệu
 Route::get('/brands/{id}', [BrandController::class, 'show'])->name('brands.show');
+Route::get('/brands/page/{id}', [BrandController::class, 'brandPage'])->name('brands.page');
+
+// Routes cho tìm kiếm
+Route::get('/search', [SearchController::class, 'search'])->name('search');
+Route::get('/search/autocomplete', [SearchController::class, 'autocomplete'])->name('search.autocomplete');

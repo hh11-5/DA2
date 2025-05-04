@@ -411,7 +411,7 @@
             </div>
         </div>
 
-      =
+      
 
         <!-- Tin tức -->
         <div class="section-spacing news-section">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SanPham;
+use App\Models\NhaSanXuat;
 use Illuminate\Http\Request;
 
 class BrandController extends Controller
@@ -15,5 +16,15 @@ class BrandController extends Controller
                           ->get();
                           
         return response()->json($products);
+    }
+
+    public function brandPage($id)
+    {
+        $brand = NhaSanXuat::findOrFail($id);
+        $products = SanPham::where('idnhasx', $id)
+                          ->select('idsp', 'tensp', 'gia', 'hinhsp')
+                          ->get();
+        
+        return view('brands.show', compact('brand', 'products'));
     }
 }

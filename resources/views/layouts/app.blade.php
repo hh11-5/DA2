@@ -65,12 +65,19 @@ body {
             <div class="row align-items-center">
                 <div class="col-md-3">
                     <a href="/" class="navbar-brand">
-                        <img src="./images/WebDH2.png.png" class="image" height="70 ">
+                        <!-- Sửa đường dẫn logo -->
+                        <img src="{{ asset('images/WebDH2.png') }}" alt="Watch Store Logo" height="70">
                     </a>
                 </div>
                 <div class="col-md-6">
-                    <form class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Tìm kiếm đồng hồ...">
+                    <form action="{{ route('search') }}" method="GET" class="d-flex position-relative">
+                        <input 
+                            class="form-control me-2" 
+                            type="search" 
+                            name="query"
+                            value="{{ request('query') }}"
+                            placeholder="Tìm kiếm theo tên, giá hoặc thương hiệu..."
+                            required>
                         <button class="btn btn-outline-dark" type="submit">
                             <i class="fas fa-search"></i>
                         </button>
@@ -124,7 +131,11 @@ body {
                         <a class="nav-link dropdown-toggle" href="#" role="button">Thương hiệu</a>
                         <ul class="dropdown-menu">
                             @foreach(App\Models\NhaSanXuat::all() as $nhasx)
-                            <li><a class="dropdown-item" href="#">{{ $nhasx->tennhasx }}</a></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('brands.page', $nhasx->idnhasx) }}">
+                                    {{ $nhasx->tennhasx }}
+                                </a>
+                            </li>
                             @endforeach
                         </ul>
                     </li>
