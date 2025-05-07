@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sanpham; 
+use App\Models\NhaSanXuat;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
@@ -19,6 +20,49 @@ class SearchController extends Controller
             ->with('nhasanxuat')
             ->get();
 
-        return view('layouts.results', compact('products', 'query')); // Sửa đường dẫn view
+        // Thêm dữ liệu thương hiệu
+        $thuonghieus = NhaSanXuat::all();
+
+        return view('layouts.results', compact('products', 'query', 'thuonghieus')); // Sửa đường dẫn view
+    }
+
+    public function filter(Request $request)
+    {
+        $query = Sanpham::query();
+
+        // Lọc theo giá
+        if ($request->minPrice) {
+            $query->where('gia', '>=', $request->minPrice);
+        }
+        if ($request->maxPrice) {
+            $query->where('gia', '<=', $request->maxPrice);
+        }
+
+        // Lọc theo thương hiệu
+        if (!empty($request->brands)) {
+            $query->whereIn('idnhasx', $request->brands);
+        }
+
+        // Lọc theo kiểu đồng hồ
+        if (!empty($request->types)) {
+            $query->whereIn('kieu', $request->types);
+        }
+
+        // Lọc theo chất liệu
+        if (!empty($request->materials)) {
+            $query->where(function($q) use ($request) {
+                $q->whereIn('clieuvo', $request->materials)
+                  ->orWhereIn('clieuday', $request->materials);
+            });
+        }
+
+        // Lọc theo chất liệu vỏ
+        if (!empty($request->clieuvo)) {
+            $query->whereIn('clieuvo', $request->clieuvo);
+        }
+
+        $products = $query->with('nhasanxuat')->get();
+        
+        return response()->json($products);
     }
 }

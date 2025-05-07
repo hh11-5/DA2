@@ -36,3 +36,4 @@ Route::get('/brands/page/{id}', [BrandController::class, 'brandPage'])->name('br
 // Routes cho tìm kiếm
 Route::get('/search', [SearchController::class, 'search'])->name('search');
 Route::get('/search/autocomplete', [SearchController::class, 'autocomplete'])->name('search.autocomplete');
+Route::post('/filter-products', [SearchController::class, 'filter'])->name('products.filter');

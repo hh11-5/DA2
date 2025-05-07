@@ -8,20 +8,48 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-         /* Navbar cố định */
-.navbar {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    background-color: #fff;
-    z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
+        /* Navbar styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: #fff;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
 
-/* Giữ nội dung không bị che */
-body {
-    padding-top: 80px;
-}
+        /* Điều chỉnh padding-top cho body */
+        body {
+            padding-top: 140px; /* Giảm xuống từ 160px */
+        }
+
+        .navbar-brand {
+            padding: 0;
+            margin-right: 2rem;
+        }
+
+        .navbar-brand img {
+            height: 60px; /* Giảm kích thước logo một chút */
+        }
+
+        /* Căn giữa form tìm kiếm */
+        .search-form {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Điều chỉnh bottom navbar */
+        .bottom-navbar {
+            margin-top: 70px !important; /* Giảm khoảng cách giữa 2 navbar */
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 100px;
+            }
+        }
 
         .dropdown:hover .dropdown-menu {
             display: block;
@@ -60,15 +88,14 @@ body {
 </head>
 <body>
     <!-- Header -->
-    <header class="bg-light">
-        <div class="container py-3">
-            <div class="row align-items-center">
-                <div class="col-md-3">
-                    <a href="/" class="navbar-brand">
-                        <!-- Sửa đường dẫn logo -->
-                        <img src="{{ asset('images/WebDH2.png') }}" alt="Watch Store Logo" height="70">
-                    </a>
-                </div>
+    <header>
+        <!-- Top navbar with logo and search -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom fixed-top">
+            <div class="container">
+                <a href="/" class="navbar-brand">
+                    <img src="{{ asset('images/WebDH2.png') }}" alt="Watch Store Logo" height="70">
+                </a>
+                
                 <div class="col-md-6">
                     <form action="{{ route('search') }}" method="GET" class="d-flex position-relative">
                         <input 
@@ -83,6 +110,7 @@ body {
                         </button>
                     </form>
                 </div>
+
                 <div class="col-md-3 text-end">
                     @auth
                         <div class="dropdown">
@@ -112,66 +140,66 @@ body {
                             </a>
                         @endif
                     @else
-                        <a href="{{ route('auth') }}" class="btn btn-outline-dark me-2">Đăng nhập / Đăng ký</a>
+                        <a href="{{ route('auth') }}" class="btn btn-outline-dark">Đăng nhập / Đăng ký</a>
                     @endauth
                 </div>
             </div>
-        </div>
-    </header>
+        </nav>
 
-    <!-- Navigation Menu -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
-        <div class="container">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button">Thương hiệu</a>
-                        <ul class="dropdown-menu">
-                            @foreach(App\Models\NhaSanXuat::all() as $nhasx)
-                            <li>
-                                <a class="dropdown-item" href="{{ route('brands.page', $nhasx->idnhasx) }}">
-                                    {{ $nhasx->tennhasx }}
-                                </a>
-                            </li>
-                            @endforeach
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button">Nam</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Dưới 5 triệu</a></li>
-                            <li><a class="dropdown-item" href="#">5-10 triệu</a></li>
-                            <li><a class="dropdown-item" href="#">Trên 10 triệu</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button">Nữ</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Dưới 3 triệu</a></li>
-                            <li><a class="dropdown-item" href="#">3-7 triệu</a></li>
-                            <li><a class="dropdown-item" href="#">Trên 7 triệu</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button">Cặp đôi</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Đồng hồ cơ</a></li>
-                            <li><a class="dropdown-item" href="#">Đồng hồ điện tử</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/contact">Liên hệ</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav ms-auto">
-                    <!-- Không cần code cart ở đây nữa -->
-                </ul>
+        <!-- Bottom navbar with categories -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom bottom-navbar" style="margin-top: 80px;">
+            <div class="container">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button">Thương hiệu</a>
+                            <ul class="dropdown-menu">
+                                @foreach(App\Models\NhaSanXuat::all() as $nhasx)
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('brands.page', $nhasx->idnhasx) }}">
+                                        {{ $nhasx->tennhasx }}
+                                    </a>
+                                </li>
+                                @endforeach
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button">Nam</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Dưới 5 triệu</a></li>
+                                <li><a class="dropdown-item" href="#">5-10 triệu</a></li>
+                                <li><a class="dropdown-item" href="#">Trên 10 triệu</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button">Nữ</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Dưới 3 triệu</a></li>
+                                <li><a class="dropdown-item" href="#">3-7 triệu</a></li>
+                                <li><a class="dropdown-item" href="#">Trên 7 triệu</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button">Cặp đôi</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Đồng hồ cơ</a></li>
+                                <li><a class="dropdown-item" href="#">Đồng hồ điện tử</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/contact">Liên hệ</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto">
+                        <!-- Không cần code cart ở đây nữa -->
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
     <!-- Main Content -->
     <main class="py-4">

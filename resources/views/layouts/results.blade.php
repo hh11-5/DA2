@@ -16,21 +16,98 @@
             Không tìm thấy sản phẩm nào phù hợp với từ khóa "{{ $query }}"
         </div>
     @else
-        <div class="row row-cols-2 row-cols-md-4 g-4">
-            @foreach($products as $product)
-            <div class="col">
-                <a href="{{ route('products.show', $product->idsp) }}" class="text-decoration-none">
-                    <div class="card h-100">
-                        <img src="{{ asset($product->hinhsp) }}" class="card-img-top" alt="{{ $product->tensp }}">
-                        <div class="card-body">
-                            <h5 class="card-title text-dark">{{ $product->tensp }}</h5>
-                            <p class="card-text text-muted">Giá: {{ number_format($product->gia, 0, ',', '.') }}đ</p>
-                            <small class="text-muted">{{ $product->nhasanxuat->tennhasx }}</small>
+        <div class="row">
+            <!-- Sidebar filters -->
+            <div class="col-md-3">
+                <div class="card filter-card">
+                    <div class="card-body">
+                        <h5 class="filter-title">Bộ lọc tìm kiếm</h5>
+                        
+                        <!-- Khoảng giá -->
+                        <div class="filter-section">
+                            <h6>Khoảng giá</h6>
+                            <div class="price-range">
+                                <div class="price-inputs mb-3">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="me-2">Từ:</span>
+                                        <input type="number" class="form-control" id="minPriceInput" 
+                                               min="0" max="500000000" step="1000000" value="0">
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <span class="me-2">Đến:</span>
+                                        <input type="number" class="form-control" id="maxPriceInput" 
+                                               min="0" max="500000000" step="1000000" value="500000000">
+                                    </div>
+                                </div>
+                                <div class="price-slider">
+                                    <input type="range" class="form-range" id="priceRange" 
+                                           min="0" max="500000000" step="1000000"
+                                           value="500000000">
+                                    <div class="d-flex justify-content-between mt-2">
+                                        <small class="text-muted">0đ</small>
+                                        <small class="text-muted">500 triệu</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- Chất liệu vỏ -->
+                        <div class="filter-section">
+                            <h6>Chất liệu vỏ</h6>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input filter-check" type="checkbox" 
+                                           name="clieuvo" value="Thép không gỉ 904L">
+                                    <label class="form-check-label">Thép không gỉ 904L</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input filter-check" type="checkbox" 
+                                           name="clieuvo" value="Thép không gỉ và vàng">
+                                    <label class="form-check-label">Thép không gỉ và vàng</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input filter-check" type="checkbox" 
+                                           name="clieuvo" value="Thép không gỉ">
+                                    <label class="form-check-label">Thép không gỉ</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input filter-check" type="checkbox" 
+                                           name="clieuvo" value="Vàng Everose 18k">
+                                    <label class="form-check-label">Vàng Everose 18k</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input filter-check" type="checkbox" 
+                                           name="clieuvo" value="Vàng 18k">
+                                    <label class="form-check-label">Vàng 18k</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Nút lọc -->
+                        <button class="btn btn-primary w-100 mt-3" id="applyFilters">Áp dụng</button>
                     </div>
-                </a>
+                </div>
             </div>
-            @endforeach
+
+            <!-- Product grid -->
+            <div class="col-md-9">
+                <div class="row row-cols-2 row-cols-md-3 g-4" id="productsContainer">
+                    @foreach($products as $product)
+                    <div class="col">
+                        <a href="{{ route('products.show', $product->idsp) }}" class="text-decoration-none">
+                            <div class="card h-100">
+                                <img src="{{ asset($product->hinhsp) }}" class="card-img-top" alt="{{ $product->tensp }}">
+                                <div class="card-body">
+                                    <h5 class="card-title text-dark">{{ $product->tensp }}</h5>
+                                    <p class="card-text text-muted">Giá: {{ number_format($product->gia, 0, ',', '.') }}đ</p>
+                                    <small class="text-muted">{{ $product->nhasanxuat->tennhasx }}</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
         </div>
     @endif
 </div>
@@ -64,5 +141,141 @@
     font-size: 1rem;
     margin-bottom: 0.5rem;
 }
+
+.filter-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.filter-title {
+    color: #2d3748;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+.filter-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.filter-section:last-child {
+    border-bottom: none;
+}
+
+.filter-section h6 {
+    color: #4a5568;
+    margin-bottom: 1rem;
+}
+
+.form-check-label {
+    color: #4a5568;
+    cursor: pointer;
+}
+
+.price-range {
+    padding: 10px 0;
+}
+
+#priceRange {
+    width: 100%;
+}
 </style>
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const priceRange = document.getElementById('priceRange');
+    const minPriceInput = document.getElementById('minPriceInput');
+    const maxPriceInput = document.getElementById('maxPriceInput');
+    
+    // Format price
+    function formatPrice(price) {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(price);
+    }
+
+    // Update price display
+    priceRange.addEventListener('input', function() {
+        maxPriceInput.value = this.value;
+    });
+
+    minPriceInput.addEventListener('input', function() {
+        priceRange.min = this.value;
+    });
+
+    maxPriceInput.addEventListener('input', function() {
+        priceRange.max = this.value;
+        priceRange.value = this.value;
+    });
+
+    // Apply filters
+    document.getElementById('applyFilters').addEventListener('click', function() {
+        const filters = {
+            minPrice: document.getElementById('minPriceInput').value,
+            maxPrice: document.getElementById('maxPriceInput').value,
+            clieuvo: Array.from(document.querySelectorAll('input[name="clieuvo"]:checked'))
+                         .map(cb => cb.value)
+        };
+
+        // Thêm token CSRF
+        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        fetch('/filter-products', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': token
+            },
+            body: JSON.stringify(filters)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(products => {
+            updateProductsDisplay(products);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Có lỗi xảy ra khi lọc sản phẩm');
+        });
+    });
+});
+
+// Hàm hiển thị sản phẩm
+function updateProductsDisplay(products) {
+    const container = document.getElementById('productsContainer');
+    if (products.length === 0) {
+        container.innerHTML = `
+            <div class="col-12">
+                <div class="alert alert-info">
+                    Không tìm thấy sản phẩm nào phù hợp với bộ lọc
+                </div>
+            </div>
+        `;
+    } else {
+        container.innerHTML = products.map(product => `
+            <div class="col">
+                <a href="/products/${product.idsp}" class="text-decoration-none">
+                    <div class="card h-100">
+                        <img src="${product.hinhsp}" class="card-img-top" alt="${product.tensp}">
+                        <div class="card-body">
+                            <h5 class="card-title text-dark">${product.tensp}</h5>
+                            <p class="card-text text-muted">Giá: ${new Intl.NumberFormat('vi-VN').format(product.gia)}đ</p>
+                            <small class="text-muted">${product.nhasanxuat.tennhasx}</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        `).join('');
+    }
+}
+</script>
 @endsection
