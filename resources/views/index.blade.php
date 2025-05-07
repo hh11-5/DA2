@@ -148,7 +148,7 @@
 
         /* Giữ nội dung không bị che */
         body {
-            padding-top: 80px;
+            padding-top: 150px;
         }
 
         /* CSS cho nút điều hướng sản phẩm */
@@ -411,7 +411,7 @@
             </div>
         </div>
 
-      
+
 
         <!-- Tin tức -->
         <div class="section-spacing news-section">
@@ -441,12 +441,12 @@ document.querySelectorAll('.brand-card').forEach(card => {
     card.addEventListener('click', function() {
         const brandId = this.dataset.brandId;
         const brandName = this.querySelector('.brand-name').textContent;
-        
+
         // Lấy container hiển thị sản phẩm theo thương hiệu
         const brandProductsSection = document.getElementById('brand-products');
         const brandTitle = document.getElementById('brand-title');
         const productsContainer = document.getElementById('brand-products-container');
-        
+
         fetch(`/brands/${brandId}`)
             .then(response => {
                 if (!response.ok) {
@@ -457,7 +457,7 @@ document.querySelectorAll('.brand-card').forEach(card => {
             .then(products => {
                 // Cập nhật tiêu đề
                 brandTitle.textContent = `Sản phẩm ${brandName}`;
-                
+
                 if (products.length === 0) {
                     productsContainer.innerHTML = `
                         <div class="col-12">
@@ -481,10 +481,10 @@ document.querySelectorAll('.brand-card').forEach(card => {
                         </div>
                     `).join('');
                 }
-                
+
                 // Hiển thị phần sản phẩm
                 brandProductsSection.style.display = 'block';
-                
+
                 // Scroll đến phần sản phẩm của thương hiệu
                 brandProductsSection.scrollIntoView({ behavior: 'smooth' });
             })

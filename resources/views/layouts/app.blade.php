@@ -41,7 +41,8 @@
 
         /* Điều chỉnh bottom navbar */
         .bottom-navbar {
-            margin-top: 70px !important; /* Giảm khoảng cách giữa 2 navbar */
+            margin-top: 100px !important; /* Giảm khoảng cách giữa 2 navbar */
+            z-index: 1 !important;
         }
 
         /* Responsive */
@@ -84,6 +85,44 @@
         font-weight: bold;
         margin-bottom: 15px;
     }
+
+    .btn-outline-dark:hover .badge {
+        transform: scale(1.1);
+        transition: transform 0.2s ease;
+    }
+
+    .btn-outline-dark {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        border-width: 2px;
+    }
+
+    .btn-outline-dark:hover {
+        background-color: #f8f9fa;
+        color: #212529;
+        border-color: #212529;
+    }
+
+    .badge {
+        transition: all 0.3s ease;
+    }
+
+    .text-success {
+        animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
     </style>
 </head>
 <body>
@@ -95,12 +134,12 @@
                 <a href="/" class="navbar-brand">
                     <img src="{{ asset('images/WebDH2.png') }}" alt="Watch Store Logo" height="70">
                 </a>
-                
+
                 <div class="col-md-6">
                     <form action="{{ route('search') }}" method="GET" class="d-flex position-relative">
-                        <input 
-                            class="form-control me-2" 
-                            type="search" 
+                        <input
+                            class="form-control me-2"
+                            type="search"
                             name="query"
                             value="{{ request('query') }}"
                             placeholder="Tìm kiếm theo tên, giá hoặc thương hiệu..."
@@ -118,7 +157,9 @@
                                 Xin chào, {{ Auth::user()->khachHang->tenkh }}
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Thông tin tài khoản</a></li>
+                                <li><a class="dropdown-item" href="{{ route('profile') }}">
+                                    <i class="fas fa-user me-2"></i>Thông tin tài khoản
+                                </a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form action="{{ route('auth.logout') }}" method="POST" class="d-inline">
@@ -130,12 +171,17 @@
                         </div>
                         @if(!Auth::user()->nhanVien)
                             <a href="{{ route('cart.index') }}" class="btn btn-outline-dark position-relative ms-2">
-                                <i class="fas fa-shopping-cart"></i>
-                                @if(session()->has('cart') && count(session('cart')) > 0)
-                                    <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">
-                                        {{ count(session('cart')) }}
+                                <i class="fas fa-shopping-cart me-1"></i>Giỏ hàng
+                                @if(isset($cart) && count($cart) > 0)
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                          style="font-size: 0.8rem; padding: 0.4em 0.6em;">
+                                        {{ count($cart) }}
                                     </span>
-                                    <span class="ms-2">{{ number_format(session('cart_total', 0), 0, ',', '.') }}đ</span>
+                                    <span class="ms-3 text-success" style="font-weight: 600;">
+                                        {{ number_format($total, 0, ',', '.') }}đ
+                                    </span>
+                                @else
+                                    <span class="ms-2 text-muted">(Trống)</span>
                                 @endif
                             </a>
                         @endif
@@ -265,5 +311,50 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     @yield('scripts')
+    <!-- Thêm script này trước thẻ </body> -->
+<script>
+function updateCartInfo() {
+    fetch('/cart/info')
+        .then(response => response.json())
+        .then(data => {
+            const cartButton = document.querySelector('a[href="{{ route('cart.index') }}"]');
+            if (cartButton) {
+                if (data.count > 0) {
+                    cartButton.innerHTML = `
+                        <i class="fas fa-shopping-cart me-1"></i>Giỏ hàng
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                              style="font-size: 0.8rem; padding: 0.4em 0.6em;">
+                            ${data.count}
+                        </span>
+                        <span class="ms-3 text-success" style="font-weight: 600;">
+                            ${new Intl.NumberFormat('vi-VN').format(data.total)}đ
+                        </span>
+                    `;
+                } else {
+                    cartButton.innerHTML = `
+                        <i class="fas fa-shopping-cart me-1"></i>Giỏ hàng
+                        <span class="ms-2 text-muted">(Trống)</span>
+                    `;
+                }
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+// Cập nhật giỏ hàng khi trang load
+document.addEventListener('DOMContentLoaded', updateCartInfo);
+
+// Cập nhật giỏ hàng sau khi thêm sản phẩm thành công
+if (document.querySelector('.alert-success')) {
+    updateCartInfo();
+}
+
+// Thêm event listener cho nút thêm vào giỏ
+document.querySelectorAll('form[action*="cart/add"]').forEach(form => {
+    form.addEventListener('submit', function() {
+        setTimeout(updateCartInfo, 500);
+    });
+});
+</script>
 </body>
 </html>
