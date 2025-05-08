@@ -113,6 +113,93 @@
         margin-bottom: 20px;
         color: #1a202c;
     }
+
+    /* Card styles */
+    .product-card {
+        border: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .card-img-wrapper {
+        height: 200px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+        padding: 1rem;
+    }
+
+    .card-img-top {
+        height: 100%;
+        width: auto;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+    }
+
+    .product-card:hover .card-img-top {
+        transform: scale(1.05);
+    }
+
+    .card-title {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+        height: 2.4rem;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .card-footer {
+        padding: 1rem;
+        background: transparent;
+    }
+
+    .card-footer .btn {
+        font-size: 0.875rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .card-footer form {
+        margin: 0;
+    }
+
+    /* Related products section */
+    .related-products {
+        margin-top: 4rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .related-products h3 {
+        margin-bottom: 2rem;
+        color: #1a202c;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .row-cols-md-4 > * {
+            width: 50%;
+        }
+
+        .card-footer {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .card-footer .btn {
+            width: 100%;
+        }
+    }
 </style>
 
 <div class="container mt-5">
@@ -188,16 +275,22 @@
     <!-- Related Products -->
     <div class="related-products">
         <h3>Sản phẩm cùng thương hiệu</h3>
-        <div class="row">
+        <div class="row row-cols-2 row-cols-md-4 g-4">
             @foreach($relatedProducts as $product)
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="{{ asset($product->hinhsp) }}" class="card-img-top" alt="{{ $product->tensp }}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $product->tensp }}</h5>
-                        <p class="card-text text-muted">{{ number_format($product->gia, 0, ',', '.') }}đ</p>
+            <div class="col">
+                <a href="{{ route('products.show', $product->idsp) }}" class="text-decoration-none">
+                    <div class="card product-card h-100">
+                        <div class="card-img-wrapper">
+                            <img src="{{ asset($product->hinhsp) }}" class="card-img-top" alt="{{ $product->tensp }}">
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title text-dark">{{ $product->tensp }}</h5>
+                            <div class="text-danger fw-bold mt-auto">
+                                {{ number_format($product->gia, 0, ',', '.') }}đ
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
             @endforeach
         </div>

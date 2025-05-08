@@ -77,8 +77,12 @@ class CartController extends Controller
             $chiTietGioHang->save();
             DB::commit();
 
+            // Trả về response với thông tin giỏ hàng mới
+            $cartInfo = $this->getCartInfo()->getData();
+
             return redirect()->back()
-                ->with('success', 'Đã thêm sản phẩm vào giỏ hàng');
+                ->with('success', 'Đã thêm sản phẩm vào giỏ hàng')
+                ->with('cartInfo', $cartInfo);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -169,5 +173,35 @@ class CartController extends Controller
             return redirect()->back()
                 ->with('error', 'Có lỗi xảy ra khi xóa sản phẩm');
         }
+    }
+
+    public function getCartInfo()
+    {
+        if (!Auth::check()) {
+            return response()->json([
+                'count' => 0,
+                'total' => 0
+            ]);
+        }
+
+        $gioHang = GioHang::where('idkh', Auth::user()->khachHang->idkh)->first();
+
+        if (!$gioHang) {
+            return response()->json([
+                'count' => 0,
+                'total' => 0
+            ]);
+        }
+
+        $count = $gioHang->chiTietGioHang->count();
+        $total = DB::table('chitietgiohang')
+            ->join('sanpham', 'chitietgiohang.idsp', '=', 'sanpham.idsp')
+            ->where('chitietgiohang.idgh', $gioHang->idgh)
+            ->sum(DB::raw('chitietgiohang.soluong * sanpham.gia'));
+
+        return response()->json([
+            'count' => $count,
+            'total' => $total
+        ]);
     }
 }
