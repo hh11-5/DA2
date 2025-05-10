@@ -318,24 +318,105 @@
         /* CSS cho thẻ thương hiệu */
         .brand-card {
             background: white;
-            border-radius: 12px;
-            padding: 2rem;
+            border-radius: 8px;
+            padding: 1rem;
             text-align: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
             cursor: pointer;
+            height: 100%;
+            max-width: 120px;
+            margin: 0 auto;
         }
 
         .brand-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-            background-color: #f8f9fa;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            background: linear-gradient(to bottom, #fff, #f8f9fa);
         }
 
         .brand-name {
-            color: #2d3748;
-            font-weight: 600;
+            color: #1a202c;
+            font-weight: 700;
             margin: 0;
+            font-size: 1.2rem; /* Tăng kích thước chữ lên */
+            line-height: 1.2;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .brand-card:hover .brand-name {
+            color: #475569; /* Thay đổi màu khi hover thành màu xám của banner */
+            transform: scale(1.05);
+        }
+
+        /* Thêm hiệu ứng đổ bóng cho text */
+        .brand-content {
+            padding: 0.5rem;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Thêm responsive cho brand-card */
+        @media (max-width: 992px) {
+            .row-cols-6 {
+                --bs-rows: 3;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .row-cols-6 {
+                --bs-rows: 4;
+            }
+        }
+
+        /* Thêm style cho tiêu đề thương hiệu */
+        .brand-section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .brand-section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(135deg, #94a3b8, #475569);
+            border-radius: 2px;
+        }
+
+        .brand-grid {
+            margin-bottom: 2rem;
+        }
+
+        .brand-card {
+            max-width: 150px; /* Tăng kích thước card một chút */
+        }
+
+        /* Điều chỉnh responsive */
+        @media (max-width: 992px) {
+            .row-cols-5 {
+                --bs-row-cols: 3; /* Hiển thị 3 cột trên tablet */
+            }
+            .brand-card {
+                max-width: 120px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .row-cols-5 {
+                --bs-row-cols: 2; /* Hiển thị 2 cột trên mobile */
+            }
+            .brand-card {
+                max-width: 100%;
+            }
         }
     </style>
 
@@ -390,17 +471,30 @@
 
         <!-- Sau phần sản phẩm mới nhất -->
         <div class="section-spacing">
-            <h5 class="mb-4">Thương hiệu đồng hồ</h5>
-            <div class="row row-cols-2 row-cols-md-3 g-4 mb-4">
-                @foreach($thuonghieus as $th)
-                <div class="col">
-                    <div class="brand-card" data-brand-id="{{ $th->idnhasx }}">
-                        <div class="brand-content">
-                            <h5 class="brand-name">{{ $th->tennhasx }}</h5>
+            <h5 class="brand-section-title">Thương hiệu đồng hồ</h5>
+            <div class="brand-grid">
+                <div class="row row-cols-5 g-3 mb-3"> <!-- Hàng đầu tiên với 5 thương hiệu -->
+                    @foreach($thuonghieus->take(5) as $th)
+                    <div class="col">
+                        <div class="brand-card" data-brand-id="{{ $th->idnhasx }}">
+                            <div class="brand-content">
+                                <h5 class="brand-name">{{ $th->tennhasx }}</h5>
+                            </div>
                         </div>
                     </div>
+                    @endforeach
                 </div>
-                @endforeach
+                <div class="row row-cols-5 g-3"> <!-- Hàng thứ hai với 5 thương hiệu còn lại -->
+                    @foreach($thuonghieus->skip(5)->take(5) as $th)
+                    <div class="col">
+                        <div class="brand-card" data-brand-id="{{ $th->idnhasx }}">
+                            <div class="brand-content">
+                                <h5 class="brand-name">{{ $th->tennhasx }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
             </div>
 
             <!-- Thêm container để hiển thị sản phẩm theo thương hiệu -->
@@ -437,12 +531,13 @@
 
 @section('scripts')
 <script>
+// Sửa lại phần JavaScript xử lý click
 document.querySelectorAll('.brand-card').forEach(card => {
-    card.addEventListener('click', function() {
+    card.addEventListener('click', function(e) {
+        e.preventDefault(); // Ngăn chặn hành vi mặc định
+
         const brandId = this.dataset.brandId;
         const brandName = this.querySelector('.brand-name').textContent;
-
-        // Lấy container hiển thị sản phẩm theo thương hiệu
         const brandProductsSection = document.getElementById('brand-products');
         const brandTitle = document.getElementById('brand-title');
         const productsContainer = document.getElementById('brand-products-container');
@@ -482,11 +577,11 @@ document.querySelectorAll('.brand-card').forEach(card => {
                     `).join('');
                 }
 
-                // Hiển thị phần sản phẩm
+                // Hiển thị phần sản phẩm mà không scroll
                 brandProductsSection.style.display = 'block';
 
-                // Scroll đến phần sản phẩm của thương hiệu
-                brandProductsSection.scrollIntoView({ behavior: 'smooth' });
+                // Xóa scrollIntoView
+                // brandProductsSection.scrollIntoView({ behavior: 'smooth' });
             })
             .catch(error => {
                 console.error('Error:', error);

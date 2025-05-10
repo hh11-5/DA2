@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-4">
+<div class="container mt-5"> <!-- Thêm margin-top -->
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
@@ -9,7 +9,11 @@
         </ol>
     </nav>
 
-    <h4 class="mb-4">Kết quả tìm kiếm cho "{{ $query }}"</h4>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="mb-0">
+            Hiển thị {{ count($products) }} kết quả cho "{{ $query }}"
+        </h4>
+    </div>
     
     @if($products->isEmpty())
         <div class="alert alert-info">
@@ -181,6 +185,42 @@
 
 #priceRange {
     width: 100%;
+}
+
+.breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 1.5rem;
+}
+
+.breadcrumb-item a {
+    color: #475569;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.breadcrumb-item a:hover {
+    color: #1e40af;
+}
+
+.breadcrumb-item.active {
+    color: #64748b;
+}
+
+/* Thêm animation cho số lượng kết quả */
+.search-results {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 </style>
 

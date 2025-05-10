@@ -15,46 +15,44 @@
             width: 100%;
             background-color: #fff;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        /* Điều chỉnh padding-top cho body */
+        .top-navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 10px 0;
+        }
+
+        .bottom-navbar {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 8px 0;
+            margin-top: 70px !important; /* Giảm margin */
+        }
+
         body {
-            padding-top: 140px; /* Giảm xuống từ 160px */
-        }
-
-        .navbar-brand {
-            padding: 0;
-            margin-right: 2rem;
+            padding-top: 120px; /* Giảm padding-top */
         }
 
         .navbar-brand img {
-            height: 60px; /* Giảm kích thước logo một chút */
+            height: 50px; /* Giảm kích thước logo */
         }
 
-        /* Căn giữa form tìm kiếm */
-        .search-form {
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
+        /* Làm gọn dropdown menu */
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 0.5rem;
         }
 
-        /* Điều chỉnh bottom navbar */
-        .bottom-navbar {
-            margin-top: 100px !important; /* Giảm khoảng cách giữa 2 navbar */
-            z-index: 1 !important;
+        .dropdown-item {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            body {
-                padding-top: 100px;
-            }
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
         }
 
-        .dropdown:hover .dropdown-menu {
-            display: block;
-        }
         .navbar {
             padding: 15px 0;
         }
@@ -128,92 +126,41 @@
 <body>
     <!-- Header -->
     <header>
-        <!-- Top navbar with logo and search -->
         <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom fixed-top">
             <div class="container">
+                <!-- Logo -->
                 <a href="/" class="navbar-brand">
-                    <img src="{{ asset('images/WebDH2.png') }}" alt="Watch Store Logo" height="70">
+                    <img src="{{ asset('images/WebDH2.png') }}" alt="Watch Store Logo" height="60">
                 </a>
 
-                <div class="col-md-6">
-                    <form action="{{ route('search') }}" method="GET" class="d-flex position-relative">
-                        <input
-                            class="form-control me-2"
-                            type="search"
-                            name="query"
-                            value="{{ request('query') }}"
-                            placeholder="Tìm kiếm theo tên, giá hoặc thương hiệu..."
-                            required>
-                        <button class="btn btn-outline-dark" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </form>
-                </div>
-
-                <div class="col-md-3 text-end">
-                    @auth
-                        <div class="dropdown">
-                            <button class="btn btn-outline-dark dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
-                                Xin chào, {{ Auth::user()->khachHang->tenkh }}
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ route('profile') }}">
-                                    <i class="fas fa-user me-2"></i>Thông tin tài khoản
-                                </a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form action="{{ route('auth.logout') }}" method="POST" class="d-inline">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item">Đăng xuất</button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                        @if(!Auth::user()->nhanVien)
-                            <a href="{{ route('cart.index') }}" class="btn btn-outline-dark position-relative ms-2">
-                                <i class="fas fa-shopping-cart me-1"></i>Giỏ hàng
-                                @if(isset($cart) && count($cart) > 0)
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                                          style="font-size: 0.8rem; padding: 0.4em 0.6em;">
-                                        {{ count($cart) }}
-                                    </span>
-                                    <span class="ms-3 text-success" style="font-weight: 600;">
-                                        {{ number_format($total, 0, ',', '.') }}đ
-                                    </span>
-                                @else
-                                    <span class="ms-2 text-muted">(Trống)</span>
-                                @endif
-                            </a>
-                        @endif
-                    @else
-                        <a href="{{ route('auth') }}" class="btn btn-outline-dark">Đăng nhập / Đăng ký</a>
-                    @endauth
-                </div>
-            </div>
-        </nav>
-
-        <!-- Bottom navbar with categories -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom bottom-navbar" style="margin-top: 80px;">
-            <div class="container">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                    <ul class="navbar-nav">
+
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <!-- Menu chính -->
+                    <ul class="navbar-nav me-auto">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button">Thương hiệu</a>
+                            <a class="nav-link dropdown-toggle" href="#" 
+                               role="button" 
+                               data-bs-toggle="dropdown" 
+                               aria-expanded="false">
+                                Thương hiệu
+                            </a>
                             <ul class="dropdown-menu">
                                 @foreach(App\Models\NhaSanXuat::all() as $nhasx)
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('brands.page', $nhasx->idnhasx) }}">
-                                        {{ $nhasx->tennhasx }}
-                                    </a>
-                                </li>
+                                <li><a class="dropdown-item" href="{{ route('brands.page', $nhasx->idnhasx) }}">
+                                    {{ $nhasx->tennhasx }}</a></li>
                                 @endforeach
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button">Nam</a>
+                            <a class="nav-link dropdown-toggle" href="#" 
+                               role="button" 
+                               data-bs-toggle="dropdown" 
+                               aria-expanded="false">
+                                Nam
+                            </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="#">Dưới 5 triệu</a></li>
                                 <li><a class="dropdown-item" href="#">5-10 triệu</a></li>
@@ -221,7 +168,12 @@
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button">Nữ</a>
+                            <a class="nav-link dropdown-toggle" href="#" 
+                               role="button" 
+                               data-bs-toggle="dropdown" 
+                               aria-expanded="false">
+                                Nữ
+                            </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="#">Dưới 3 triệu</a></li>
                                 <li><a class="dropdown-item" href="#">3-7 triệu</a></li>
@@ -229,7 +181,12 @@
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button">Cặp đôi</a>
+                            <a class="nav-link dropdown-toggle" href="#" 
+                               role="button" 
+                               data-bs-toggle="dropdown" 
+                               aria-expanded="false">
+                                Cặp đôi
+                            </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="#">Đồng hồ cơ</a></li>
                                 <li><a class="dropdown-item" href="#">Đồng hồ điện tử</a></li>
@@ -239,13 +196,101 @@
                             <a class="nav-link" href="/contact">Liên hệ</a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav ms-auto">
-                        <!-- Không cần code cart ở đây nữa -->
-                    </ul>
+
+                    <!-- Thanh tìm kiếm -->
+                    <form action="{{ route('search') }}" method="GET" class="d-flex mx-3" style="min-width: 300px;">
+                        <input class="form-control me-2" type="search" name="query" 
+                               value="{{ request('query') }}" 
+                               placeholder="Tìm kiếm..." required>
+                        <button class="btn btn-outline-dark" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+
+                    <!-- Giỏ hàng và tài khoản -->
+                    <div class="nav-item d-flex align-items-center">
+                        @auth
+                            @if(!Auth::user()->nhanVien)
+                                <a href="{{ route('cart.index') }}" class="btn btn-outline-dark position-relative me-2">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    @if(isset($cart) && count($cart) > 0)
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                            {{ count($cart) }}
+                                        </span>
+                                    @endif
+                                </a>
+                            @endif
+                            <div class="dropdown">
+                                <button class="btn btn-outline-dark dropdown-toggle" 
+                                        type="button" 
+                                        data-bs-toggle="dropdown" 
+                                        aria-expanded="false">
+                                    {{ Auth::user()->khachHang->tenkh }}
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="{{ route('profile') }}">
+                                        <i class="fas fa-user me-2"></i>Thông tin tài khoản</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form action="{{ route('auth.logout') }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        @else
+                            <a href="{{ route('auth') }}" class="btn btn-outline-dark">
+                                <i class="fas fa-user me-1"></i>Đăng nhập / Đăng ký
+                            </a>
+                        @endauth
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
+
+    <style>
+        .navbar {
+            padding: 1rem 0;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        body {
+            padding-top: 76px;
+        }
+
+        .navbar-brand img {
+            height: 60px;
+            transition: height 0.3s ease;
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem !important;
+            font-weight: 500;
+        }
+
+        .dropdown-menu {
+            margin-top: 0.5rem;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+
+        @media (max-width: 992px) {
+            .navbar-brand img {
+                height: 50px;
+            }
+            
+            .nav-item.d-flex {
+                margin-top: 1rem;
+                justify-content: center;
+            }
+        }
+    </style>
 
     <!-- Main Content -->
     <main class="py-4">
