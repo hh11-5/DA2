@@ -9,8 +9,12 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Sanpham::with('nhasanxuat')->paginate(12);
-        return view('products.index', compact('products'));
+        $products = Sanpham::with('nhasanxuat')->get();
+        return view('layouts.results', [
+            'products' => $products,
+            'query' => 'Tất cả sản phẩm',
+            'thuonghieus' => \App\Models\NhaSanXuat::all()
+        ]);
     }
 
     public function show($id)

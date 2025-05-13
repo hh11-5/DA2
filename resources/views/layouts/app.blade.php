@@ -201,8 +201,8 @@
                     <form action="{{ route('search') }}" method="GET" class="d-flex mx-3" style="min-width: 300px;">
                         <input class="form-control me-2" type="search" name="query" 
                                value="{{ request('query') }}" 
-                               placeholder="Tìm kiếm..." required>
-                        <button class="btn btn-outline-dark" type="submit">
+                               placeholder="Tìm kiếm...">
+                        <button type="button" class="btn btn-outline-dark search-btn">
                             <i class="fas fa-search"></i>
                         </button>
                     </form>
@@ -399,6 +399,20 @@ document.querySelectorAll('form[action*="cart/add"]').forEach(form => {
     form.addEventListener('submit', function() {
         setTimeout(updateCartInfo, 500);
     });
+});
+
+document.querySelector('.search-btn').addEventListener('click', function(e) {
+    e.preventDefault();
+    const searchForm = this.closest('form');
+    const searchInput = searchForm.querySelector('input[name="query"]');
+    
+    if (searchInput.value.trim()) {
+        // Nếu có từ khóa tìm kiếm -> submit form tìm kiếm
+        searchForm.submit();
+    } else {
+        // Nếu không có từ khóa -> chuyển đến trang hiển thị tất cả sản phẩm
+        window.location.href = '{{ route("products.index") }}';
+    }
 });
 </script>
 </body>

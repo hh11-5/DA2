@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -34,9 +32,10 @@
                         <i class="fas fa-user"></i>
                         <input type="text" name="email_or_phone" placeholder="Email hoặc số điện thoại" required />
                     </div>
-                    <div class="input-field">
+                    <div class="input-field password-field">
                         <i class="fas fa-lock"></i>
                         <input type="password" name="password" placeholder="Mật khẩu" required />
+                        <i class="fas fa-eye password-toggle" style="margin-right: 15px;"></i>
                     </div>
                     <button type="submit" class="btn btn-primary">Đăng nhập</button>
                 </form>
@@ -73,13 +72,15 @@
                         <i class="fas fa-name"></i>
                         <input type="text" name="full_name" placeholder="Họ và tên" required>
                     </div>
-                    <div class="input-field">
+                    <div class="input-field password-field">
                         <i class="fas fa-lock"></i>
                         <input name="password1" type="password" placeholder="Mật khẩu" required />
+                        <i class="fas fa-eye password-toggle"></i>
                     </div>
-                    <div class="input-field">
+                    <div class="input-field password-field">
                         <i class="fas fa-lock"></i>
                         <input name="password2" type="password" placeholder="Nhập lại mật khẩu" required />
+                        <i class="fas fa-eye password-toggle"></i>
                     </div>
                     <?=isset($message) ? $message : ''?>
                     <input name="SignUp" type="submit" class="btn" value="Đăng ký" />
@@ -93,7 +94,6 @@
                     <p>Nếu bạn chưa có tài khoản. Hãy tạo ngay một tài khoản và tham gia cùng chúng tôi nào!</p>
                     <button class="btn transparent" id="sign-up-btn">Đăng ký</button>
                 </div>
-                <img src="./assets/log.svg" class="image" alt="" />
             </div>
             <div class="panel right-panel">
                 <div class="content">
@@ -101,7 +101,6 @@
                     <p>Nếu bạn đã có tài khoản. Hãy đăng nhập vào để bắt đầu mua hàng!</p>
                     <button class="btn transparent" id="sign-in-btn">Đăng nhập</button>
                 </div>
-                <img src="./assets/img/register.svg" class="image" alt="" />
             </div>
         </div>
     </div>
@@ -172,14 +171,15 @@ form.sign-in-form {
 
 .title {
     font-size: 2.2rem;
-    color: #444;
+    color: #1e293b;
     margin-bottom: 10px;
 }
 
 .input-field {
     max-width: 380px;
     width: 100%;
-    background-color: #f0f0f0;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
     margin: 10px 0;
     height: 55px;
     border-radius: 55px;
@@ -192,7 +192,7 @@ form.sign-in-form {
 .input-field i {
     text-align: center;
     line-height: 55px;
-    color: #acacac;
+    color: #64748b;
     transition: 0.5s;
     font-size: 1.1rem;
 }
@@ -204,11 +204,11 @@ form.sign-in-form {
     line-height: 1;
     font-weight: 600;
     font-size: 1.1rem;
-    color: #333;
+    color: #1e293b;
 }
 
 .input-field input::placeholder {
-    color: #aaa;
+    color: #94a3b8;
     font-weight: 500;
 }
 
@@ -229,22 +229,23 @@ form.sign-in-form {
     justify-content: center;
     align-items: center;
     margin: 0 0.45rem;
-    color: #333;
+    color: #475569;
     border-radius: 50%;
-    border: 1px solid #333;
+    border: 1px solid #475569;
     text-decoration: none;
     font-size: 1.1rem;
     transition: 0.3s;
 }
 
 .social-icon:hover {
-    color: #4481eb;
-    border-color: #4481eb;
+    color: #334155;
+    border-color: #334155;
+    transform: translateY(-2px);
 }
 
 .btn {
     width: 150px;
-    background-color: #5995fd;
+    background-color: #475569;
     border: none;
     outline: none;
     height: 49px;
@@ -254,11 +255,12 @@ form.sign-in-form {
     font-weight: 600;
     margin: 10px 0;
     cursor: pointer;
-    transition: 0.5s;
+    transition: all 0.3s ease;
 }
 
 .btn:hover {
-    background-color: #4d84e2;
+    background-color: #334155;
+    transform: translateY(-2px);
 }
 
 .panels-container {
@@ -279,7 +281,7 @@ form.sign-in-form {
     top: -10%;
     right: 48%;
     transform: translateY(-50%);
-    background-image: linear-gradient(-45deg, #4481eb 0%, #04befe 100%);
+    background-image: linear-gradient(135deg, #94a3b8, #475569);
     transition: 1.8s ease-in-out;
     border-radius: 50%;
     z-index: 6;
@@ -320,11 +322,13 @@ form.sign-in-form {
     font-weight: 600;
     line-height: 1;
     font-size: 1.5rem;
+    color: #fff;
 }
 
 .panel p {
     font-size: 0.95rem;
     padding: 0.7rem 0;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .btn.transparent {
@@ -335,6 +339,11 @@ form.sign-in-form {
     height: 41px;
     font-weight: 600;
     font-size: 0.8rem;
+    color: #fff;
+}
+
+.btn.transparent:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .right-panel .image,
@@ -348,6 +357,7 @@ form.sign-in-form {
 .container.sign-up-mode:before {
     transform: translate(100%, -50%);
     right: 52%;
+    transition: transform 1.5s ease-in-out;
 }
 
 .container.sign-up-mode .left-panel .image,
@@ -357,6 +367,7 @@ form.sign-in-form {
 
 .container.sign-up-mode .signin-signup {
     left: 25%;
+    transition: transform 0.7s ease-in-out;
 }
 
 .container.sign-up-mode form.sign-up-form {
@@ -445,6 +456,7 @@ form.sign-in-form {
         right: initial;
         top: initial;
         transition: 2s ease-in-out;
+        background-image: linear-gradient(135deg, #94a3b8, #475569);
     }
     .container.sign-up-mode:before {
         transform: translate(-50%, 100%);
@@ -490,6 +502,10 @@ form.sign-in-form {
         bottom: 28%;
         left: 50%;
     }
+    form {
+        background: white;
+        margin: 1rem;
+    }
 }
     /* Thêm các rules mới này */
 .container.sign-up-mode .panels-container {
@@ -520,6 +536,92 @@ form.sign-up-form {
 .container.sign-up-mode form.sign-in-form {
     display: none;
 }
+
+/* Thêm hiệu ứng hover cho input field */
+.input-field:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Style cho icon hiện/ẩn mật khẩu */
+.password-field {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #64748b;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.password-toggle:hover {
+    color: #475569;
+}
+
+/* Thêm hiệu ứng ripple cho buttons */
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform .5s, opacity 1s;
+}
+
+.btn:active:after {
+    transform: scale(0, 0);
+    opacity: .3;
+    transition: 0s;
+}
+
+/* Thêm animation cho form errors và success messages */
+.alert {
+    animation: slideDown 0.4s ease-out;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.alert-danger {
+    background-color: #fee2e2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+}
+
+.alert-success {
+    background-color: #dcfce7;
+    border: 1px solid #bbf7d0;
+    color: #16a34a;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
 </style>
 
 <script>
@@ -534,6 +636,36 @@ sign_up_btn.addEventListener("click", () => {
 sign_in_btn.addEventListener("click", () => {
     container.classList.remove("sign-up-mode");
 });
-</script>
+
+// Xử lý hiện/ẩn mật khẩu
+document.querySelectorAll('.password-toggle').forEach(toggle => {
+    toggle.addEventListener('click', function() {
+        const passwordField = this.closest('.password-field');
+        const input = passwordField.querySelector('input[type="password"], input[type="text"]');
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            this.classList.remove('fa-eye');
+            this.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            this.classList.remove('fa-eye-slash');
+            this.classList.add('fa-eye');
+        }
+    });
+});
+
+// Thêm hiệu ứng ripple cho buttons
+document.querySelectorAll('.btn').forEach(button => {
+    button.addEventListener('click', function(e) {
+        const rect = button.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        button.style.setProperty('--ripple-x', x + 'px');
+        button.style.setProperty('--ripple-y', y + 'px');
+    });
+});
+</script>   
 
 </html>
