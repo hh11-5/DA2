@@ -260,7 +260,10 @@
                 </div>
 
                 <div class="buy-buttons">
-                    <button class="btn btn-buy-now">MUA NGAY</button>
+                    <form action="{{ route('buy.now', $sanpham->idsp) }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-buy-now">MUA NGAY</button>
+                    </form>
                     <form action="{{ route('cart.add', $sanpham->idsp) }}" method="POST" class="d-inline">
                         @csrf
                         <button type="submit" class="btn btn-add-cart">
