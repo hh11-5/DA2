@@ -3,7 +3,6 @@
 @section('content')
 <div class="container mt-4">
     <h2>🛒 Giỏ hàng của bạn</h2>
-
     @if (!empty($cart) && count($cart) > 0)
         <table class="table table-hover">
             <tr>
@@ -22,7 +21,7 @@
                     </td>
                     <td>{{ number_format($item['gia']) }}đ</td>
                     <td>
-                        <form method="POST" action="{{ route('cart.update', $id) }}" class="d-flex align-items-center">
+                        <form method="POST" action="{{ route('cart.update', $id) }}" class="d-flex align-items-center" data-product-id="{{ $id }}">
                             @csrf
                             <div class="input-group" style="width: 130px;">
                                 <button type="button" class="btn btn-outline-secondary btn-sm" onclick="decreaseQty(this)">-</button>
@@ -30,7 +29,6 @@
                                        class="form-control text-center" required>
                                 <button type="button" class="btn btn-outline-secondary btn-sm" onclick="increaseQty(this)">+</button>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-sm ms-2">Cập nhật</button>
                         </form>
                     </td>
                     <td>{{ number_format($item['gia'] * $item['quantity']) }}đ</td>
@@ -51,7 +49,7 @@
 
         <div class="text-end mt-3">
             <a href="{{ route('products.index') }}" class="btn btn-secondary">Tiếp tục mua hàng</a>
-            <button class="btn btn-primary">Thanh toán</button>
+            <a href="{{ route('checkout.index') }}" class="btn btn-primary">Thanh toán</a>
         </div>
     @else
         <div class="alert alert-info">
@@ -62,17 +60,35 @@
 
 <script>
 function increaseQty(button) {
-    let input = button.parentNode.querySelector('input');
-    input.value = parseInt(input.value) + 1;
+    const form = button.closest('form');
+    const input = form.querySelector('input[name="quantity"]');
+    if (input) {
+        input.value = parseInt(input.value) + 1;
+        form.submit();
+    }
 }
 
 function decreaseQty(button) {
-    let input = button.parentNode.querySelector('input');
-    let value = parseInt(input.value);
-    if (value > 1) {
-        input.value = value - 1;
+    const form = button.closest('form');
+    const input = form.querySelector('input[name="quantity"]');
+    if (input && parseInt(input.value) > 1) {
+        input.value = parseInt(input.value) - 1;
+        form.submit();
     }
 }
+
+// Thêm sự kiện lắng nghe khi người dùng thay đổi số lượng bằng tay
+document.addEventListener('DOMContentLoaded', function() {
+    const quantityInputs = document.querySelectorAll('input[name="quantity"]');
+    quantityInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            if (this.value < 1) {
+                this.value = 1;
+            }
+            this.closest('form').submit();
+        });
+    });
+});
 
 // Tự động ẩn thông báo sau 3 giây
 window.addEventListener('load', function() {

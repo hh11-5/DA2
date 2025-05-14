@@ -141,9 +141,9 @@
                     <!-- Menu chính -->
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" 
-                               role="button" 
-                               data-bs-toggle="dropdown" 
+                            <a class="nav-link dropdown-toggle" href="#"
+                               role="button"
+                               data-bs-toggle="dropdown"
                                aria-expanded="false">
                                 Thương hiệu
                             </a>
@@ -155,9 +155,9 @@
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" 
-                               role="button" 
-                               data-bs-toggle="dropdown" 
+                            <a class="nav-link dropdown-toggle" href="#"
+                               role="button"
+                               data-bs-toggle="dropdown"
                                aria-expanded="false">
                                 Nam
                             </a>
@@ -168,9 +168,9 @@
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" 
-                               role="button" 
-                               data-bs-toggle="dropdown" 
+                            <a class="nav-link dropdown-toggle" href="#"
+                               role="button"
+                               data-bs-toggle="dropdown"
                                aria-expanded="false">
                                 Nữ
                             </a>
@@ -181,9 +181,9 @@
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" 
-                               role="button" 
-                               data-bs-toggle="dropdown" 
+                            <a class="nav-link dropdown-toggle" href="#"
+                               role="button"
+                               data-bs-toggle="dropdown"
                                aria-expanded="false">
                                 Cặp đôi
                             </a>
@@ -199,8 +199,8 @@
 
                     <!-- Thanh tìm kiếm -->
                     <form action="{{ route('search') }}" method="GET" class="d-flex mx-3" style="min-width: 300px;">
-                        <input class="form-control me-2" type="search" name="query" 
-                               value="{{ request('query') }}" 
+                        <input class="form-control me-2" type="search" name="query"
+                               value="{{ request('query') }}"
                                placeholder="Tìm kiếm...">
                         <button type="button" class="btn btn-outline-dark search-btn">
                             <i class="fas fa-search"></i>
@@ -213,23 +213,39 @@
                             @if(!Auth::user()->nhanVien)
                                 <a href="{{ route('cart.index') }}" class="btn btn-outline-dark position-relative me-2">
                                     <i class="fas fa-shopping-cart"></i>
-                                    @if(isset($cart) && count($cart) > 0)
+                                    @if(isset($cartInfo) && $cartInfo['count'] > 0)
                                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                            {{ count($cart) }}
+                                            {{ $cartInfo['count'] }}
                                         </span>
                                     @endif
                                 </a>
                             @endif
                             <div class="dropdown">
-                                <button class="btn btn-outline-dark dropdown-toggle" 
-                                        type="button" 
-                                        data-bs-toggle="dropdown" 
+                                <button class="btn btn-outline-dark dropdown-toggle"
+                                        type="button"
+                                        data-bs-toggle="dropdown"
                                         aria-expanded="false">
-                                    {{ Auth::user()->khachHang->tenkh }}
+                                    @if(Auth::user()->nhanVien)
+                                        {{ Auth::user()->nhanVien->honv }} {{ Auth::user()->nhanVien->tennv }}
+                                    @elseif(Auth::user()->khachHang)
+                                        {{ Auth::user()->khachHang->hokh }} {{ Auth::user()->khachHang->tenkh }}
+                                    @else
+                                        {{ Auth::user()->emailtk }}
+                                    @endif
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="{{ route('profile') }}">
-                                        <i class="fas fa-user me-2"></i>Thông tin tài khoản</a></li>
+                                    @if(!Auth::user()->nhanVien)
+                                        <li>
+                                            <a class="dropdown-item" href="{{ route('profile') }}">
+                                                <i class="fas fa-user me-2"></i>Thông tin tài khoản
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{{ route('orders.history') }}">
+                                                <i class="fas fa-history me-2"></i>Lịch sử đơn hàng
+                                            </a>
+                                        </li>
+                                    @endif
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form action="{{ route('auth.logout') }}" method="POST">
@@ -284,7 +300,7 @@
             .navbar-brand img {
                 height: 50px;
             }
-            
+
             .nav-item.d-flex {
                 margin-top: 1rem;
                 justify-content: center;
@@ -366,7 +382,7 @@ function updateCartInfo() {
             if (cartButton) {
                 if (data.count > 0) {
                     cartButton.innerHTML = `
-                        <i class="fas fa-shopping-cart me-1"></i>Giỏ hàng
+                        <i class="fas fa-shopping-cart me-1"></i>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                               style="font-size: 0.8rem; padding: 0.4em 0.6em;">
                             ${data.count}
@@ -377,7 +393,7 @@ function updateCartInfo() {
                     `;
                 } else {
                     cartButton.innerHTML = `
-                        <i class="fas fa-shopping-cart me-1"></i>Giỏ hàng
+                        <i class="fas fa-shopping-cart me-1"></i>
                         <span class="ms-2 text-muted">(Trống)</span>
                     `;
                 }
@@ -405,7 +421,7 @@ document.querySelector('.search-btn').addEventListener('click', function(e) {
     e.preventDefault();
     const searchForm = this.closest('form');
     const searchInput = searchForm.querySelector('input[name="query"]');
-    
+
     if (searchInput.value.trim()) {
         // Nếu có từ khóa tìm kiếm -> submit form tìm kiếm
         searchForm.submit();

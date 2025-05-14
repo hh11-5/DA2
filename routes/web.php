@@ -11,6 +11,9 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Geocoder\Geocoder;
 use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\EmployeeController;
 
 // Trang chủ
 Route::get('/', [IndexController::class, 'index'])->name('index');
@@ -30,6 +33,7 @@ Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('cart.
 Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 // Thêm route mới
 Route::get('/cart/info', [CartController::class, 'getCartInfo'])->name('cart.info');
+Route::post('/buy-now/{id}', [CartController::class, 'buyNow'])->name('buy.now');
 
 // Routes cho sản phẩm
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -118,4 +122,17 @@ Route::get('/verify-address', function (Request $request) {
         ], 500);
     }
 })->name('verify.address');
+
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
+
+// Routes cho đơn hàng
+Route::middleware(['auth'])->group(function () {
+    Route::get('/history', [OrderController::class, 'history'])->name('orders.history');
+    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+
+    // Employee routes
+    Route::get('/employee/dashboard', [EmployeeController::class, 'dashboard'])
+        ->name('employee.dashboard');
+});
 
