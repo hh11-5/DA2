@@ -62,6 +62,11 @@ class TaiKhoan extends Authenticatable
         return $this->hasOne(NhanVien::class, 'idtk', 'idtk');
     }
 
+    public function phanQuyen()
+    {
+        return $this->hasOne(PhanQuyen::class, 'idtk', 'idtk');
+    }
+
     /**
      * Get the value of the model's primary key.
      */

@@ -14,17 +14,26 @@ use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\AdminController;
+
+// Admin và Employee routes
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+Route::get('/employee/dashboard', [EmployeeController::class, 'dashboard'])->name('employee.dashboard');
 
 // Trang chủ
 Route::get('/', [IndexController::class, 'index'])->name('index');
 
-// Routes cho authentication
+// Routes cho authentication (chỉ giữ lại các route cho khách hàng)
 Route::group(['prefix' => 'auth'], function () {
     Route::get('/', [AuthController::class, 'showLoginForm'])->name('auth');
     Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
     Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
     Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 });
+
+// Routes cho admin login (để riêng)
+Route::get('/admin/login', [AuthController::class, 'showAdminLoginForm'])->name('admin.loginForm');
+Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.login');
 
 // Routes cho giỏ hàng
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
