@@ -86,7 +86,7 @@
                     <div class="mt-3">
                         <form action="{{ route('checkout.process') }}" method="POST">
                             @csrf
-                            <button type="submit" class="btn btn-danger w-100">ĐẶT HÀNG</button>
+                            <button type="submit" class="btn btn-buy-now w-100">ĐẶT HÀNG</button>
                         </form>
                         <a href="{{ route('cart.index') }}" class="btn btn-outline-secondary w-100 mt-2">Quay lại giỏ hàng</a>
                     </div>
@@ -101,13 +101,36 @@
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
+
 .card-header {
     background-color: #f8f9fa;
     border-bottom: 1px solid #eee;
 }
-.btn-danger {
-    background-color: #dc3545;
-    border-color: #dc3545;
+
+.btn-buy-now {
+    background: #fbbf24;
+    color: #1a202c;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-buy-now:hover {
+    background: #f59e0b;
+    transform: translateY(-2px);
+    color: #1a202c;
+}
+
+.btn-outline-secondary {
+    border-radius: 8px;
+    padding: 12px 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+    transform: translateY(-2px);
 }
 </style>
 @endsection

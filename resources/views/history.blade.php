@@ -4,12 +4,6 @@
 <div class="container mt-4">
     <h2>Lịch sử đơn hàng</h2>
 
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
     @if($orders->isEmpty())
         <div class="alert alert-info">
             Bạn chưa có đơn hàng nào.

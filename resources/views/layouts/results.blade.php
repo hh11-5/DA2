@@ -14,7 +14,7 @@
             Hiển thị {{ count($products) }} kết quả cho "{{ $query }}"
         </h4>
     </div>
-    
+
     @if($products->isEmpty())
         <div class="alert alert-info">
             Không tìm thấy sản phẩm nào phù hợp với từ khóa "{{ $query }}"
@@ -26,7 +26,7 @@
                 <div class="card filter-card">
                     <div class="card-body">
                         <h5 class="filter-title">Bộ lọc tìm kiếm</h5>
-                        
+
                         <!-- Khoảng giá -->
                         <div class="filter-section">
                             <h6>Khoảng giá</h6>
@@ -34,17 +34,17 @@
                                 <div class="price-inputs mb-3">
                                     <div class="d-flex align-items-center mb-2">
                                         <span class="me-2">Từ:</span>
-                                        <input type="number" class="form-control" id="minPriceInput" 
+                                        <input type="number" class="form-control custom-input" id="minPriceInput"
                                                min="0" max="500000000" step="1000000" value="0">
                                     </div>
                                     <div class="d-flex align-items-center">
                                         <span class="me-2">Đến:</span>
-                                        <input type="number" class="form-control" id="maxPriceInput" 
+                                        <input type="number" class="form-control custom-input" id="maxPriceInput"
                                                min="0" max="500000000" step="1000000" value="500000000">
                                     </div>
                                 </div>
                                 <div class="price-slider">
-                                    <input type="range" class="form-range" id="priceRange" 
+                                    <input type="range" class="form-range custom-range" id="priceRange"
                                            min="0" max="500000000" step="1000000"
                                            value="500000000">
                                     <div class="d-flex justify-content-between mt-2">
@@ -60,27 +60,27 @@
                             <h6>Chất liệu vỏ</h6>
                             <div class="mb-3">
                                 <div class="form-check">
-                                    <input class="form-check-input filter-check" type="checkbox" 
+                                    <input class="form-check-input filter-check" type="checkbox"
                                            name="clieuvo" value="Thép không gỉ 904L">
                                     <label class="form-check-label">Thép không gỉ 904L</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input filter-check" type="checkbox" 
+                                    <input class="form-check-input filter-check" type="checkbox"
                                            name="clieuvo" value="Thép không gỉ và vàng">
                                     <label class="form-check-label">Thép không gỉ và vàng</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input filter-check" type="checkbox" 
+                                    <input class="form-check-input filter-check" type="checkbox"
                                            name="clieuvo" value="Thép không gỉ">
                                     <label class="form-check-label">Thép không gỉ</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input filter-check" type="checkbox" 
+                                    <input class="form-check-input filter-check" type="checkbox"
                                            name="clieuvo" value="Vàng Everose 18k">
                                     <label class="form-check-label">Vàng Everose 18k</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input filter-check" type="checkbox" 
+                                    <input class="form-check-input filter-check" type="checkbox"
                                            name="clieuvo" value="Vàng 18k">
                                     <label class="form-check-label">Vàng 18k</label>
                                 </div>
@@ -88,7 +88,9 @@
                         </div>
 
                         <!-- Nút lọc -->
-                        <button class="btn btn-primary w-100 mt-3" id="applyFilters">Áp dụng</button>
+                        <button class="btn btn-buy-now w-100 mt-3" id="applyFilters">
+                            <i class="fas fa-filter me-2"></i>Áp dụng
+                        </button>
                     </div>
                 </div>
             </div>
@@ -117,6 +119,23 @@
 </div>
 
 <style>
+/* Đặt btn-buy-now lên đầu để ưu tiên cao nhất */
+.btn-buy-now {
+    background-color: #fbbf24 !important; /* Thêm !important để đảm bảo được áp dụng */
+    color: #1a202c !important;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-buy-now:hover {
+    background-color: #f59e0b !important;
+    transform: translateY(-2px);
+    color: #1a202c !important;
+}
+
 .card {
     transition: all 0.3s ease;
     border: none;
@@ -222,6 +241,57 @@
         transform: translateY(0);
     }
 }
+
+.custom-input {
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    padding: 8px 12px;
+    transition: all 0.3s ease;
+}
+
+.custom-input:focus {
+    border-color: #fbbf24;
+    box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2);
+}
+
+.custom-range {
+    height: 6px;
+    -webkit-appearance: none;
+    background: #e2e8f0;
+    border-radius: 3px;
+    outline: none;
+}
+
+.custom-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #fbbf24;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.custom-range::-webkit-slider-thumb:hover {
+    background: #f59e0b;
+    transform: scale(1.1);
+}
+
+.custom-range::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: #fbbf24;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.custom-range::-moz-range-thumb:hover {
+    background: #f59e0b;
+    transform: scale(1.1);
+}
 </style>
 
 @section('scripts')
@@ -230,7 +300,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const priceRange = document.getElementById('priceRange');
     const minPriceInput = document.getElementById('minPriceInput');
     const maxPriceInput = document.getElementById('maxPriceInput');
-    
+
     // Format price
     function formatPrice(price) {
         return new Intl.NumberFormat('vi-VN', {

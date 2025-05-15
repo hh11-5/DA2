@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use App\Rules\VietnamesePhone;
 
 class ProfileController extends Controller
 {
@@ -82,9 +83,12 @@ class ProfileController extends Controller
             'tenkh' => 'required|string|max:30',
             'diachikh' => 'required|string|max:100',
             'email' => 'required|email|unique:taikhoan,emailtk,' . Auth::id() . ',idtk',
-            'phone' => 'required|string|max:10|unique:taikhoan,sdttk,' . Auth::id() . ',idtk',
+            'phone' => ['required', new VietnamesePhone, 'unique:taikhoan,sdttk,' . Auth::id() . ',idtk'],
             'current_password' => 'nullable|required_with:new_password',
             'new_password' => 'nullable|min:6|same:password_confirmation'
+        ], [
+            'phone.required' => 'Vui lòng nhập số điện thoại',
+            'phone.unique' => 'Số điện thoại đã được sử dụng'
         ]);
 
         try {
