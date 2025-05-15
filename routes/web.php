@@ -145,3 +145,23 @@ Route::middleware(['auth'])->group(function () {
         ->name('employee.dashboard');
 });
 
+// Admin routes
+Route::prefix('admin')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+
+    // Product management
+    Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
+    Route::get('/products/create', [AdminController::class, 'createProduct'])->name('admin.products.create');
+    Route::post('/products', [AdminController::class, 'storeProduct'])->name('admin.products.store');
+    Route::get('/products/{id}/edit', [AdminController::class, 'editProduct'])->name('admin.products.edit');
+    Route::put('/products/{id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
+    Route::delete('/products/{id}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
+
+    // Staff management
+    Route::get('/staff', [AdminController::class, 'staff'])->name('admin.staff');
+    Route::get('/staff/create', [AdminController::class, 'createStaff'])->name('admin.staff.create');
+    Route::post('/staff', [AdminController::class, 'storeStaff'])->name('admin.staff.store');
+    Route::put('/staff/{id}/toggle-status', [AdminController::class, 'toggleStaffStatus'])->name('admin.staff.toggle-status');
+    Route::delete('/staff/{id}', [AdminController::class, 'deleteStaff'])->name('admin.staff.delete');
+});
+
