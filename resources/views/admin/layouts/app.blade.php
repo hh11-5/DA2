@@ -99,6 +99,13 @@
                             <p>Dashboard</p>
                         </a>
                     </li>
+                    <li class="nav-header">QUẢN LÝ</li>
+                    <li class="nav-item">
+                        <a href="{{ route('employee.orders') }}" class="nav-link {{ request()->routeIs('employee.orders*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-shopping-cart"></i>
+                            <p>Quản lý đơn hàng</p>
+                        </a>
+                    </li>
                     @endif
                 </ul>
             </nav>

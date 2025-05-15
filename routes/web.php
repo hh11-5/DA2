@@ -165,3 +165,10 @@ Route::prefix('admin')->group(function () {
     Route::delete('/staff/{id}', [AdminController::class, 'deleteStaff'])->name('admin.staff.delete');
 });
 
+// Employee routes
+Route::prefix('employee')->group(function () {
+    Route::get('/orders', [EmployeeController::class, 'orders'])->name('employee.orders');
+    Route::get('/orders/{iddhang}', [EmployeeController::class, 'showOrder'])->name('employee.orders.show');
+    Route::put('/orders/{iddhang}/status', [EmployeeController::class, 'updateOrderStatus'])->name('employee.orders.update-status');
+});
+
