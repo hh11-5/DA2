@@ -204,4 +204,62 @@ class CartController extends Controller
             'total' => $total
         ]);
     }
+
+    /**
+     * Xử lý chức năng mua ngay
+     */
+    public function buyNow($id)
+    {
+        if (!Auth::check()) {
+            return redirect()->route('auth')
+                ->with('error', 'Vui lòng đăng nhập để mua hàng');
+        }
+
+        if (Auth::user()->nhanVien) {
+            return redirect()->back()
+                ->with('error', 'Tài khoản nhân viên không thể mua hàng');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Lấy hoặc tạo giỏ hàng
+            $gioHang = GioHang::firstOrCreate(
+                ['idkh' => Auth::user()->khachHang->idkh]
+            );
+
+            // Kiểm tra sản phẩm có tồn tại không
+            $sanPham = SanPham::findOrFail($id);
+
+            // Thêm hoặc cập nhật sản phẩm trong giỏ hàng
+            $chiTietGioHang = ChiTietGioHang::firstOrNew([
+                'idgh' => $gioHang->idgh,
+                'idsp' => $id
+            ]);
+
+            if ($chiTietGioHang->exists) {
+                $chiTietGioHang->soluong += 1;
+            } else {
+                $chiTietGioHang->soluong = 1;
+                $chiTietGioHang->ngaythem = now();
+            }
+
+            $chiTietGioHang->save();
+
+            DB::commit();
+
+            // Chuyển hướng đến trang checkout
+            return redirect()->route('checkout.index');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Buy Now Error:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'Có lỗi xảy ra khi xử lý đơn hàng');
+        }
+    }
 }

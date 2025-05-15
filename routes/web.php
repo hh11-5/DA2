@@ -14,17 +14,26 @@ use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\AdminController;
+
+// Admin và Employee routes
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+Route::get('/employee/dashboard', [EmployeeController::class, 'dashboard'])->name('employee.dashboard');
 
 // Trang chủ
 Route::get('/', [IndexController::class, 'index'])->name('index');
 
-// Routes cho authentication
+// Routes cho authentication (chỉ giữ lại các route cho khách hàng)
 Route::group(['prefix' => 'auth'], function () {
     Route::get('/', [AuthController::class, 'showLoginForm'])->name('auth');
     Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
     Route::post('/register', [AuthController::class, 'register'])->name('auth.register');
     Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 });
+
+// Routes cho admin login (để riêng)
+Route::get('/admin/login', [AuthController::class, 'showAdminLoginForm'])->name('admin.loginForm');
+Route::post('/admin/login', [AuthController::class, 'adminLogin'])->name('admin.login');
 
 // Routes cho giỏ hàng
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
@@ -134,5 +143,32 @@ Route::middleware(['auth'])->group(function () {
     // Employee routes
     Route::get('/employee/dashboard', [EmployeeController::class, 'dashboard'])
         ->name('employee.dashboard');
+});
+
+// Admin routes
+Route::prefix('admin')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+
+    // Product management
+    Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
+    Route::get('/products/create', [AdminController::class, 'createProduct'])->name('admin.products.create');
+    Route::post('/products', [AdminController::class, 'storeProduct'])->name('admin.products.store');
+    Route::get('/products/{id}/edit', [AdminController::class, 'editProduct'])->name('admin.products.edit');
+    Route::put('/products/{id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
+    Route::delete('/products/{id}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
+
+    // Staff management
+    Route::get('/staff', [AdminController::class, 'staff'])->name('admin.staff');
+    Route::get('/staff/create', [AdminController::class, 'createStaff'])->name('admin.staff.create');
+    Route::post('/staff', [AdminController::class, 'storeStaff'])->name('admin.staff.store');
+    Route::put('/staff/{id}/toggle-status', [AdminController::class, 'toggleStaffStatus'])->name('admin.staff.toggle-status');
+    Route::delete('/staff/{id}', [AdminController::class, 'deleteStaff'])->name('admin.staff.delete');
+});
+
+// Employee routes
+Route::prefix('employee')->group(function () {
+    Route::get('/orders', [EmployeeController::class, 'orders'])->name('employee.orders');
+    Route::get('/orders/{iddhang}', [EmployeeController::class, 'showOrder'])->name('employee.orders.show');
+    Route::put('/orders/{iddhang}/status', [EmployeeController::class, 'updateOrderStatus'])->name('employee.orders.update-status');
 });
 

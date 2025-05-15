@@ -38,6 +38,12 @@
                         <i class="fas fa-eye password-toggle" style="margin-right: 15px;"></i>
                     </div>
                     <button type="submit" class="btn btn-primary">Đăng nhập</button>
+                    <div class="mt-3 text-center">
+                        <small class="text-muted">Bạn là nhân viên? </small>
+                        <a href="{{ route('admin.loginForm') }}" class="text-primary">
+                            Đăng nhập tại đây
+                        </a>
+                    </div>
                 </form>
                 <form action="{{ route('auth.register') }}" method="POST" class="sign-up-form">
                     @csrf
@@ -642,7 +648,7 @@ document.querySelectorAll('.password-toggle').forEach(toggle => {
     toggle.addEventListener('click', function() {
         const passwordField = this.closest('.password-field');
         const input = passwordField.querySelector('input[type="password"], input[type="text"]');
-        
+
         if (input.type === 'password') {
             input.type = 'text';
             this.classList.remove('fa-eye');
@@ -661,11 +667,11 @@ document.querySelectorAll('.btn').forEach(button => {
         const rect = button.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        
+
         button.style.setProperty('--ripple-x', x + 'px');
         button.style.setProperty('--ripple-y', y + 'px');
     });
 });
-</script>   
+</script>
 
 </html>

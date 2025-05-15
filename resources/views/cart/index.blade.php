@@ -48,8 +48,12 @@
         </table>
 
         <div class="text-end mt-3">
-            <a href="{{ route('products.index') }}" class="btn btn-secondary">Tiếp tục mua hàng</a>
-            <a href="{{ route('checkout.index') }}" class="btn btn-primary">Thanh toán</a>
+            <a href="{{ route('products.index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Tiếp tục mua hàng
+            </a>
+            <a href="{{ route('checkout.index') }}" class="btn btn-buy-now">
+                <i class="fas fa-check me-2"></i>Thanh toán
+            </a>
         </div>
     @else
         <div class="alert alert-info">
@@ -104,4 +108,32 @@ window.addEventListener('load', function() {
     }, 3000);
 });
 </script>
+
+<style>
+.btn-buy-now {
+    background: #fbbf24;
+    color: #1a202c;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-buy-now:hover {
+    background: #f59e0b;
+    transform: translateY(-2px);
+    color: #1a202c;
+}
+
+.btn-outline-secondary {
+    border-radius: 8px;
+    padding: 12px 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+    transform: translateY(-2px);
+}
+</style>
 @endsection
