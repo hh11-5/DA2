@@ -418,6 +418,19 @@
                 max-width: 100%;
             }
         }
+
+        /* News section specific styles */
+        .news-section .card-title {
+            color: #1a202c !important;
+        }
+        
+        .news-section .card-text {
+            color: #2d3748 !important;
+        }
+
+        .news-section a:hover .card-title {
+            color: #2d3748 !important;
+        }
     </style>
 
     <div class="container mt-4">
@@ -517,8 +530,8 @@
                         <div class="card h-100">
                             <img src="{{ $item['hinhanh'] }}" class="card-img-top" alt="{{ $item['tieude'] }}">
                             <div class="card-body">
-                                <h6 class="card-title">{{ $item['tieude'] }}</h6>
-                                <p class="card-text text-muted">{{ $item['tomtat'] }}</p>
+                                <h6 class="card-title text-dark">{{ $item['tieude'] }}</h6>
+                                <p class="card-text" style="color: #2d3748;">{{ $item['tomtat'] }}</p>
                             </div>
                         </div>
                     </a>

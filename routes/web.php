@@ -47,6 +47,7 @@ Route::post('/buy-now/{id}', [CartController::class, 'buyNow'])->name('buy.now')
 // Routes cho sản phẩm
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/products/type/{type}', [ProductController::class, 'getProductsByType'])->name('products.by.type');
 
 // Routes cho thương hiệu
 Route::get('/brands/{id}', [BrandController::class, 'show'])->name('brands.show');
@@ -56,6 +57,7 @@ Route::get('/brands/page/{id}', [BrandController::class, 'brandPage'])->name('br
 Route::get('/search', [SearchController::class, 'search'])->name('search');
 Route::get('/search/autocomplete', [SearchController::class, 'autocomplete'])->name('search.autocomplete');
 Route::post('/filter-products', [SearchController::class, 'filter'])->name('products.filter');
+Route::post('/filter-products', [ProductController::class, 'filterProducts'])->name('filter.products');
 
 // Thay thế route profile cũ bằng route mới
 Route::get('/profile', [ProfileController::class, 'index'])->name('profile');

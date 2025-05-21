@@ -13,7 +13,6 @@ class SearchController extends Controller
         $query = $request->input('query');
         
         $products = Sanpham::where('tensp', 'ilike', "%{$query}%")
-            ->orWhere('gia', 'like', "%{$query}%")
             ->orWhereHas('nhasanxuat', function($q) use ($query) {
                 $q->where('tennhasx', 'ilike', "%{$query}%");
             })

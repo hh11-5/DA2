@@ -38,4 +38,48 @@ class ProductController extends Controller
 
         return view('detail', compact('sanpham', 'images', 'relatedProducts'));
     }
+
+    public function getProductsByType($type)
+    {
+        $products = Sanpham::where('kieu', $type)->get();
+        
+        return view('products.by_type', [
+            'products' => $products,
+            'type' => $type
+        ]);
+    }
+
+    public function filterProducts(Request $request)
+    {
+        try {
+            $query = Sanpham::query();
+
+            // Debug log
+            \Log::info('Filter request:', $request->all());
+
+            // Xử lý lọc theo khoảng giá
+            if ($request->priceRange) {
+                list($minPrice, $maxPrice) = explode('-', $request->priceRange);
+                $query->whereBetween('gia', [(int)$minPrice, (int)$maxPrice]);
+                
+                // Debug log
+                \Log::info('Price range:', ['min' => $minPrice, 'max' => $maxPrice]);
+            }
+
+            // Xử lý lọc theo chất liệu vỏ
+            if (!empty($request->clieuvo)) {
+                $query->whereIn('clieuvo', $request->clieuvo);
+            }
+
+            $products = $query->get();
+            
+            // Debug log
+            \Log::info('Filtered products count:', ['count' => $products->count()]);
+
+            return response()->json($products);
+        } catch (\Exception $e) {
+            \Log::error('Filter error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }

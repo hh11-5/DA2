@@ -121,6 +121,63 @@
             transform: translateY(0);
         }
     }
+
+    /* Thống nhất style giá sản phẩm */
+    .product-price, 
+    .card-text.price {
+        color: #dc2626 !important; /* Màu đỏ giống detail */
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    /* Card styles */
+    .card {
+        border: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .card-img-top {
+        padding: 1rem;
+        object-fit: contain;
+        height: 200px;
+    }
+    /* Style chung cho giá sản phẩm */
+    .card-text.text-muted,
+    .card-text.price,
+    .product-price {
+        color: #dc2626 !important;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    /* Thêm vào phần style của file */
+    .dropdown-submenu {
+        position: absolute;
+        left: 100%;
+        top: 0;
+        display: none;
+    }
+
+    .dropdown-item.dropdown-toggle {
+        position: relative;
+    }
+
+    .dropdown-item.dropdown-toggle::after {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .dropdown-item:hover > .dropdown-submenu {
+        display: block;
+    }
     </style>
 </head>
 <body>
@@ -154,32 +211,22 @@
                                 @endforeach
                             </ul>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#"
-                               role="button"
-                               data-bs-toggle="dropdown"
-                               aria-expanded="false">
-                                Nam
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Dưới 5 triệu</a></li>
-                                <li><a class="dropdown-item" href="#">5-10 triệu</a></li>
-                                <li><a class="dropdown-item" href="#">Trên 10 triệu</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#"
-                               role="button"
-                               data-bs-toggle="dropdown"
-                               aria-expanded="false">
-                                Nữ
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Dưới 3 triệu</a></li>
-                                <li><a class="dropdown-item" href="#">3-7 triệu</a></li>
-                                <li><a class="dropdown-item" href="#">Trên 7 triệu</a></li>
-                            </ul>
-                        </li>
+                        
+<!-- Thay thế phần dropdown Giới tính hiện tại -->
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Giới tính
+    </a>
+    <ul class="dropdown-menu">
+        <li>
+            <a class="dropdown-item" href="{{ route('products.by.type', ['type' => 'Đồng hồ nam']) }}">Nam</a>
+        </li>
+        <li>
+            <a class="dropdown-item" href="{{ route('products.by.type', ['type' => 'Đồng hồ nữ']) }}">Nữ</a>
+        </li>
+    </ul>
+</li>
+
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#"
                                role="button"
@@ -429,6 +476,27 @@ document.querySelector('.search-btn').addEventListener('click', function(e) {
         // Nếu không có từ khóa -> chuyển đến trang hiển thị tất cả sản phẩm
         window.location.href = '{{ route("products.index") }}';
     }
+});
+
+// Thêm vào phần script của file
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownItems = document.querySelectorAll('.dropdown-item.dropdown-toggle');
+    
+    dropdownItems.forEach(item => {
+        item.addEventListener('mouseover', function() {
+            const submenu = this.nextElementSibling;
+            if (submenu) {
+                submenu.style.display = 'block';
+            }
+        });
+        
+        item.parentElement.addEventListener('mouseleave', function() {
+            const submenu = this.querySelector('.dropdown-submenu');
+            if (submenu) {
+                submenu.style.display = 'none';
+            }
+        });
+    });
 });
 </script>
 </body>
