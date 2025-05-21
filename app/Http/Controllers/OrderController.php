@@ -17,7 +17,7 @@ class OrderController extends Controller
 
         $orders = DonHang::where('idkh', Auth::user()->khachHang->idkh)
                         ->orderBy('ngaydathang', 'desc')
-                        ->get();
+                        ->paginate(10);
 
         return view('history', compact('orders')); // Changed from orders.history to history
     }
@@ -28,9 +28,10 @@ class OrderController extends Controller
             return redirect()->route('auth');
         }
 
-        $order = DonHang::where('iddhang', $id)
-                        ->where('idkh', Auth::user()->khachHang->idkh)
-                        ->firstOrFail();
+        $order = DonHang::with(['khachHang.taiKhoan', 'chiTietDonHang.sanPham'])
+            ->where('iddhang', $id)
+            ->where('idkh', Auth::user()->khachHang->idkh)
+            ->firstOrFail();
 
         return view('orders.show', compact('order'));
     }

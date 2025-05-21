@@ -14,7 +14,7 @@ class CreateDonhangTable extends Migration
             $table->unsignedBigInteger('idkh');
             $table->decimal('tongtien', 18, 2);
             $table->decimal('phivanchuyen', 18, 2);
-            $table->enum('trangthai', ['Chờ xác nhận', 'Đã xác nhận', 'Đang giao', 'Đã giao', 'Đã hủy']);
+            $table->tinyInteger('trangthai')->default(0); // Thay đổi từ enum sang integer
             $table->foreign('idkh')->references('idkh')->on('khachhang')->onDelete('cascade');
             $table->timestamps();
         });

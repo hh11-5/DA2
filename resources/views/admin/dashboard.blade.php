@@ -9,7 +9,7 @@
     <div class="col-lg-3 col-6">
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>150</h3>
+                <h3>{{ $newOrders ?? 0 }}</h3>
                 <p>Đơn hàng mới</p>
             </div>
             <div class="icon">
@@ -55,12 +55,15 @@
     <div class="col-lg-4 col-6">
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>150</h3>
+                <h3>{{ $pendingOrders }}</h3>
                 <p>Đơn hàng cần xử lý</p>
             </div>
             <div class="icon">
                 <i class="fas fa-shopping-cart"></i>
             </div>
+            <a href="{{ route('employee.orders', ['status' => 0]) }}" class="small-box-footer">
+                Xem chi tiết <i class="fas fa-arrow-circle-right"></i>
+            </a>
         </div>
     </div>
     @endif

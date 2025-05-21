@@ -98,7 +98,7 @@ class CheckoutController extends Controller
                 'idkh' => $customer->idkh,
                 'tongtien' => $total,
                 'phivanchuyen' => $shipping,
-                'trangthai' => 'Chờ xác nhận'
+                'trangthai' => 0
             ]);
 
             // Chuyển sản phẩm từ giỏ hàng sang chi tiết đơn hàng

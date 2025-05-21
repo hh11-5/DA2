@@ -174,3 +174,14 @@ Route::prefix('employee')->group(function () {
     Route::put('/orders/{iddhang}/status', [EmployeeController::class, 'updateOrderStatus'])->name('employee.orders.update-status');
 });
 
+Route::middleware(['auth', 'employee'])->prefix('employee')->name('employee.')->group(function () {
+    Route::get('/orders/{iddhang}', [EmployeeController::class, 'showOrder'])->name('orders.show');
+    Route::put('/orders/{iddhang}/status', [EmployeeController::class, 'updateOrderStatus'])->name('orders.update-status');
+});
+
+Route::prefix('employee')->name('employee.')->group(function () {
+    Route::get('/orders', [EmployeeController::class, 'orders'])->name('orders');
+    Route::get('/orders/{iddhang}', [EmployeeController::class, 'showOrder'])->name('orders.show');
+    Route::put('/orders/{iddhang}/status', [EmployeeController::class, 'updateOrderStatus'])->name('orders.update-status');
+});
+

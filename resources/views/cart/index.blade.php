@@ -127,7 +127,7 @@ window.addEventListener('load', function() {
 
 .btn-outline-secondary {
     border-radius: 8px;
-    padding: 12px 30px;
+    padding: 12px 12px;
     font-weight: 600;
     transition: all 0.3s ease;
 }
