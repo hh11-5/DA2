@@ -73,9 +73,9 @@
                                             {{ $item->sanPham->tensp }}
                                         </div>
                                     </td>
-                                    <td>{{ number_format($item->gia) }}đ</td>
+                                    <td>{{ number_format($item->dongia) }}đ</td>
                                     <td>{{ $item->soluong }}</td>
-                                    <td>{{ number_format($item->gia * $item->soluong) }}đ</td>
+                                    <td>{{ number_format($item->thanhtien) }}đ</td>
                                 </tr>
                                 @endforeach
                             </tbody>

@@ -423,7 +423,7 @@
         .news-section .card-title {
             color: #1a202c !important;
         }
-        
+
         .news-section .card-text {
             color: #2d3748 !important;
         }

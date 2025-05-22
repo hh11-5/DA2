@@ -7,6 +7,7 @@ class KhachHang extends Model
 {
     protected $table = 'khachhang';
     protected $primaryKey = 'idkh';
+    public $timestamps = false; // Thêm dòng này
 
     protected $fillable = [
         'hokh',

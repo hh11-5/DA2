@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 class NhanVien extends Model
 {
     protected $table = 'nhanvien';
-    protected $primaryKey = 'idtk';
+    protected $primaryKey = 'idnv'; // Sửa từ 'idtk' thành 'idnv'
     public $timestamps = false;
 
     protected $fillable = [
@@ -18,6 +18,6 @@ class NhanVien extends Model
 
     public function taiKhoan()
     {
-        return $this->belongsTo(TaiKhoan::class, 'idtk');
+        return $this->belongsTo(TaiKhoan::class, 'idtk', 'idtk');
     }
 }

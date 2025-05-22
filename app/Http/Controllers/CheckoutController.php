@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Models\DonHang;
+use App\Models\ChiTietDonHang;
+use App\Models\ChiTietKho;
+use App\Models\Kho;
 
 class CheckoutController extends Controller
 {
@@ -29,12 +32,20 @@ class CheckoutController extends Controller
             return redirect()->route('auth');
         }
 
-        $user = Auth::user();
-        $customer = $user->khachHang;
+        $customer = Auth::user()->khachHang;
         $cart = GioHang::where('idkh', $customer->idkh)->first();
 
         if (!$cart || $cart->chiTietGioHang->isEmpty()) {
             return redirect()->route('cart.index')->with('error', 'Giỏ hàng trống');
+        }
+
+        // Kiểm tra sản phẩm hết hàng
+        foreach ($cart->chiTietGioHang as $item) {
+            $tonKho = $item->sanPham->chiTietKho->sum('soluong');
+            if ($tonKho <= 0) {
+                return redirect()->route('cart.index')
+                    ->with('error', 'Có sản phẩm đã hết hàng, vui lòng xóa khỏi giỏ hàng để tiếp tục');
+            }
         }
 
         $items = [];
@@ -83,6 +94,14 @@ class CheckoutController extends Controller
                 throw new \Exception('Giỏ hàng trống');
             }
 
+            // Kiểm tra số lượng tồn kho trước khi đặt hàng
+            foreach ($cart->chiTietGioHang as $item) {
+                $tonKho = $item->sanPham->chiTietKho->sum('soluong');
+                if ($tonKho < $item->soluong) {
+                    throw new \Exception("Sản phẩm {$item->sanPham->tensp} không đủ số lượng trong kho");
+                }
+            }
+
             // Tính tổng tiền và phí vận chuyển
             $subtotal = 0;
             foreach ($cart->chiTietGioHang as $item) {
@@ -101,11 +120,12 @@ class CheckoutController extends Controller
                 'trangthai' => 0
             ]);
 
-            // Chuyển sản phẩm từ giỏ hàng sang chi tiết đơn hàng
+            // Chuyển sản phẩm từ giỏ hàng sang chi tiết đơn hàng và cập nhật số lượng trong kho
             foreach ($cart->chiTietGioHang as $item) {
                 $dongia = $item->sanPham->gia;
                 $thanhtien = $dongia * $item->soluong;
 
+                // Thêm chi tiết đơn hàng
                 DB::table('chitietdonhang')->insert([
                     'iddhang' => $order->iddhang,
                     'idsp' => $item->idsp,
@@ -115,6 +135,13 @@ class CheckoutController extends Controller
                     'thanhtien' => $thanhtien,
                     'ghichu' => null
                 ]);
+
+                // Cập nhật số lượng trong kho
+                $chiTietKho = ChiTietKho::where('idsp', $item->idsp)->first();
+                if ($chiTietKho) {
+                    $chiTietKho->soluong -= $item->soluong;
+                    $chiTietKho->save();
+                }
             }
 
             // Xóa giỏ hàng
@@ -123,13 +150,17 @@ class CheckoutController extends Controller
 
             DB::commit();
 
-            return redirect()->route('orders.history')
-                ->with('success', 'Đặt hàng thành công! Mã đơn hàng: ' . $order->iddhang);
+            return redirect()->route('orders.show', $order->iddhang)
+                ->with('success', 'Đặt hàng thành công');
 
         } catch (\Exception $e) {
             DB::rollBack();
+            \Log::error('Checkout Error:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return redirect()->back()
-                ->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+                ->with('error', $e->getMessage());
         }
     }
 }

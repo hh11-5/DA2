@@ -14,33 +14,29 @@ class CartController extends Controller
     public function index()
     {
         if (!Auth::check()) {
-            return redirect()->route('auth')
-                ->with('error', 'Vui lòng đăng nhập để xem giỏ hàng');
+            return redirect()->route('auth');
         }
-
-        if (Auth::user()->nhanVien) {
-            Auth::logout();
-            return redirect()->route('auth')
-                ->with('error', 'Tài khoản nhân viên không thể truy cập giỏ hàng');
-        }
-
-        $gioHang = GioHang::firstOrCreate(
-            ['idkh' => Auth::user()->khachHang->idkh]
-        );
 
         $cart = [];
         $total = 0;
+        $gioHang = GioHang::where('idkh', Auth::user()->khachHang->idkh)->first();
 
-        foreach ($gioHang->chiTietGioHang as $chiTiet) {
-            $sanPham = $chiTiet->sanPham;
-            $cart[$sanPham->idsp] = [
-                'tensp' => $sanPham->tensp,
-                'hinhsp' => $sanPham->hinhsp,
-                'gia' => $sanPham->gia,
-                'quantity' => $chiTiet->soluong,
-                'ngaythem' => $chiTiet->ngaythem
-            ];
-            $total += $sanPham->gia * $chiTiet->soluong;
+        if ($gioHang) {
+            foreach ($gioHang->chiTietGioHang as $chiTiet) {
+                $sanPham = $chiTiet->sanPham;
+                // Lấy số lượng tồn kho
+                $tonKho = $sanPham->chiTietKho->sum('soluong') ?? 0;
+
+                $cart[$sanPham->idsp] = [
+                    'tensp' => $sanPham->tensp,
+                    'hinhsp' => $sanPham->hinhsp,
+                    'gia' => $sanPham->gia,
+                    'quantity' => $chiTiet->soluong,
+                    'tonkho' => $tonKho,
+                    'ngaythem' => $chiTiet->ngaythem
+                ];
+                $total += $sanPham->gia * $chiTiet->soluong;
+            }
         }
 
         return view('cart.index', compact('cart', 'total'));

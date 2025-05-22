@@ -80,6 +80,11 @@
                             <label class="form-label">Thời gian bảo hành (năm)</label>
                             <input type="number" name="tgbaohanh_nam" class="form-control" required>
                         </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Số lượng trong kho</label>
+                            <input type="number" name="soluong" class="form-control" min="0" required>
+                        </div>
                     </div>
 
                     <div class="col-md-12">
