@@ -7,17 +7,17 @@ class KhachHang extends Model
 {
     protected $table = 'khachhang';
     protected $primaryKey = 'idkh';
-    public $timestamps = false;
+    public $timestamps = false; // Thêm dòng này
 
     protected $fillable = [
-        'tenkh',
         'hokh',
+        'tenkh',
         'diachikh',
-        'idtk',
+        'idtk'
     ];
 
     public function taiKhoan()
     {
-        return $this->belongsTo(TaiKhoan::class, 'idtk');
+        return $this->belongsTo(TaiKhoan::class, 'idtk', 'idtk');
     }
 }

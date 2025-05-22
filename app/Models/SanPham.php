@@ -29,4 +29,10 @@ class SanPham extends Model
     {
         return $this->belongsTo(NhaSanXuat::class, 'idnhasx', 'idnhasx');
     }
+
+    // Thêm relationship với ChiTietKho
+    public function chiTietKho()
+    {
+        return $this->hasMany(ChiTietKho::class, 'idsp', 'idsp');
+    }
 }

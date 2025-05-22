@@ -99,6 +99,12 @@
                             <input type="number" name="tgbaohanh_nam" class="form-control"
                                    value="{{ $product->tgbaohanh_nam }}" required>
                         </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Số lượng trong kho</label>
+                            <input type="number" name="soluong" class="form-control" min="0"
+                                   value="{{ $product->chiTietKho->sum('soluong') }}" required>
+                        </div>
                     </div>
 
                     <div class="col-md-12">

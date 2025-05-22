@@ -10,6 +10,8 @@ use App\Models\NhaSanXuat;
 use Illuminate\Support\Facades\DB;
 use App\Models\TaiKhoan;
 use App\Models\NhanVien;
+use Illuminate\Support\Facades\Hash;
+use App\Models\ChiTietKho;
 
 class AdminController extends Controller
 {
@@ -62,7 +64,7 @@ class AdminController extends Controller
             return $response;
         }
 
-        $query = SanPham::with('nhasanxuat');
+        $query = SanPham::with(['nhasanxuat', 'chiTietKho']);
 
         // Apply filters
         if ($request->filled('masp')) {
@@ -133,7 +135,15 @@ class AdminController extends Controller
                 $validated['hinhsp'] = 'images/products/' . $filename;
             }
 
-            SanPham::create($validated);
+            // Tạo sản phẩm mới
+            $product = SanPham::create($validated);
+
+            // Tạo chi tiết kho cho sản phẩm
+            ChiTietKho::create([
+                'idkho' => 1, // ID của kho chính
+                'idsp' => $product->idsp,
+                'soluong' => $request->soluong,
+            ]);
 
             DB::commit();
             return redirect()->route('admin.products')
@@ -195,7 +205,21 @@ class AdminController extends Controller
                 $validated['hinhsp'] = 'images/products/' . $filename;
             }
 
+            // Cập nhật thông tin sản phẩm
             $product->update($validated);
+
+            // Cập nhật số lượng trong kho
+            $chiTietKho = ChiTietKho::where('idsp', $id)->first();
+            if ($chiTietKho) {
+                $chiTietKho->soluong = $request->soluong;
+                $chiTietKho->save();
+            } else {
+                ChiTietKho::create([
+                    'idkho' => 1,
+                    'idsp' => $id,
+                    'soluong' => $request->soluong,
+                ]);
+            }
 
             DB::commit();
             return redirect()->route('admin.products')
@@ -260,48 +284,75 @@ class AdminController extends Controller
             return $response;
         }
 
-        $validated = $request->validate([
-            'honv' => 'required|string|max:50',
-            'tennv' => 'required|string|max:50',
-            'sdtnv' => 'required|string|unique:nhanvien,sdtnv',
-            'diachinv' => 'required|string',
-            'email' => 'required|email|unique:taikhoan,emailtk',
-            'password' => 'required|min:6',
-        ]);
+        \Log::info('Start staff creation with data:', $request->all());
 
         try {
+            $validated = $request->validate([
+                'honv' => 'required|string|max:50',
+                'tennv' => 'required|string|max:50',
+                'diachinv' => 'required|string',
+                'email' => 'required|email|unique:taikhoan,emailtk',
+                'password' => 'required|min:6',
+                'sdttk' => [
+                    'required',
+                    'string',
+                    'unique:taikhoan,sdttk',
+                    'regex:/^0[3|5|7|8|9][0-9]{8}$/'
+                ]
+            ]);
+
+            \Log::info('Validation passed');
+
             DB::beginTransaction();
 
-            // Create account
+            // 1. Tạo tài khoản
             $taiKhoan = TaiKhoan::create([
                 'emailtk' => $validated['email'],
-                'matkhau' => bcrypt($validated['password']),
-                'sdttk' => $validated['sdtnv'],
+                'sdttk' => $validated['sdttk'],
+                'matkhau' => Hash::make($validated['password']),
                 'trangthai' => 1
             ]);
 
-            // Create employee record
+            \Log::info('Account created:', ['id' => $taiKhoan->idtk]);
+
+            // 2. Tạo nhân viên
             $nhanVien = NhanVien::create([
                 'honv' => $validated['honv'],
                 'tennv' => $validated['tennv'],
-                'sdtnv' => $validated['sdtnv'],
                 'diachinv' => $validated['diachinv'],
                 'idtk' => $taiKhoan->idtk
             ]);
 
-            // Create permission (2 for employee role)
-            PhanQuyen::create([
+            \Log::info('Employee created:', ['id' => $nhanVien->idnv]);
+
+            // 3. Tạo phân quyền
+            $phanQuyen = DB::table('phanquyen')->insert([
                 'idtk' => $taiKhoan->idtk,
-                'idqh' => 2
+                'idqh' => 2 // staff role
             ]);
 
+            \Log::info('Permission created');
+
             DB::commit();
+            \Log::info('Transaction committed successfully');
+
             return redirect()->route('admin.staff')
                 ->with('success', 'Thêm nhân viên thành công');
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Validation error:', ['errors' => $e->errors()]);
+            return back()
+                ->withErrors($e->errors())
+                ->withInput();
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+            \Log::error('Staff creation error:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return back()
+                ->with('error', 'Có lỗi xảy ra: ' . $e->getMessage())
+                ->withInput();
         }
     }
 
@@ -313,8 +364,13 @@ class AdminController extends Controller
 
         try {
             $nhanVien = NhanVien::findOrFail($id);
-            $taiKhoan = $nhanVien->taiKhoan;
 
+            // Kiểm tra có phải super admin không
+            if ($nhanVien->taiKhoan->emailtk === 'admin@watchstore.com') {
+                return back()->with('error', 'Không thể vô hiệu hóa tài khoản Super Admin');
+            }
+
+            $taiKhoan = $nhanVien->taiKhoan;
             $taiKhoan->trangthai = !$taiKhoan->trangthai;
             $taiKhoan->save();
 
@@ -333,15 +389,19 @@ class AdminController extends Controller
         }
 
         try {
+            $nhanVien = NhanVien::findOrFail($id);
+
+            // Kiểm tra có phải super admin không
+            if ($nhanVien->taiKhoan->emailtk === 'admin@watchstore.com') {
+                return back()->with('error', 'Không thể xóa tài khoản Super Admin');
+            }
+
             DB::beginTransaction();
 
-            $nhanVien = NhanVien::findOrFail($id);
-            $taiKhoan = $nhanVien->taiKhoan;
-
-            // Delete related records
-            PhanQuyen::where('idtk', $taiKhoan->idtk)->delete();
+            // Xóa các bản ghi liên quan
+            PhanQuyen::where('idtk', $nhanVien->taiKhoan->idtk)->delete();
             $nhanVien->delete();
-            $taiKhoan->delete();
+            $nhanVien->taiKhoan->delete();
 
             DB::commit();
             return redirect()->route('admin.staff')

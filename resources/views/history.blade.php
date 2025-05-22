@@ -29,9 +29,24 @@
                         <td>{{ number_format($order->tongtien) }}đ</td>
                         <td>{{ number_format($order->phivanchuyen) }}đ</td>
                         <td>
-                            <span class="badge bg-{{ $order->trangthai === 'Đã hủy' ? 'danger' :
-                                ($order->trangthai === 'Đã giao' ? 'success' : 'info') }}">
-                                {{ $order->trangthai }}
+                            @php
+                                $statusClass = [
+                                    0 => 'secondary',  // Chờ xác nhận
+                                    1 => 'info',       // Đã xác nhận
+                                    2 => 'primary',    // Đang giao
+                                    3 => 'success',    // Đã giao
+                                    4 => 'danger'      // Đã hủy
+                                ];
+                                $statusText = [
+                                    0 => 'Chờ xác nhận',
+                                    1 => 'Đã xác nhận',
+                                    2 => 'Đang giao',
+                                    3 => 'Đã giao',
+                                    4 => 'Đã hủy'
+                                ];
+                            @endphp
+                            <span class="badge bg-{{ $statusClass[$order->trangthai] }}">
+                                {{ $statusText[$order->trangthai] }}
                             </span>
                         </td>
                         <td>
@@ -44,7 +59,23 @@
                     @endforeach
                 </tbody>
             </table>
+
+            @if($orders->hasPages())
+                <div class="mt-4">
+                    {{ $orders->links() }}
+                </div>
+            @endif
         </div>
     @endif
 </div>
+
+<style>
+.badge {
+    padding: 8px 12px;
+    font-weight: 500;
+}
+.table > tbody > tr > td {
+    vertical-align: middle;
+}
+</style>
 @endsection

@@ -17,7 +17,8 @@ class AdminStaffSeeder extends Seeder
         $adminAccount = TaiKhoan::create([
             'emailtk' => 'admin@watchstore.com',
             'sdttk' => '0123456789',
-            'matkhau' => Hash::make('admin123')
+            'matkhau' => Hash::make('admin123'),
+            'trangthai' => 1
         ]);
 
         NhanVien::create([
@@ -30,14 +31,15 @@ class AdminStaffSeeder extends Seeder
         // Phân quyền admin
         DB::table('phanquyen')->insert([
             'idtk' => $adminAccount->idtk,
-            'idqh' => QuyenHan::where('tenquyenhan', 'admin')->first()->idqh
+            'idqh' => 1 // admin
         ]);
 
         // Tạo tài khoản nhân viên
         $staffAccount = TaiKhoan::create([
             'emailtk' => 'staff@watchstore.com',
             'sdttk' => '0987654321',
-            'matkhau' => Hash::make('staff123')
+            'matkhau' => Hash::make('staff123'),
+            'trangthai' => 1
         ]);
 
         NhanVien::create([
@@ -50,7 +52,7 @@ class AdminStaffSeeder extends Seeder
         // Phân quyền nhân viên
         DB::table('phanquyen')->insert([
             'idtk' => $staffAccount->idtk,
-            'idqh' => QuyenHan::where('tenquyenhan', 'staff')->first()->idqh
+            'idqh' => 2 // staff
         ]);
     }
 }

@@ -28,34 +28,64 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label">Họ</label>
-                            <input type="text" name="honv" class="form-control" required>
+                            <input type="text" name="honv"
+                                   class="form-control @error('honv') is-invalid @enderror"
+                                   value="{{ old('honv') }}" required>
+                            @error('honv')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Tên</label>
-                            <input type="text" name="tennv" class="form-control" required>
+                            <input type="text" name="tennv"
+                                   class="form-control @error('tennv') is-invalid @enderror"
+                                   value="{{ old('tennv') }}" required>
+                            @error('tennv')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Số điện thoại</label>
-                            <input type="text" name="sdtnv" class="form-control" required>
+                            <input type="text" name="sdttk"
+                                   class="form-control @error('sdttk') is-invalid @enderror"
+                                   value="{{ old('sdttk') }}" required>
+                            @error('sdttk')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control" required>
+                            <input type="email" name="email"
+                                   class="form-control @error('email') is-invalid @enderror"
+                                   value="{{ old('email') }}" required>
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Mật khẩu</label>
-                            <input type="password" name="password" class="form-control" required>
+                            <input type="password" name="password"
+                                   class="form-control @error('password') is-invalid @enderror"
+                                   required>
+                            @error('password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Địa chỉ</label>
-                            <textarea name="diachinv" class="form-control" rows="3" required></textarea>
+                            <textarea name="diachinv"
+                                      class="form-control @error('diachinv') is-invalid @enderror"
+                                      rows="3" required>{{ old('diachinv') }}</textarea>
+                            @error('diachinv')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                 </div>

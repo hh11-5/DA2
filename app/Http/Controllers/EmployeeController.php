@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\DonHang;
-use App\Models\ChiTietDonHang;
 
 class EmployeeController extends Controller
 {
@@ -30,18 +29,32 @@ class EmployeeController extends Controller
             return $response;
         }
 
-        return view('admin.dashboard'); // Tạm thời dùng chung view với admin
+        // Đếm số đơn hàng đang chờ xử lý (trạng thái = 0)
+        $pendingOrders = DonHang::where('trangthai', 0)->count();
+
+        return view('admin.dashboard', compact('pendingOrders'));
     }
 
-    public function orders()
+    public function orders(Request $request)
     {
         if ($response = $this->checkEmployeeAccess()) {
             return $response;
         }
 
-        $orders = DonHang::with(['khachHang', 'chiTietDonHang'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $query = DonHang::with(['khachHang.taiKhoan'])
+            ->orderBy('ngaydathang', 'desc');
+
+        // Lọc theo mã đơn hàng
+        if ($request->filled('search')) {
+            $query->where('iddhang', 'LIKE', '%' . $request->search . '%');
+        }
+
+        // Lọc theo trạng thái
+        if ($request->filled('status') && $request->status !== '') {
+            $query->where('trangthai', $request->status);
+        }
+
+        $orders = $query->paginate(10)->withQueryString();
 
         return view('employee.orders.index', compact('orders'));
     }
@@ -52,7 +65,7 @@ class EmployeeController extends Controller
             return $response;
         }
 
-        $order = DonHang::with(['khachHang', 'chiTietDonHang.sanPham'])
+        $order = DonHang::with(['khachHang.taiKhoan', 'chiTietDonHang.sanPham'])
             ->findOrFail($iddhang);
 
         return view('employee.orders.show', compact('order'));
@@ -66,11 +79,15 @@ class EmployeeController extends Controller
 
         $request->validate([
             'trangthai' => 'required|in:0,1,2,3,4'
-            // 0: Đang xử lý, 1: Đã xác nhận, 2: Đang giao, 3: Đã giao, 4: Đã hủy
         ]);
 
         try {
             $order = DonHang::findOrFail($iddhang);
+
+            if ($order->trangthai == 3 || $order->trangthai == 4) {
+                return back()->with('error', 'Không thể cập nhật trạng thái của đơn hàng đã hoàn thành hoặc đã hủy');
+            }
+
             $order->trangthai = $request->trangthai;
             $order->save();
 

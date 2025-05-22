@@ -9,7 +9,9 @@ class IndexController extends Controller
 {
     public function index()
     {
-        $sanphams = SanPham::select('idsp', 'tensp', 'gia', 'hinhsp')->take(6)->get();
+        $sanphams = Sanpham::orderBy('created_at', 'desc')
+                          ->take(6)
+                          ->get();
         $thuonghieus = NhaSanXuat::all(); // Lấy tất cả thương hiệu
 
         // Giữ nguyên mảng tin tức

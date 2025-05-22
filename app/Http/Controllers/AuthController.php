@@ -65,11 +65,20 @@ class AuthController extends Controller
         // Kiểm tra thông tin nhập vào
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:taikhoan,emailtk',
-            'phone' => 'required|unique:taikhoan,sdttk|max:10',
+            'phone' => [
+                'required',
+                'unique:taikhoan,sdttk',
+                'regex:/^0[3|5|7|8|9][0-9]{8}$/' // Kiểm tra số điện thoại VN
+            ],
             'add' => 'required|string|max:200',
-            'full_name' => 'required|string|max:50',
+            'full_name' => 'required|string|max:100',
             'password1' => 'required|string|min:6',
             'password2' => 'required|same:password1'
+        ], [
+            'phone.regex' => 'Số điện thoại không đúng định dạng',
+            'password2.same' => 'Mật khẩu nhập lại không khớp',
+            'email.unique' => 'Email đã được sử dụng',
+            'phone.unique' => 'Số điện thoại đã được sử dụng'
         ]);
 
         if ($validator->fails()) {
@@ -81,29 +90,34 @@ class AuthController extends Controller
         try {
             DB::beginTransaction();
 
-            // Tạo tài khoản mới
+            // Tạo tài khoản mới với trạng thái kích hoạt
             $taiKhoan = TaiKhoan::create([
                 'emailtk' => $request->email,
                 'sdttk' => $request->phone,
                 'matkhau' => Hash::make($request->password1),
+                'trangthai' => 1 // Mặc định là kích hoạt
             ]);
 
-            // Tạo khách hàng
-            $nameParts = explode(" ", $request->full_name);
-            $lastName = array_pop($nameParts);
-            $firstName = implode(" ", $nameParts);
+            // Tách họ và tên
+            $nameParts = explode(" ", trim($request->full_name));
+            if (count($nameParts) < 2) {
+                throw new \Exception('Họ và tên phải có ít nhất 2 từ');
+            }
+            $lastName = array_pop($nameParts); // Lấy tên
+            $firstName = implode(" ", $nameParts); // Phần còn lại là họ
 
+            // Tạo khách hàng
             $khachHang = KhachHang::create([
-                'tenkh' => $lastName,
                 'hokh' => $firstName,
+                'tenkh' => $lastName,
                 'diachikh' => $request->add,
                 'idtk' => $taiKhoan->idtk
             ]);
 
-            // Thêm phân quyền khách hàng (user)
+            // Thêm phân quyền khách hàng
             DB::table('phanquyen')->insert([
                 'idtk' => $taiKhoan->idtk,
-                'idqh' => 3 // Giả sử 3 là ID quyền hạn của khách hàng
+                'idqh' => 3 // ID quyền hạn của khách hàng
             ]);
 
             DB::commit();
@@ -119,7 +133,7 @@ class AuthController extends Controller
             ]);
 
             return redirect()->route('auth')
-                ->with('error', 'Có lỗi xảy ra khi đăng ký. Vui lòng thử lại.')
+                ->with('error', 'Có lỗi xảy ra: ' . $e->getMessage())
                 ->withInput();
         }
     }
@@ -151,6 +165,12 @@ class AuthController extends Controller
         $taiKhoan = TaiKhoan::where('emailtk', $request->email)->first();
 
         if ($taiKhoan && Hash::check($request->password, $taiKhoan->matkhau)) {
+            // Kiểm tra trạng thái tài khoản trước
+            if (!$taiKhoan->trangthai) {
+                return redirect()->route('admin.loginForm')
+                    ->with('error', 'Tài khoản đã bị vô hiệu hóa');
+            }
+
             // Kiểm tra nếu là nhân viên/admin
             $nhanVien = NhanVien::where('idtk', $taiKhoan->idtk)->first();
             if ($nhanVien) {

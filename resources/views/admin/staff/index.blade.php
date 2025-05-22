@@ -45,33 +45,43 @@
                             <td>{{ $employee->taikhoan->sdttk }}</td>
                             <td>{{ $employee->diachinv }}</td>
                             <td>
-                                <span class="badge badge-{{ $employee->taiKhoan->trangthai ? 'success' : 'danger' }}">
-                                    {{ $employee->taiKhoan->trangthai ? 'Hoạt động' : 'Vô hiệu hóa' }}
-                                </span>
+                                @if($employee->taiKhoan->emailtk === 'admin@watchstore.com')
+                                    <!-- Super admin luôn active và không thể thay đổi -->
+                                    <span class="badge bg-success">Hoạt động</span>
+                                @else
+                                    <span class="badge bg-{{ $employee->taiKhoan->trangthai ? 'success' : 'danger' }}">
+                                        {{ $employee->taiKhoan->trangthai ? 'Hoạt động' : 'Vô hiệu hóa' }}
+                                    </span>
+                                @endif
                             </td>
                             <td>
-                                <form action="{{ route('admin.staff.toggle-status', $employee->idnv) }}"
-                                      method="POST"
-                                      class="d-inline">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit"
-                                            class="btn btn-sm {{ $employee->taiKhoan->trangthai ? 'btn-warning' : 'btn-success' }}"
-                                            title="{{ $employee->taiKhoan->trangthai ? 'Vô hiệu hóa' : 'Kích hoạt' }}">
-                                        <i class="fas fa-{{ $employee->taiKhoan->trangthai ? 'ban' : 'check' }}"></i>
-                                    </button>
-                                </form>
+                                @if($employee->taiKhoan->emailtk === 'admin@watchstore.com')
+                                    <!-- Super admin không có nút vô hiệu hóa và xóa -->
+                                    <span class="text-muted"><i class="fas fa-lock"></i> Super Admin</span>
+                                @else
+                                    <form action="{{ route('admin.staff.toggle-status', $employee->idnv) }}"
+                                          method="POST"
+                                          class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="submit"
+                                                class="btn btn-sm {{ $employee->taiKhoan->trangthai ? 'btn-warning' : 'btn-success' }}"
+                                                title="{{ $employee->taiKhoan->trangthai ? 'Vô hiệu hóa' : 'Kích hoạt' }}">
+                                            <i class="fas fa-{{ $employee->taiKhoan->trangthai ? 'ban' : 'check' }}"></i>
+                                        </button>
+                                    </form>
 
-                                <form action="{{ route('admin.staff.delete', $employee->idnv) }}"
-                                      method="POST"
-                                      class="d-inline"
-                                      onsubmit="return confirm('Bạn có chắc muốn xóa nhân viên này?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                                    <form action="{{ route('admin.staff.delete', $employee->idnv) }}"
+                                          method="POST"
+                                          class="d-inline"
+                                          onsubmit="return confirm('Bạn có chắc muốn xóa nhân viên này?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                         @endforeach
@@ -86,3 +96,30 @@
     </div>
 </div>
 @endsection
+
+<style>
+.badge {
+    padding: 8px 12px;
+    font-weight: 500;
+}
+
+.bg-success {
+    background-color: #198754 !important;
+}
+
+.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.btn-warning {
+    color: #000;
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-success {
+    color: #fff;
+    background-color: #198754;
+    border-color: #198754;
+}
+</style>

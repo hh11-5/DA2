@@ -9,8 +9,18 @@ class QuyenHanSeeder extends Seeder
 {
     public function run()
     {
-        QuyenHan::create(['tenquyenhan' => 'admin']);
-        QuyenHan::create(['tenquyenhan' => 'staff']);
-        QuyenHan::create(['tenquyenhan' => 'customer']);
+        // Quyền hạn cơ bản
+        QuyenHan::create([
+            'idqh' => 1,
+            'tenquyenhan' => 'admin'
+        ]);
+        QuyenHan::create([
+            'idqh' => 2,
+            'tenquyenhan' => 'staff'
+        ]);
+        QuyenHan::create([
+            'idqh' => 3,
+            'tenquyenhan' => 'customer'
+        ]);
     }
 }

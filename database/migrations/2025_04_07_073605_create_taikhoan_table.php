@@ -14,6 +14,7 @@ class CreateTaikhoanTable extends Migration
             $table->string('emailtk', 50)->unique()->nullable();
             $table->string('sdttk', 10)->unique()->nullable();
             $table->string('matkhau', 255);
+            $table->boolean('trangthai')->default(1); // Thêm trường trạng thái, mặc định là 1 (kích hoạt)
         });
 
         DB::statement('ALTER TABLE taikhoan ADD CONSTRAINT chk_email_or_phone CHECK (emailtk IS NOT NULL OR sdttk IS NOT NULL)');
