@@ -169,7 +169,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                 <form action="{{ route('orders.cancel', $order->iddhang) }}" method="POST">
                     @csrf
-                    @method('PATCH')
+                    @method('PUT')  <!-- Thay đổi từ PATCH sang PUT -->
                     <button type="submit" class="btn btn-danger">Xác nhận hủy</button>
                 </form>
             </div>

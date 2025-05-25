@@ -8,18 +8,28 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
-    public function history()
+    public function history(Request $request)
     {
-        if (!Auth::check()) {
-            return redirect()->route('auth')
-                ->with('error', 'Vui lòng đăng nhập để xem lịch sử đơn hàng');
+        $user = auth()->user();
+        $query = DonHang::where('idkh', $user->khachHang->idkh);
+
+        // Lọc theo trạng thái
+        if ($request->has('status')) {
+            $query->where('trangthai', $request->status);
         }
 
-        $orders = DonHang::where('idkh', Auth::user()->khachHang->idkh)
-                        ->orderBy('ngaydathang', 'desc')
-                        ->paginate(10);
+        // Lấy số lượng đơn hàng cho từng trạng thái
+        $pendingCount = DonHang::where('idkh', $user->khachHang->idkh)
+                              ->where('trangthai', 0)->count();
+        $shippingCount = DonHang::where('idkh', $user->khachHang->idkh)
+                             ->where('trangthai', 1)->count();
+        $deliveringCount = DonHang::where('idkh', $user->khachHang->idkh)
+                               ->where('trangthai', 2)->count();
 
-        return view('history', compact('orders')); // Changed from orders.history to history
+        $orders = $query->orderBy('ngaydathang', 'desc')->paginate(10);
+
+        return view('history', compact('orders', 'pendingCount', 
+            'shippingCount', 'deliveringCount'));
     }
 
     public function show($id)
@@ -36,28 +46,17 @@ class OrderController extends Controller
         return view('orders.show', compact('order'));
     }
 
-    public function cancel(DonHang $order)
+    public function cancel($id)
     {
-        // Kiểm tra xem đơn hàng có phải của user hiện tại không
-        if ($order->khachhang_id !== auth()->user()->khachHang->id) {
-            return back()->with('error', 'Bạn không có quyền hủy đơn hàng này');
+        $order = DonHang::findOrFail($id);
+        
+        if ($order->trangthai == 0 || $order->trangthai == 1) {
+            $order->trangthai = 4; // Trạng thái đã hủy
+            $order->save();
+            
+            return redirect()->back()->with('success', 'Đơn hàng đã được hủy thành công');
         }
-
-        // Kiểm tra trạng thái đơn hàng
-        if (!in_array($order->trangthai, [0, 1])) {
-            return back()->with('error', 'Không thể hủy đơn hàng ở trạng thái này');
-        }
-
-        try {
-            $order->update([
-                'trangthai' => 4, // Trạng thái đã hủy
-                'ngaycapnhat' => now()
-            ]);
-
-            return redirect()->route('orders.show', $order->iddhang)
-                ->with('success', 'Đơn hàng đã được hủy thành công');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Có lỗi xảy ra khi hủy đơn hàng');
-        }
+        
+        return redirect()->back()->with('error', 'Không thể hủy đơn hàng này');
     }
 }

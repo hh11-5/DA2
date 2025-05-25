@@ -141,7 +141,7 @@ Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout
 Route::middleware(['auth'])->group(function () {
     Route::get('/history', [OrderController::class, 'history'])->name('orders.history');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
-    Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+    Route::put('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 
     // Employee routes
     Route::get('/employee/dashboard', [EmployeeController::class, 'dashboard'])
