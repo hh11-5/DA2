@@ -27,4 +27,15 @@ class BrandController extends Controller
         
         return view('brands.show', compact('brand', 'products'));
     }
+
+    public function getProducts($id)
+    {
+        try {
+            $products = SanPham::where('idnhasx', $id)->get();
+            return response()->json($products);
+        } catch (\Exception $e) {
+            \Log::error('Lỗi khi lấy sản phẩm: ' . $e->getMessage());
+            return response()->json(['error' => 'Có lỗi xảy ra khi tải sản phẩm'], 500);
+        }
+    }
 }

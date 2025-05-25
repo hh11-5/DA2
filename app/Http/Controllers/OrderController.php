@@ -35,4 +35,29 @@ class OrderController extends Controller
 
         return view('orders.show', compact('order'));
     }
+
+    public function cancel(DonHang $order)
+    {
+        // Kiểm tra xem đơn hàng có phải của user hiện tại không
+        if ($order->khachhang_id !== auth()->user()->khachHang->id) {
+            return back()->with('error', 'Bạn không có quyền hủy đơn hàng này');
+        }
+
+        // Kiểm tra trạng thái đơn hàng
+        if (!in_array($order->trangthai, [0, 1])) {
+            return back()->with('error', 'Không thể hủy đơn hàng ở trạng thái này');
+        }
+
+        try {
+            $order->update([
+                'trangthai' => 4, // Trạng thái đã hủy
+                'ngaycapnhat' => now()
+            ]);
+
+            return redirect()->route('orders.show', $order->iddhang)
+                ->with('success', 'Đơn hàng đã được hủy thành công');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Có lỗi xảy ra khi hủy đơn hàng');
+        }
+    }
 }

@@ -50,7 +50,7 @@ Route::get('/products/{id}', [ProductController::class, 'show'])->name('products
 Route::get('/products/type/{type}', [ProductController::class, 'getProductsByType'])->name('products.by.type');
 
 // Routes cho thương hiệu
-Route::get('/brands/{id}', [BrandController::class, 'show'])->name('brands.show');
+Route::get('/brands/{id}', [BrandController::class, 'getProducts'])->name('brands.products');
 Route::get('/brands/page/{id}', [BrandController::class, 'brandPage'])->name('brands.page');
 
 // Routes cho tìm kiếm
@@ -141,6 +141,7 @@ Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout
 Route::middleware(['auth'])->group(function () {
     Route::get('/history', [OrderController::class, 'history'])->name('orders.history');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+    Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 
     // Employee routes
     Route::get('/employee/dashboard', [EmployeeController::class, 'dashboard'])

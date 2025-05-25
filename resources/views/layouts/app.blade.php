@@ -178,6 +178,40 @@
     .dropdown-item:hover > .dropdown-submenu {
         display: block;
     }
+
+    /* Thay đổi style cho form tìm kiếm */
+    .search-form {
+        min-width: 400px; /* Tăng độ rộng tối thiểu */
+        max-width: 600px; /* Giới hạn độ rộng tối đa */
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .search-form .form-control {
+        width: 100%;
+        padding: 0.6rem 1rem;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+    }
+
+    .search-form .form-control:focus {
+        border-color: #fbbf24;
+        box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .search-form {
+            min-width: 300px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .search-form {
+            min-width: 100%;
+        }
+    }
     </style>
 </head>
 <body>
@@ -227,29 +261,17 @@
     </ul>
 </li>
 
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#"
-                               role="button"
-                               data-bs-toggle="dropdown"
-                               aria-expanded="false">
-                                Cặp đôi
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Đồng hồ cơ</a></li>
-                                <li><a class="dropdown-item" href="#">Đồng hồ điện tử</a></li>
-                            </ul>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/contact">Liên hệ</a>
                         </li>
                     </ul>
 
                     <!-- Thanh tìm kiếm -->
-                    <form action="{{ route('search') }}" method="GET" class="d-flex mx-3" style="min-width: 300px;">
+                    <form action="{{ route('search') }}" method="GET" class="search-form d-flex mx-3">
                         <input class="form-control me-2" type="search" name="query"
                                value="{{ request('query') }}"
-                               placeholder="Tìm kiếm...">
-                        <button type="button" class="btn btn-outline-dark search-btn">
+                               placeholder="Tìm kiếm theo tên...">
+                        <button type="submit" class="btn btn-outline-dark">
                             <i class="fas fa-search"></i>
                         </button>
                     </form>

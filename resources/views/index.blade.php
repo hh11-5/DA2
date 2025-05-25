@@ -400,22 +400,22 @@
             max-width: 150px; /* Tăng kích thước card một chút */
         }
 
-        /* Điều chỉnh responsive */
+        /* Điều chỉnh responsive cho brand grid */
+        @media (max-width: 1200px) {
+            .row-cols-5 {
+                --bs-row-cols: 4; /* 4 cột trên màn hình lớn */
+            }
+        }
+
         @media (max-width: 992px) {
             .row-cols-5 {
-                --bs-row-cols: 3; /* Hiển thị 3 cột trên tablet */
-            }
-            .brand-card {
-                max-width: 120px;
+                --bs-row-cols: 3; /* 3 cột trên tablet */
             }
         }
 
         @media (max-width: 768px) {
             .row-cols-5 {
-                --bs-row-cols: 2; /* Hiển thị 2 cột trên mobile */
-            }
-            .brand-card {
-                max-width: 100%;
+                --bs-row-cols: 2; /* 2 cột trên mobile */
             }
         }
 
@@ -486,8 +486,8 @@
         <div class="section-spacing">
             <h5 class="brand-section-title">Thương hiệu đồng hồ</h5>
             <div class="brand-grid">
-                <div class="row row-cols-5 g-3 mb-3"> <!-- Hàng đầu tiên với 5 thương hiệu -->
-                    @foreach($thuonghieus->take(5) as $th)
+                <div class="row row-cols-5 g-3">
+                    @foreach($thuonghieus as $th)
                     <div class="col">
                         <div class="brand-card" data-brand-id="{{ $th->idnhasx }}">
                             <div class="brand-content">
@@ -496,24 +496,6 @@
                         </div>
                     </div>
                     @endforeach
-                </div>
-                <div class="row row-cols-5 g-3"> <!-- Hàng thứ hai với 5 thương hiệu còn lại -->
-                    @foreach($thuonghieus->skip(5)->take(5) as $th)
-                    <div class="col">
-                        <div class="brand-card" data-brand-id="{{ $th->idnhasx }}">
-                            <div class="brand-content">
-                                <h5 class="brand-name">{{ $th->tennhasx }}</h5>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-
-            <!-- Thêm container để hiển thị sản phẩm theo thương hiệu -->
-            <div id="brand-products" class="mt-4" style="display: none;">
-                <h5 id="brand-title" class="mb-4"></h5>
-                <div class="row row-cols-2 row-cols-md-3 g-3" id="brand-products-container">
                 </div>
             </div>
         </div>
@@ -544,16 +526,27 @@
 
 @section('scripts')
 <script>
-// Sửa lại phần JavaScript xử lý click
-document.querySelectorAll('.brand-card').forEach(card => {
-    card.addEventListener('click', function(e) {
-        e.preventDefault(); // Ngăn chặn hành vi mặc định
+// Thêm các biến cần thiết
+const brandProductsSection = document.createElement('div');
+brandProductsSection.className = 'section-spacing';
+brandProductsSection.style.display = 'none';
 
+const brandTitle = document.createElement('h5');
+brandTitle.className = 'mb-4';
+
+const productsContainer = document.createElement('div');
+productsContainer.className = 'row row-cols-2 row-cols-md-4 g-3';
+
+brandProductsSection.appendChild(brandTitle);
+brandProductsSection.appendChild(productsContainer);
+
+// Thêm section vào sau phần thương hiệu
+document.querySelector('.brand-grid').after(brandProductsSection);
+
+document.querySelectorAll('.brand-card').forEach(card => {
+    card.addEventListener('click', function() {
         const brandId = this.dataset.brandId;
         const brandName = this.querySelector('.brand-name').textContent;
-        const brandProductsSection = document.getElementById('brand-products');
-        const brandTitle = document.getElementById('brand-title');
-        const productsContainer = document.getElementById('brand-products-container');
 
         fetch(`/brands/${brandId}`)
             .then(response => {
@@ -579,10 +572,14 @@ document.querySelectorAll('.brand-card').forEach(card => {
                         <div class="col">
                             <a href="/products/${product.idsp}" class="text-decoration-none">
                                 <div class="card h-100">
-                                    <img src="${product.hinhsp || '/images/placeholder.png'}" class="card-img-top" alt="${product.tensp}">
+                                    <img src="${product.hinhsp || '/images/placeholder.png'}" 
+                                         class="card-img-top" 
+                                         alt="${product.tensp}">
                                     <div class="card-body">
                                         <h5 class="card-title text-dark">${product.tensp}</h5>
-                                        <p class="card-text text-muted">Giá: ${new Intl.NumberFormat('vi-VN').format(product.gia)}đ</p>
+                                        <p class="card-text product-price">
+                                            ${new Intl.NumberFormat('vi-VN').format(product.gia)}đ
+                                        </p>
                                     </div>
                                 </div>
                             </a>
@@ -590,11 +587,8 @@ document.querySelectorAll('.brand-card').forEach(card => {
                     `).join('');
                 }
 
-                // Hiển thị phần sản phẩm mà không scroll
+                // Hiển thị phần sản phẩm
                 brandProductsSection.style.display = 'block';
-
-                // Xóa scrollIntoView
-                // brandProductsSection.scrollIntoView({ behavior: 'smooth' });
             })
             .catch(error => {
                 console.error('Error:', error);
