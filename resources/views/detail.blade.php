@@ -102,6 +102,7 @@
 
     .btn-add-cart:hover {
         background: #334155;
+        color: white;
         transform: translateY(-2px);
     }
 

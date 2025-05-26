@@ -137,10 +137,11 @@
                 <div class="col-md-2">
                     <div class="input-group">
                         <span class="input-group-text">Hiệu</span>
-                        <select name="idnhasx" class="form-select">
+                        <select name="idnhasx" class="form-select" id="brandFilter">
                             <option value="">Tất cả</option>
                             @foreach($manufacturers as $manufacturer)
-                                <option value="{{ $manufacturer->idnhasx }}" {{ request('idnhasx') == $manufacturer->idnhasx ? 'selected' : '' }}>
+                                <option value="{{ $manufacturer->idnhasx }}"
+                                    {{ request('idnhasx') == $manufacturer->idnhasx ? 'selected' : '' }}>
                                     {{ $manufacturer->tennhasx }}
                                 </option>
                             @endforeach
@@ -227,4 +228,39 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+document.getElementById('brandFilter').addEventListener('change', function() {
+    // Lấy các giá trị filter khác
+    const masp = document.querySelector('input[name="masp"]').value;
+    const tensp = document.querySelector('input[name="tensp"]').value;
+    const gia_min = document.querySelector('input[name="gia_min"]').value;
+    const gia_max = document.querySelector('input[name="gia_max"]').value;
+
+    // Tạo URL với các tham số
+    let url = new URL(window.location.href);
+    url.searchParams.set('idnhasx', this.value);
+
+    // Thêm các tham số khác nếu có
+    if(masp) url.searchParams.set('masp', masp);
+    if(tensp) url.searchParams.set('tensp', tensp);
+    if(gia_min) url.searchParams.set('gia_min', gia_min);
+    if(gia_max) url.searchParams.set('gia_max', gia_max);
+
+    // Chuyển hướng đến URL mới
+    window.location.href = url.toString();
+});
+
+// Auto hide alert after 3 seconds
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            alert.style.display = 'none';
+        });
+    }, 3000);
+});
+</script>
 @endsection

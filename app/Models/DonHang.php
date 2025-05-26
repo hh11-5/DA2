@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class DonHang extends Model
 {
@@ -10,6 +11,7 @@ class DonHang extends Model
     protected $primaryKey = 'iddhang';
     public $incrementing = false;
     protected $keyType = 'string';
+    public $timestamps = false;
 
     protected $fillable = [
         'iddhang',
@@ -20,10 +22,19 @@ class DonHang extends Model
         'trangthai'
     ];
 
-    // Cast ngaydathang to datetime
+    // Chỉ định các trường ngày tháng
+    protected $dates = ['ngaydathang'];
+
+    // Đảm bảo ngày được parse thành Carbon khi lấy từ DB
     protected $casts = [
         'ngaydathang' => 'datetime'
     ];
+
+    // Chuyển ngày thành Carbon khi lưu vào DB
+    public function setNgaydathangAttribute($value)
+    {
+        $this->attributes['ngaydathang'] = Carbon::parse($value);
+    }
 
     // Định nghĩa các trạng thái đơn hàng
     const STATUSES = [

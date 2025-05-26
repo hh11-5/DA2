@@ -15,6 +15,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\StatisticsController;
 
 // Admin và Employee routes
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
@@ -152,6 +153,9 @@ Route::middleware(['auth'])->group(function () {
 Route::prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
+    // Thêm vào nhóm routes admin
+    Route::get('/statistics', [StatisticsController::class, 'index'])->name('admin.statistics');
+
     // Product management
     Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
     Route::get('/products/create', [AdminController::class, 'createProduct'])->name('admin.products.create');
@@ -159,6 +163,12 @@ Route::prefix('admin')->group(function () {
     Route::get('/products/{id}/edit', [AdminController::class, 'editProduct'])->name('admin.products.edit');
     Route::put('/products/{id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
     Route::delete('/products/{id}', [AdminController::class, 'deleteProduct'])->name('admin.products.delete');
+
+    // Brand management
+    Route::get('/brands', [AdminController::class, 'brands'])->name('admin.brands');
+    Route::post('/brands', [AdminController::class, 'storeBrand'])->name('admin.brands.store');
+    Route::put('/brands/{id}', [AdminController::class, 'updateBrand'])->name('admin.brands.update');
+    Route::delete('/brands/{id}', [AdminController::class, 'deleteBrand'])->name('admin.brands.destroy');
 
     // Staff management
     Route::get('/staff', [AdminController::class, 'staff'])->name('admin.staff');
@@ -170,6 +180,8 @@ Route::prefix('admin')->group(function () {
 
 // Employee routes
 Route::prefix('employee')->group(function () {
+    Route::get('/dashboard', [EmployeeController::class, 'dashboard'])->name('employee.dashboard');
+    Route::get('/statistics', [StatisticsController::class, 'employeeIndex'])->name('employee.statistics');
     Route::get('/orders', [EmployeeController::class, 'orders'])->name('employee.orders');
     Route::get('/orders/{iddhang}', [EmployeeController::class, 'showOrder'])->name('employee.orders.show');
     Route::put('/orders/{iddhang}/status', [EmployeeController::class, 'updateOrderStatus'])->name('employee.orders.update-status');
@@ -179,6 +191,7 @@ Route::middleware(['auth', 'employee'])->prefix('employee')->name('employee.')->
     Route::get('/orders/{iddhang}', [EmployeeController::class, 'showOrder'])->name('orders.show');
     Route::put('/orders/{iddhang}/status', [EmployeeController::class, 'updateOrderStatus'])->name('orders.update-status');
 });
+
 
 Route::prefix('employee')->name('employee.')->group(function () {
     Route::get('/orders', [EmployeeController::class, 'orders'])->name('orders');
