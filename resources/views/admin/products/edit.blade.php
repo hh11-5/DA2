@@ -83,15 +83,21 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Kích thước</label>
-                            <input type="text" name="clieukinh" class="form-control"
-                                   value="{{ $product->clieukinh }}" required>
+                            <label class="form-label">Đường kính mặt</label>
+                            <div class="input-group">
+                                <input type="number" name="clieukinh" class="form-control" required step="0.1" min="0"
+                                       value="{{ (float) str_replace(['mm', ' '], '', $product->clieukinh) }}">
+                                <span class="input-group-text">mm</span>
+                            </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Khả năng chống nước</label>
-                            <input type="text" name="khangnuoc" class="form-control"
-                                   value="{{ $product->khangnuoc }}" required>
+                            <div class="input-group">
+                                <input type="number" name="khangnuoc" class="form-control" required step="1" min="0"
+                                       value="{{ (int) str_replace(['m', ' '], '', $product->khangnuoc) }}">
+                                <span class="input-group-text">m</span>
+                            </div>
                         </div>
 
                         <div class="mb-3">

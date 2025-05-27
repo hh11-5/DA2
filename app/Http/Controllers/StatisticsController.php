@@ -27,7 +27,6 @@ class StatisticsController extends Controller
 
         $type = $request->get('type', 'daily');
 
-        // Format dates properly for PostgreSQL
         $startDate = $request->get('start_date')
             ? Carbon::parse($request->get('start_date'))->startOfDay()->format('Y-m-d H:i:s')
             : Carbon::now()->subMonth()->startOfDay()->format('Y-m-d H:i:s');
@@ -36,28 +35,41 @@ class StatisticsController extends Controller
             ? Carbon::parse($request->get('end_date'))->endOfDay()->format('Y-m-d H:i:s')
             : Carbon::now()->endOfDay()->format('Y-m-d H:i:s');
 
-        // Get data based on type
-        switch($type) {
-            case 'daily':
-                $data = $this->getDailyStats($startDate, $endDate);
-                break;
-            case 'monthly':
-                $data = $this->getMonthlyStats($startDate, $endDate);
-                break;
-            case 'quarterly':
-                $data = $this->getQuarterlyStats($startDate, $endDate);
-                break;
-            case 'yearly':
-                $data = $this->getYearlyStats($startDate, $endDate);
-                break;
-            case 'customer':
-                $data = $this->getCustomerStats($startDate, $endDate);
-                break;
-            case 'product':
-                $data = $this->getProductStats($startDate, $endDate);
-                break;
-            default:
-                $data = $this->getDailyStats($startDate, $endDate);
+        if ($type == 'product') {
+            $data = ChiTietDonHang::with('sanPham')
+                ->select(
+                    'idsp',
+                    DB::raw('SUM(soluong) as total_quantity'),
+                    DB::raw('SUM(thanhtien) as total_revenue')
+                )
+                ->whereHas('donHang', function($query) use ($startDate, $endDate) {
+                    $query->where('trangthai', 3)
+                          ->whereBetween('ngaydathang', [$startDate, $endDate]);
+                })
+                ->groupBy('idsp')
+                ->orderBy('total_quantity', 'desc')
+                ->limit(10)
+                ->get();
+        } else {
+            switch($type) {
+                case 'daily':
+                    $data = $this->getDailyStats($startDate, $endDate);
+                    break;
+                case 'monthly':
+                    $data = $this->getMonthlyStats($startDate, $endDate);
+                    break;
+                case 'quarterly':
+                    $data = $this->getQuarterlyStats($startDate, $endDate);
+                    break;
+                case 'yearly':
+                    $data = $this->getYearlyStats($startDate, $endDate);
+                    break;
+                case 'customer':
+                    $data = $this->getCustomerStats($startDate, $endDate);
+                    break;
+                default:
+                    $data = $this->getDailyStats($startDate, $endDate);
+            }
         }
 
         return view('admin.statistics.index', compact('data', 'type', 'startDate', 'endDate'));

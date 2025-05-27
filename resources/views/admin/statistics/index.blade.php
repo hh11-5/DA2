@@ -5,6 +5,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="row mb-3">
+        <h1 class="h3 mb-3">Thống kê doanh thu</h1>
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
@@ -46,57 +47,34 @@
             <div class="card">
                 <div class="card-body">
                     @if(request('type') == 'customer')
-                        <h5>Top khách hàng</h5>
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Khách hàng</th>
-                                        <th>Số đơn hàng</th>
-                                        <th>Tổng chi tiêu</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($data as $item)
-                                    <tr>
-                                        <td>{{ $item->khachHang->hokh }} {{ $item->khachHang->tenkh }}</td>
-                                        <td>{{ $item->total_orders }}</td>
-                                        <td>{{ number_format($item->total_spent) }}đ</td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                        {{-- Hiển thị biểu đồ kết hợp cho thống kê khách hàng --}}
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Thống kê doanh thu theo khách hàng</h3>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="customerChart"></canvas>
+                            </div>
                         </div>
                     @elseif(request('type') == 'product')
-                        <h5>Top sản phẩm bán chạy</h5>
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Sản phẩm</th>
-                                        <th>Số lượng đã bán</th>
-                                        <th>Doanh thu</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($data as $item)
-                                    <tr>
-                                        <td>{{ $item->sanPham->tensp }}</td>
-                                        <td>{{ $item->total_quantity }}</td>
-                                        <td>{{ number_format($item->total_revenue) }}đ</td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                        {{-- Chỉ hiển thị biểu đồ kết hợp cho thống kê sản phẩm --}}
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Thống kê doanh thu theo sản phẩm</h3>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="mixedChart"></canvas>
+                            </div>
                         </div>
                     @else
+                        {{-- Biểu đồ doanh thu cho các loại thống kê khác --}}
                         <canvas id="revenueChart"></canvas>
                     @endif
                 </div>
             </div>
         </div>
     </div>
-
+{{--
     @if(config('app.debug'))
     <div class="card mb-3">
         <div class="card-body">
@@ -109,14 +87,172 @@
             @endif
         </div>
     </div>
-    @endif
+    @endif --}}
 </div>
 @endsection
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-@if(!in_array(request('type', 'daily'), ['customer', 'product']))
+@if(request('type') == 'customer')
+    const ctx = document.getElementById('customerChart').getContext('2d');
+    const chartData = {
+        labels: {!! json_encode($data->map(function($item) {
+            return $item->khachHang->hokh . ' ' . $item->khachHang->tenkh;
+        })) !!},
+        datasets: [
+            {
+                type: 'bar',
+                label: 'Tổng chi tiêu',
+                data: {!! json_encode($data->pluck('total_spent')) !!},
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                borderColor: 'rgb(255, 99, 132)',
+                borderWidth: 1,
+                yAxisID: 'y-spent'
+            },
+            {
+                type: 'line',
+                label: 'Số đơn hàng',
+                data: {!! json_encode($data->pluck('total_orders')) !!},
+                borderColor: 'rgb(75, 192, 192)',
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                fill: false,
+                yAxisID: 'y-orders'
+            }
+        ]
+    };
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: chartData,
+        options: {
+            responsive: true,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            scales: {
+                'y-spent': {
+                    type: 'linear',
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: 'Tổng chi tiêu (VNĐ)'
+                    },
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return new Intl.NumberFormat('vi-VN').format(value) + 'đ';
+                        }
+                    }
+                },
+                'y-orders': {
+                    type: 'linear',
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'Số đơn hàng'
+                    },
+                    beginAtZero: true,
+                    grid: {
+                        drawOnChartArea: false
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            if (context.dataset.type === 'bar') {
+                                return 'Tổng chi tiêu: ' + new Intl.NumberFormat('vi-VN').format(context.raw) + 'đ';
+                            }
+                            return 'Số đơn hàng: ' + context.raw;
+                        }
+                    }
+                }
+            }
+        }
+    });
+@elseif(request('type') == 'product')
+    const ctx = document.getElementById('mixedChart').getContext('2d');
+    const chartData = {
+        labels: {!! json_encode($data->map(function($item) {
+            return $item->sanPham->tensp;
+        })) !!},
+        datasets: [
+            {
+                type: 'bar',
+                label: 'Số lượng đã bán',
+                data: {!! json_encode($data->pluck('total_quantity')) !!},
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgb(75, 192, 192)',
+                borderWidth: 1,
+                yAxisID: 'y-quantity'
+            },
+            {
+                type: 'line',
+                label: 'Doanh thu',
+                data: {!! json_encode($data->pluck('total_revenue')) !!},
+                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                fill: false,
+                yAxisID: 'y-revenue'
+            }
+        ]
+    };
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: chartData,
+        options: {
+            responsive: true,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            scales: {
+                'y-quantity': {
+                    type: 'linear',
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: 'Số lượng đã bán'
+                    },
+                    beginAtZero: true
+                },
+                'y-revenue': {
+                    type: 'linear',
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'Doanh thu (VNĐ)'
+                    },
+                    beginAtZero: true,
+                    grid: {
+                        drawOnChartArea: false
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return new Intl.NumberFormat('vi-VN').format(value) + 'đ';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            if (context.dataset.type === 'line') {
+                                return 'Doanh thu: ' + new Intl.NumberFormat('vi-VN').format(context.raw) + 'đ';
+                            }
+                            return 'Số lượng: ' + context.raw;
+                        }
+                    }
+                }
+            }
+        }
+        });
+@elseif(!in_array(request('type', 'daily'), ['customer']))
     const ctx = document.getElementById('revenueChart').getContext('2d');
 
     const chartData = {
@@ -146,7 +282,7 @@
     };
 
     new Chart(ctx, {
-        type: 'bar', // Thay đổi type từ 'line' thành 'bar'
+        type: 'bar',
         data: chartData,
         options: {
             responsive: true,
@@ -169,11 +305,11 @@
                     }
                 },
                 legend: {
-                    display: false // Ẩn legend vì chỉ có 1 dataset
+                    display: false
                 }
             }
         }
-    });
+        });
 @endif
 </script>
 @endsection

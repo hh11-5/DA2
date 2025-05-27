@@ -68,12 +68,18 @@
 
                         <div class="mb-3">
                             <label class="form-label">Kích thước</label>
-                            <input type="text" name="clieukinh" class="form-control" required>
+                            <div class="input-group">
+                                <input type="number" name="clieukinh" class="form-control" required step="0.1" min="0">
+                                <span class="input-group-text">mm</span>
+                            </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Khả năng chống nước</label>
-                            <input type="text" name="khangnuoc" class="form-control" required>
+                            <div class="input-group">
+                                <input type="number" name="khangnuoc" class="form-control" required step="1" min="0">
+                                <span class="input-group-text">m</span>
+                            </div>
                         </div>
 
                         <div class="mb-3">

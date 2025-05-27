@@ -12,6 +12,8 @@ use App\Models\TaiKhoan;
 use App\Models\NhanVien;
 use Illuminate\Support\Facades\Hash;
 use App\Models\ChiTietKho;
+use App\Models\ChiTietDonHang;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
@@ -41,12 +43,45 @@ class AdminController extends Controller
 
     public function dashboard()
     {
-        // Kiểm tra quyền
         if ($response = $this->checkAdminAccess()) {
             return $response;
         }
 
-        return view('admin.dashboard');
+        // Lấy số lượng sản phẩm đã bán và doanh thu hôm nay
+        $today = Carbon::today();
+        $todayProducts = ChiTietDonHang::whereHas('donHang', function($query) use ($today) {
+            $query->where('trangthai', 3)
+                  ->whereDate('ngaydathang', $today);
+        })->sum('soluong');
+
+        $todayRevenue = ChiTietDonHang::whereHas('donHang', function($query) use ($today) {
+            $query->where('trangthai', 3)
+                  ->whereDate('ngaydathang', $today);
+        })->sum(DB::raw('soluong * dongia'));
+
+        // Lấy thống kê top 10 sản phẩm bán chạy
+        $products = ChiTietDonHang::with('sanPham')
+            ->select(
+                'idsp',
+                DB::raw('SUM(soluong) as total_quantity'),
+                DB::raw('SUM(thanhtien) as total_revenue')
+            )
+            ->whereHas('donHang', function($query) {
+                $query->where('trangthai', 3); // Chỉ lấy đơn hàng đã hoàn thành
+            })
+            ->groupBy('idsp')
+            ->orderBy('total_quantity', 'desc')
+            ->limit(10)
+            ->get()
+            ->map(function($item) {
+                return [
+                    'tensp' => $item->sanPham->tensp,
+                    'total_quantity' => $item->total_quantity,
+                    'total_revenue' => $item->total_revenue
+                ];
+            });
+
+        return view('admin.dashboard', compact('todayProducts', 'todayRevenue', 'products'));
     }
 
     // Thêm logic kiểm tra vào tất cả các methods khác
