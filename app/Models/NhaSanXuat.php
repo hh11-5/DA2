@@ -10,15 +10,10 @@ class NhaSanXuat extends Model
     protected $primaryKey = 'idnhasx';
     public $timestamps = false;
 
-    protected $fillable = [
-        'tennhasx',
-        'diachi',
-        'sdt',
-        'email'
-    ];
+    protected $fillable = ['tennhasx', 'diachi', 'sdt', 'email'];
 
-    public function sanphams()
+    public function sanPhams()
     {
-        return $this->hasMany(SanPham::class, 'idnhasx', 'idnhasx');
+        return $this->hasMany(SanPham::class, 'idnhasx');
     }
 }

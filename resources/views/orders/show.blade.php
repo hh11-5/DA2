@@ -8,9 +8,9 @@
                 <h2>Chi tiết đơn hàng #{{ $order->iddhang }}</h2>
                 <div>
                     @if($order->trangthai == 0 || $order->trangthai == 1)
-                        <button type="button" 
-                                class="btn btn-danger me-2" 
-                                data-bs-toggle="modal" 
+                        <button type="button"
+                                class="btn btn-danger me-2"
+                                data-bs-toggle="modal"
                                 data-bs-target="#cancelOrderModal">
                             <i class="fas fa-times-circle me-2"></i>Hủy đơn hàng
                         </button>
@@ -276,25 +276,25 @@
 }
 
 .step.active .step-icon {
-    border-color: #10B981;
-    background: #10B981;
+    border-color: #fbbf24;
+    background: #fbbf24;
     color: white;
     animation: pulse 2s infinite;
 }
 
 .step.active .step-label {
-    color: #10B981;
+    color: #fbbf24;
     font-weight: 600;
 }
 
 .step.completed .step-icon {
-    border-color: #10B981;
+    border-color: #fbbf24;
     background: #fff;
-    color: #10B981;
+    color: #fbbf24;
 }
 
 .step.completed .step-label {
-    color: #10B981;
+    color: #fbbf24;
 }
 
 .step.active ~ .step .step-icon {
@@ -332,13 +332,13 @@
 
 @keyframes pulse {
     0% {
-        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+        box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4);
     }
     70% {
-        box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+        box-shadow: 0 0 0 10px rgba(251, 191, 36, 0);
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+        box-shadow: 0 0 0 0 rgba(251, 191, 36, 0);
     }
 }
 </style>

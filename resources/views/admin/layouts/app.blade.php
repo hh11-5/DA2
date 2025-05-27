@@ -74,7 +74,7 @@
                     </li>
                     <li class="nav-header">QUẢN LÝ</li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="{{ route('admin.statistics') }}" class="nav-link {{ request()->routeIs('admin.statistics') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-chart-pie"></i>
                             <p>Thống kê doanh thu</p>
                         </a>
@@ -83,6 +83,12 @@
                         <a href="{{ route('admin.products') }}" class="nav-link {{ request()->routeIs('admin.products*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-box"></i>
                             <p>Quản lý sản phẩm</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.brands') }}" class="nav-link {{ request()->routeIs('admin.brands*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-trademark"></i>
+                            <p>Quản lý thương hiệu</p>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -100,6 +106,12 @@
                         </a>
                     </li>
                     <li class="nav-header">QUẢN LÝ</li>
+                    <li class="nav-item">
+                        <a href="{{ route('employee.statistics') }}" class="nav-link {{ request()->routeIs('employee.statistics') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-chart-pie"></i>
+                            <p>Thống kê doanh thu</p>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a href="{{ route('employee.orders') }}" class="nav-link {{ request()->routeIs('employee.orders*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-shopping-cart"></i>

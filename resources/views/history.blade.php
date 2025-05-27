@@ -9,12 +9,12 @@
         cancelForms.forEach(form => {
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
+
                 const modal = document.createElement('div');
                 modal.className = 'modal';
                 modal.style.display = 'block';
                 modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
-                
+
                 modal.innerHTML = `
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -27,15 +27,15 @@
                                 <p class="text-muted">Lưu ý: Hành động này không thể hoàn tác.</p>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" 
+                                <button type="button" class="btn btn-secondary"
                                         onclick="closeModal(this.closest('.modal'))">Đóng</button>
-                                <button type="button" class="btn btn-danger" 
+                                <button type="button" class="btn btn-danger"
                                         onclick="submitCancelForm(this)">Xác nhận hủy</button>
                             </div>
                         </div>
                     </div>
                 `;
-                
+
                 document.body.appendChild(modal);
                 // Thêm class show sau khi append để kích hoạt animation
                 setTimeout(() => modal.classList.add('show'), 50);
@@ -163,36 +163,36 @@
     <!-- Thanh trạng thái -->
     <div class="order-status-tabs mb-4">
         <div class="nav nav-pills">
-            <a href="{{ route('orders.history') }}" 
+            <a href="{{ route('orders.history') }}"
                class="nav-link {{ !request('status') ? 'active' : '' }}">
                 Tất cả
             </a>
-            <a href="{{ route('orders.history', ['status' => 0]) }}" 
+            <a href="{{ route('orders.history', ['status' => 0]) }}"
                class="nav-link {{ request('status') == '0' ? 'active' : '' }}">
                 Chờ thanh toán
                 @if($pendingCount > 0)
                     <span class="badge bg-secondary ms-1">{{ $pendingCount }}</span>
                 @endif
             </a>
-            <a href="{{ route('orders.history', ['status' => 1]) }}" 
+            <a href="{{ route('orders.history', ['status' => 1]) }}"
                class="nav-link {{ request('status') == '1' ? 'active' : '' }}">
                 Vận chuyển
                 @if($shippingCount > 0)
                     <span class="badge bg-primary ms-1">{{ $shippingCount }}</span>
                 @endif
             </a>
-            <a href="{{ route('orders.history', ['status' => 2]) }}" 
+            <a href="{{ route('orders.history', ['status' => 2]) }}"
                class="nav-link {{ request('status') == '2' ? 'active' : '' }}">
                 Chờ giao hàng
                 @if($deliveringCount > 0)
                     <span class="badge bg-info ms-1">{{ $deliveringCount }}</span>
                 @endif
             </a>
-            <a href="{{ route('orders.history', ['status' => 3]) }}" 
+            <a href="{{ route('orders.history', ['status' => 3]) }}"
                class="nav-link {{ request('status') == '3' ? 'active' : '' }}">
                 Hoàn thành
             </a>
-            <a href="{{ route('orders.history', ['status' => 4]) }}" 
+            <a href="{{ route('orders.history', ['status' => 4]) }}"
                class="nav-link {{ request('status') == '4' ? 'active' : '' }}">
                 Đã hủy
             </a>
@@ -220,7 +220,13 @@
                     @foreach($orders as $order)
                     <tr>
                         <td>{{ $order->iddhang }}</td>
-                        <td>{{ $order->ngaydathang->format('d/m/Y H:i') }}</td>
+                        <td>
+                            @if($order->ngaydathang instanceof \Carbon\Carbon)
+                                {{ $order->ngaydathang->format('d/m/Y H:i') }}
+                            @else
+                                {{ \Carbon\Carbon::parse($order->ngaydathang)->format('d/m/Y H:i') }}
+                            @endif
+                        </td>
                         <td>{{ number_format($order->tongtien) }}đ</td>
                         <td>{{ number_format($order->phivanchuyen) }}đ</td>
                         <td>
@@ -251,8 +257,8 @@
                                     Xem chi tiết
                                 </a>
                                 @if($order->trangthai == 0 || $order->trangthai == 1)
-                                    <form action="{{ route('orders.cancel', $order->iddhang) }}" 
-                                          method="POST" 
+                                    <form action="{{ route('orders.cancel', $order->iddhang) }}"
+                                          method="POST"
                                           class="d-inline cancel-order-form">
                                         @csrf
                                         @method('PUT')
@@ -338,6 +344,17 @@
 
 .table > tbody > tr > td {
     vertical-align: middle;
+}
+
+.btn-outline-primary {
+    color: #fbbf24;
+    border-color: #fbbf24;
+}
+
+.btn-outline-primary:hover {
+    background: #f59e0b;
+    transform: translateY(-2px);
+    border-color: #f59e0b;
 }
 </style>
 @endsection

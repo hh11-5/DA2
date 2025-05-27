@@ -87,7 +87,7 @@ class AdminController extends Controller
             $query->where('idnhasx', $request->idnhasx);
         }
 
-        $products = $query->paginate(10)->withQueryString();
+        $products = $query->paginate(50)->withQueryString();
         $manufacturers = NhaSanXuat::all();
 
         return view('admin.products.index', compact('products', 'manufacturers'));
@@ -411,5 +411,81 @@ class AdminController extends Controller
             DB::rollBack();
             return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Hiển thị danh sách thương hiệu
+     */
+    public function brands()
+    {
+        if ($response = $this->checkAdminAccess()) {
+            return $response;
+        }
+
+        $brands = NhaSanXuat::withCount('sanPhams')->get();
+        return view('admin.brands.index', compact('brands'));
+    }
+
+    /**
+     * Lưu thương hiệu mới
+     */
+    public function storeBrand(Request $request)
+    {
+        if ($response = $this->checkAdminAccess()) {
+            return $response;
+        }
+
+        $validated = $request->validate([
+            'tennhasx' => 'required|max:50|unique:nhasanxuat',
+            'diachi' => 'nullable|string',
+            'sdt' => 'nullable|string|max:15',
+            'email' => 'nullable|email|max:50'
+        ]);
+
+        NhaSanXuat::create($validated);
+        return redirect()->route('admin.brands')->with('success', 'Thêm thương hiệu thành công');
+    }
+
+    /**
+     * Cập nhật thông tin thương hiệu
+     */
+    public function updateBrand(Request $request, $id)
+    {
+        if ($response = $this->checkAdminAccess()) {
+            return $response;
+        }
+
+        $validated = $request->validate([
+            'tennhasx' => 'required|max:50|unique:nhasanxuat,tennhasx,'.$id.',idnhasx',
+            'diachi' => 'nullable|string',
+            'sdt' => 'nullable|string|max:15',
+            'email' => 'nullable|email|max:50'
+        ]);
+
+        $brand = NhaSanXuat::findOrFail($id);
+        $brand->update($validated);
+
+        return redirect()->route('admin.brands')
+            ->with('success', 'Cập nhật thương hiệu thành công');
+    }
+
+    /**
+     * Xóa thương hiệu
+     */
+    public function deleteBrand($id)
+    {
+        if ($response = $this->checkAdminAccess()) {
+            return $response;
+        }
+
+        $brand = NhaSanXuat::withCount('sanPhams')->findOrFail($id);
+
+        if ($brand->san_phams_count > 0) {
+            return back()->with('error', 'Không thể xóa thương hiệu đã có sản phẩm');
+        }
+
+        $brand->delete();
+        return redirect()->route('admin.brands')
+            ->with('success', 'Xóa thương hiệu thành công');
     }
 }
