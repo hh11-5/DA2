@@ -247,7 +247,7 @@
                         <span class="spec-value">{{ $sanpham->clieuvo }}</span>
                     </div>
                     <div class="spec-item">
-                        <span class="spec-label">Đường kính:</span>
+                        <span class="spec-label">Đường kính mặt:</span>
                         <span class="spec-value">{{ $sanpham->clieukinh }}</span>
                     </div>
                     <div class="spec-item">
