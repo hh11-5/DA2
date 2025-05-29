@@ -2,6 +2,7 @@
 
 @section('content')
 <style>
+    /* Điều chỉnh gallery và hình ảnh chính */
     .product-gallery {
         position: relative;
         margin-bottom: 30px;
@@ -9,24 +10,25 @@
 
     .main-image {
         width: 100%;
-        height: 400px;
-        object-fit: cover;
+        height: 350px; /* Giảm chiều cao xuống */
+        object-fit: contain; /* Đảm bảo ảnh không bị méo */
         border-radius: 10px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        background: white;
+        padding: 1rem;
     }
 
-    .thumbnail-slider {
-        margin-top: 20px;
-    }
-
+    /* Điều chỉnh thumbnails */
     .thumbnail {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
+        width: 70px;
+        height: 70px;
+        object-fit: contain;
         border-radius: 5px;
         cursor: pointer;
         border: 2px solid transparent;
         transition: all 0.3s ease;
+        background: white;
+        padding: 0.3rem;
     }
 
     .thumbnail:hover, .thumbnail.active {
@@ -118,6 +120,7 @@
     /* Card styles */
     .product-card {
         border: none;
+        border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         transition: all 0.3s ease;
     }
@@ -128,48 +131,35 @@
     }
 
     .card-img-wrapper {
-        height: 200px;
+        height: 180px; /* Giảm chiều cao */
         overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: #f8f9fa;
-        padding: 1rem;
+        background-color: #ffffff;
+        padding: 0.8rem;
     }
 
     .card-img-top {
-        height: 100%;
+        max-height: 100%;
         width: auto;
         object-fit: contain;
         transition: transform 0.3s ease;
     }
 
-    .product-card:hover .card-img-top {
-        transform: scale(1.05);
-    }
-
     .card-title {
-        font-size: 1rem;
+        font-size: 0.9rem; /* Giảm kích thước chữ */
         margin-bottom: 0.5rem;
         height: 2.4rem;
         overflow: hidden;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
+        color: #333;
     }
 
-    .card-footer {
+    .card-body {
         padding: 1rem;
-        background: transparent;
-    }
-
-    .card-footer .btn {
-        font-size: 0.875rem;
-        padding: 0.25rem 0.5rem;
-    }
-
-    .card-footer form {
-        margin: 0;
     }
 
     /* Related products section */
@@ -199,6 +189,14 @@
 
         .card-footer .btn {
             width: 100%;
+        }
+
+        .main-image {
+            height: 300px;
+        }
+        
+        .card-img-wrapper {
+            height: 160px;
         }
     }
 </style>
