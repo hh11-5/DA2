@@ -191,6 +191,8 @@
 
     /* Card styles */
     .product-card {
+        position: relative;
+        overflow: hidden;
         border: none;
         border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -219,19 +221,37 @@
         transition: transform 0.3s ease;
     }
 
-    .card-title {
-        font-size: 0.9rem; /* Giảm kích thước chữ */
+    .card-hover-content {
+        position: absolute;
+        bottom: -100%;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 1rem;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .product-card:hover .card-hover-content {
+        bottom: 0;
+    }
+
+    .card-hover-content .card-title {
+        color: #1a202c;
+        font-size: 0.9rem;
+        font-weight: 600;
         margin-bottom: 0.5rem;
-        height: 2.4rem;
-        overflow: hidden;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
-        color: #333;
+        overflow: hidden;
     }
 
-    .card-body {
-        padding: 1rem;
+    .card-hover-content .card-price {
+        color: #dc2626;
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 0;
     }
 
     /* Related products section */
@@ -297,9 +317,22 @@
         .main-image {
             height: 300px;
         }
-        
+
         .card-img-wrapper {
             height: 160px;
+        }
+
+        .card-hover-content {
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.98);
+        }
+
+        .card-hover-content .card-title {
+            font-size: 0.8rem;
+        }
+
+        .card-hover-content .card-price {
+            font-size: 0.9rem;
         }
     }
 </style>
@@ -395,10 +428,14 @@
                 <a href="{{ route('products.show', $product->idsp) }}" class="text-decoration-none">
                     <div class="card product-card h-100">
                         <div class="card-img-wrapper skeleton-loading">
-                            <img src="{{ asset($product->hinhsp) }}" 
-                                 class="card-img-top lazy-load" 
-                                 data-src="{{ asset($product->hinhsp) }}" 
+                            <img src="{{ asset($product->hinhsp) }}"
+                                 class="card-img-top lazy-load"
+                                 data-src="{{ asset($product->hinhsp) }}"
                                  alt="{{ $product->tensp }}">
+                        </div>
+                        <div class="card-hover-content">
+                            <h5 class="card-title">{{ $product->tensp }}</h5>
+                            <p class="card-price">{{ number_format($product->gia, 0, ',', '.') }}đ</p>
                         </div>
                     </div>
                 </a>

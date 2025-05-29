@@ -16,6 +16,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\StatisticsController;
+use App\Http\Controllers\QRCodeController;
 
 // Admin và Employee routes
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
@@ -198,4 +199,7 @@ Route::prefix('employee')->name('employee.')->group(function () {
     Route::get('/orders/{iddhang}', [EmployeeController::class, 'showOrder'])->name('orders.show');
     Route::put('/orders/{iddhang}/status', [EmployeeController::class, 'updateOrderStatus'])->name('orders.update-status');
 });
+
+// Thêm route cho QR code
+Route::post('/generate-qr', [QRCodeController::class, 'generateQR'])->name('generate.qr');
 
