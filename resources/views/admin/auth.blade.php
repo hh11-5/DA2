@@ -27,7 +27,7 @@
                         <form action="{{ route('admin.login') }}" method="POST">
                             @csrf
                             <div class="mb-3">
-                                <label class="form-label">Email</label>
+                                <label class="form-label">Tài khoản</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                                     <input type="email" name="email" class="form-control" required>
