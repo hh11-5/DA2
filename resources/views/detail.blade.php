@@ -6,71 +6,137 @@
     .product-gallery {
         position: relative;
         margin-bottom: 30px;
+        overflow: hidden;
+    }
+
+    .main-image-wrapper {
+        position: relative;
+        overflow: hidden;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        background: white;
+        padding: 20px;
     }
 
     .main-image {
         width: 100%;
         height: 350px; /* Giảm chiều cao xuống */
         object-fit: contain; /* Đảm bảo ảnh không bị méo */
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        background: white;
-        padding: 1rem;
+        transition: transform 0.3s ease;
+    }
+
+    .main-image-wrapper:hover .main-image {
+        transform: scale(1.1);
     }
 
     /* Điều chỉnh thumbnails */
     .thumbnail {
-        width: 70px;
-        height: 70px;
+        width: 80px;
+        height: 80px;
         object-fit: contain;
-        border-radius: 5px;
+        border-radius: 10px;
         cursor: pointer;
         border: 2px solid transparent;
         transition: all 0.3s ease;
         background: white;
-        padding: 0.3rem;
+        padding: 0.5rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
     .thumbnail:hover, .thumbnail.active {
-        border-color: #475569;
+        border-color: #3b82f6;
+        transform: translateY(-2px);
     }
 
     .product-info h1 {
-        color: #1a202c;
+        color: #1e293b;
         font-size: 2rem;
-        margin-bottom: 15px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        line-height: 1.3;
     }
 
     .product-price {
-        font-size: 1.8rem;
-        color: #dc2626;
-        font-weight: bold;
+        position: relative;
+        display: inline-block;
+        padding: 12px 25px;
+        background: linear-gradient(45deg, #ffede6, #fff1f0);
+        color: #ff4d4d;
+        font-size: 1.5rem;
+        font-weight: 600;
+        border-radius: 12px;
         margin-bottom: 20px;
+        border: 1px solid rgba(255, 77, 77, 0.2);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 15px rgba(255, 77, 77, 0.1);
+    }
+
+    .product-price:hover {
+        background: linear-gradient(45deg, #fff1f0, #ffede6);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(255, 77, 77, 0.15);
+        border-color: rgba(255, 77, 77, 0.3);
+    }
+
+    /* Thay thế animation float bằng shine effect */
+    .product-price::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+            45deg,
+            transparent,
+            rgba(255, 255, 255, 0.4),
+            transparent
+        );
+        transform: rotate(45deg);
+        transition: all 0.5s ease;
+        opacity: 0;
+    }
+
+    .product-price:hover::after {
+        opacity: 1;
+        transform: rotate(45deg) translate(50%, 50%);
     }
 
     .product-specs {
-        background: #f8fafc;
-        padding: 20px;
-        border-radius: 10px;
-        margin: 20px 0;
+        background: linear-gradient(145deg, #ffffff, #f8fafc);
+        box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        padding: 30px;
+        border-radius: 20px;
+        margin: 25px 0;
+        border: 1px solid rgba(226, 232, 240, 0.8);
     }
 
     .spec-item {
         display: flex;
-        margin-bottom: 10px;
-        border-bottom: 1px solid #e2e8f0;
-        padding-bottom: 10px;
+        margin-bottom: 15px;
+        padding: 12px;
+        border-bottom: 1px dashed #e2e8f0;
+        transition: all 0.3s ease;
+        align-items: center;
+    }
+
+    .spec-item:hover {
+        background: linear-gradient(45deg, #f8fafc, #f1f5f9);
+        transform: translateX(5px);
+        border-radius: 10px;
     }
 
     .spec-label {
         width: 150px;
-        color: #64748b;
-        font-weight: 500;
+        color: #475569;
+        font-weight: 600;
+        font-size: 0.95rem;
     }
 
     .spec-value {
-        color: #1a202c;
+        color: #0f172a;
         flex: 1;
+        font-weight: 500;
     }
 
     .buy-buttons {
@@ -80,12 +146,14 @@
     }
 
     .btn-buy-now {
-        background: #fbbf24;
-        color: #1a202c;
-        padding: 12px 30px;
-        border-radius: 8px;
+        background: linear-gradient(45deg, #f59e0b, #fbbf24);
+        border: none;
+        padding: 15px 35px;
+        border-radius: 30px;
         font-weight: 600;
-        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
     }
 
     .btn-buy-now:hover {
@@ -94,18 +162,22 @@
     }
 
     .btn-add-cart {
-        background: #475569;
-        color: white;
-        padding: 12px 30px;
-        border-radius: 8px;
+        background: linear-gradient(45deg, #475569, #64748b);
+        border: none;
+        padding: 15px 35px;
+        border-radius: 30px;
         font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: white;
+        box-shadow: 0 4px 15px rgba(71, 85, 105, 0.3);
         transition: all 0.3s ease;
     }
 
     .btn-add-cart:hover {
-        background: #334155;
-        color: white;
+        background: linear-gradient(45deg, #334155, #475569);
         transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(71, 85, 105, 0.4);
     }
 
     .related-products {
@@ -176,6 +248,37 @@
         font-weight: 600;
     }
 
+    /* Skeleton loading styles */
+    .skeleton-loading {
+        position: relative;
+        overflow: hidden;
+        background: #e2e8f0;
+    }
+
+    .skeleton-loading::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        transform: translateX(-100%);
+        background-image: linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0) 0,
+            rgba(255, 255, 255, 0.2) 20%,
+            rgba(255, 255, 255, 0.5) 60%,
+            rgba(255, 255, 255, 0)
+        );
+        animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
     /* Responsive adjustments */
     @media (max-width: 768px) {
         .row-cols-md-4 > * {
@@ -206,7 +309,9 @@
         <!-- Gallery -->
         <div class="col-md-6">
             <div class="product-gallery">
-                <img src="{{ asset($sanpham->hinhsp) }}" class="main-image" id="mainImage" alt="{{ $sanpham->tensp }}">
+                <div class="main-image-wrapper">
+                    <img src="{{ asset($sanpham->hinhsp) }}" class="main-image" id="mainImage" alt="{{ $sanpham->tensp }}">
+                </div>
 
                 <div class="thumbnail-slider d-flex gap-2 mt-3">
                     @foreach($images as $image)
@@ -223,6 +328,13 @@
         <div class="col-md-6">
             <div class="product-info">
                 <h1>{{ $sanpham->tensp }}</h1>
+                <div class="badges mb-3">
+                    @if($sanpham->tgbaohanh_nam >= 2)
+                        <span class="badge bg-success">Bảo hành {{ $sanpham->tgbaohanh_nam }} năm</span>
+                    @endif
+                    <span class="badge bg-info">{{ $sanpham->xuatxu }}</span>
+                    <span class="badge bg-primary">{{ $sanpham->khangnuoc }}</span>
+                </div>
                 <div class="product-price">
                     {{ number_format($sanpham->gia, 0, ',', '.') }}đ
                 </div>
@@ -282,14 +394,11 @@
             <div class="col">
                 <a href="{{ route('products.show', $product->idsp) }}" class="text-decoration-none">
                     <div class="card product-card h-100">
-                        <div class="card-img-wrapper">
-                            <img src="{{ asset($product->hinhsp) }}" class="card-img-top" alt="{{ $product->tensp }}">
-                        </div>
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title text-dark">{{ $product->tensp }}</h5>
-                            <div class="text-danger fw-bold mt-auto">
-                                {{ number_format($product->gia, 0, ',', '.') }}đ
-                            </div>
+                        <div class="card-img-wrapper skeleton-loading">
+                            <img src="{{ asset($product->hinhsp) }}" 
+                                 class="card-img-top lazy-load" 
+                                 data-src="{{ asset($product->hinhsp) }}" 
+                                 alt="{{ $product->tensp }}">
                         </div>
                     </div>
                 </a>

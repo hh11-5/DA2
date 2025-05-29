@@ -85,7 +85,6 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
             height: 100%;
-            max-width: 300px;
             margin: 0 auto;
             border: none;
         }
@@ -260,95 +259,52 @@
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
-            margin-bottom: 20px;
             height: 100%;
-            max-width: 280px; /* Giảm kích thước tối đa */
-            margin: 0 auto; /* Căn giữa card */
-        }
-
-        .card:hover {
-            transform: translateY(5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+            margin: 0 auto;
+            border: none;
         }
 
         .card-img-top {
-            height: 180px; /* Giảm chiều cao hình */
-            object-fit: cover;
-            background-color: #f8f9fa;
-        }
-
-        .card-title {
-            font-weight: 600;
+            width: 100%;
+            height: 180px; /* Chiều cao cố định cho ảnh */
+            object-fit: contain; /* Đảm bảo ảnh không bị méo và nằm gọn trong khung */
+            padding: 0.5rem;
+            background-color: #ffffff;
+            transition: transform 0.3s ease;
         }
 
         .card-body {
-            padding: 1rem; /* Giảm padding */
+            padding: 1rem;
         }
 
         .card-title {
-            font-size: 1rem; /* Giảm kích thước chữ */
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #333;
             margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Giới hạn 2 dòng cho tiêu đề */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 2.4em; /* Chiều cao cho 2 dòng */
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .col {
-                margin-bottom: 20px;
+        .card-text {
+            font-size: 1rem;
+            color: #dc3545;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        /* Responsive cho grid */
+        .row-cols-2 > * {
+            padding: 8px;
+        }
+
+        @media (min-width: 768px) {
+            .row-cols-md-3 > * {
+                padding: 12px;
             }
-        }
-
-        .card {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-        }
-
-        .text-decoration-none:hover {
-            text-decoration: none;
-        }
-
-        .text-decoration-none:hover .card-title {
-            color: #0d6efd;
-        }
-
-        /* CSS cho thẻ thương hiệu */
-        .brand-card {
-            background: white;
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            height: 100%;
-            max-width: 120px;
-            margin: 0 auto;
-        }
-
-        .brand-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            background: linear-gradient(to bottom, #fff, #f8f9fa);
-        }
-
-        .brand-name {
-            color: #1a202c;
-            font-weight: 700;
-            margin: 0;
-            font-size: 1.2rem; /* Tăng kích thước chữ lên */
-            line-height: 1.2;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-        }
-
-        .brand-card:hover .brand-name {
-            color: #475569; /* Thay đổi màu khi hover thành màu xám của banner */
-            transform: scale(1.05);
         }
 
         /* Thêm hiệu ứng đổ bóng cho text */
