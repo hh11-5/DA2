@@ -177,6 +177,11 @@ Route::prefix('admin')->group(function () {
     Route::post('/staff', [AdminController::class, 'storeStaff'])->name('admin.staff.store');
     Route::put('/staff/{id}/toggle-status', [AdminController::class, 'toggleStaffStatus'])->name('admin.staff.toggle-status');
     Route::delete('/staff/{id}', [AdminController::class, 'deleteStaff'])->name('admin.staff.delete');
+
+    // Customer management
+    Route::get('/customers', [AdminController::class, 'customers'])->name('admin.customers');
+    Route::put('/customers/{id}/toggle', [AdminController::class, 'toggleCustomerStatus'])->name('admin.customers.toggle');
+    Route::delete('/customers/{id}', [AdminController::class, 'deleteCustomer'])->name('admin.customers.delete');
 });
 
 // Employee routes

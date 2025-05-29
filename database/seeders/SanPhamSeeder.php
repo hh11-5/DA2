@@ -387,7 +387,7 @@ class SanPhamSeeder extends Seeder
                 'hinhsp' => 'images/products/casio5.jpg',
                 'gia' => 1500000,
                 'xuatxu' => 'Nhật Bản',
-                'kieu' => 'Đồng hồ unisex',
+                'kieu' => 'Đồng hồ nam',
                 'clieuvo' => 'Thép mạ vàng',
                 'clieuday' => 'Thép mạ vàng',
                 'clieukinh' => '36.3mm',

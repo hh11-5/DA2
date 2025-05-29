@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class AuthController extends Controller
 {
@@ -36,6 +37,13 @@ class AuthController extends Controller
         $taiKhoan = TaiKhoan::where($field, $request->email_or_phone)->first();
 
         if ($taiKhoan && Hash::check($request->password, $taiKhoan->matkhau)) {
+            // Kiểm tra trạng thái tài khoản trước
+            if (!$taiKhoan->trangthai) {
+                return redirect()->route('auth')
+                    ->with('error', 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Admin để được hỗ trợ.')
+                    ->withInput();
+            }
+
             // Kiểm tra xem có phải là khách hàng không
             $khachHang = KhachHang::where('idtk', $taiKhoan->idtk)->first();
             if ($khachHang) {
@@ -60,6 +68,50 @@ class AuthController extends Controller
         return view('auth');  // Trả về view của form login để chuyển đổi dễ dàng
     }
 
+    // Thêm phương thức validateAddress từ ProfileController
+    private function validateAddress($address)
+    {
+        try {
+            $response = Http::withHeaders([
+                'User-Agent' => 'WatchStore/1.0'
+            ])->get('https://nominatim.openstreetmap.org/search', [
+                'q' => $address . ', Việt Nam',
+                'format' => 'json',
+                'addressdetails' => 1,
+                'limit' => 1,
+                'countrycodes' => 'vn'
+            ]);
+
+            if (!$response->successful()) {
+                \Log::error('Nominatim API error:', [
+                    'status' => $response->status(),
+                    'body' => $response->body()
+                ]);
+                return false;
+            }
+
+            $result = $response->json();
+
+            if (!empty($result) && isset($result[0])) {
+                $addressData = $result[0];
+
+                if (isset($addressData['address']) &&
+                    (isset($addressData['address']['country_code']) &&
+                     $addressData['address']['country_code'] === 'vn')) {
+                    return true;
+                }
+            }
+
+            return false;
+        } catch (\Exception $e) {
+            \Log::error('Address validation error:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return false;
+        }
+    }
+
     public function register(Request $request)
     {
         // Kiểm tra thông tin nhập vào
@@ -68,14 +120,23 @@ class AuthController extends Controller
             'phone' => [
                 'required',
                 'unique:taikhoan,sdttk',
-                'regex:/^0[3|5|7|8|9][0-9]{8}$/' // Kiểm tra số điện thoại VN
+                'regex:/^0[3|5|7|8|9][0-9]{8}$/'
             ],
             'add' => 'required|string|max:200',
             'full_name' => 'required|string|max:100',
-            'password1' => 'required|string|min:6',
+            'password1' => [
+                'required',
+                'string',
+                'min:8',
+                'max:16',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/'
+            ],
             'password2' => 'required|same:password1'
         ], [
             'phone.regex' => 'Số điện thoại không đúng định dạng',
+            'password1.min' => 'Mật khẩu phải có ít nhất 8 ký tự',
+            'password1.max' => 'Mật khẩu không được vượt quá 16 ký tự',
+            'password1.regex' => 'Mật khẩu phải chứa ít nhất một chữ thường, một chữ hoa, một số và một ký tự đặc biệt',
             'password2.same' => 'Mật khẩu nhập lại không khớp',
             'email.unique' => 'Email đã được sử dụng',
             'phone.unique' => 'Số điện thoại đã được sử dụng'
@@ -84,6 +145,13 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return redirect()->route('auth')
                 ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Kiểm tra địa chỉ trước khi tạo tài khoản
+        if (!$this->validateAddress($request->add)) {
+            return redirect()->route('auth')
+                ->withErrors(['add' => 'Địa chỉ không hợp lệ hoặc không tìm thấy. Vui lòng nhập đầy đủ: Số nhà, Đường, Phường/Xã, Quận/Huyện, Tỉnh/Thành phố'])
                 ->withInput();
         }
 

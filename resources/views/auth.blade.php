@@ -83,6 +83,19 @@
                         <input name="password1" type="password" placeholder="Mật khẩu" required />
                         <i class="fas fa-eye password-toggle"></i>
                     </div>
+                    <div class="password-requirements" style="display: none;">
+                        <small class="text-muted">
+                            Mật khẩu phải có:
+                            <ul>
+                                <li>8-16 ký tự</li>
+                                <li>Ít nhất 1 chữ thường (a-z)</li>
+                                <li>Ít nhất 1 chữ hoa (A-Z)</li>
+                                <li>Ít nhất 1 số (0-9)</li>
+                                <li>Ít nhất 1 ký tự đặc biệt (@$!%*?&)</li>
+                            </ul>
+                        </small>
+                    </div>
+
                     <div class="input-field password-field">
                         <i class="fas fa-lock"></i>
                         <input name="password2" type="password" placeholder="Nhập lại mật khẩu" required />
@@ -628,6 +641,50 @@ form.sign-up-form {
         opacity: 1;
     }
 }
+
+.password-requirements {
+    width: 100%;
+    max-width: 380px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: -5px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+}
+
+.password-requirements.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.password-requirements ul {
+    padding-left: 20px;
+    margin: 5px 0;
+    list-style-type: none;
+}
+
+.password-requirements li {
+    margin: 4px 0;
+    font-size: 0.75rem;
+    color: #64748b;
+    position: relative;
+    padding-left: 20px;
+}
+
+.password-requirements li:before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #94a3b8;
+}
 </style>
 
 <script>
@@ -670,6 +727,56 @@ document.querySelectorAll('.btn').forEach(button => {
 
         button.style.setProperty('--ripple-x', x + 'px');
         button.style.setProperty('--ripple-y', y + 'px');
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const password1Input = document.querySelector('input[name="password1"]');
+    const password2Input = document.querySelector('input[name="password2"]');
+    const requirements = document.querySelector('.password-requirements');
+    let isPasswordFieldFocused = false;
+
+    function showRequirements() {
+        requirements.style.display = 'block';
+        // Đợi một chút để CSS transition hoạt động
+        requestAnimationFrame(() => {
+            requirements.classList.add('show');
+        });
+        isPasswordFieldFocused = true;
+    }
+
+    function hideRequirements() {
+        if (!isPasswordFieldFocused) {
+            requirements.classList.remove('show');
+            // Đợi animation kết thúc mới ẩn element
+            setTimeout(() => {
+                if (!isPasswordFieldFocused) {
+                    requirements.style.display = 'none';
+                }
+            }, 300);
+        }
+    }
+
+    password1Input.addEventListener('focus', showRequirements);
+    password2Input.addEventListener('focus', showRequirements);
+
+    password1Input.addEventListener('blur', () => {
+        if (!document.activeElement.isSameNode(password2Input)) {
+            isPasswordFieldFocused = false;
+            hideRequirements();
+        }
+    });
+
+    password2Input.addEventListener('blur', () => {
+        if (!document.activeElement.isSameNode(password1Input)) {
+            isPasswordFieldFocused = false;
+            hideRequirements();
+        }
+    });
+
+    // Ngăn chặn việc ẩn requirements khi click vào chính nó
+    requirements.addEventListener('mousedown', (e) => {
+        e.preventDefault();
     });
 });
 </script>
