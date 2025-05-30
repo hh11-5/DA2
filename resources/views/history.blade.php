@@ -176,14 +176,14 @@
             </a>
             <a href="{{ route('orders.history', ['status' => 1]) }}"
                class="nav-link {{ request('status') == '1' ? 'active' : '' }}">
-                Vận chuyển
+                Chờ giao hàng
                 @if($shippingCount > 0)
                     <span class="badge bg-primary ms-1">{{ $shippingCount }}</span>
                 @endif
             </a>
             <a href="{{ route('orders.history', ['status' => 2]) }}"
                class="nav-link {{ request('status') == '2' ? 'active' : '' }}">
-                Chờ giao hàng
+                Đang giao hàng
                 @if($deliveringCount > 0)
                     <span class="badge bg-info ms-1">{{ $deliveringCount }}</span>
                 @endif

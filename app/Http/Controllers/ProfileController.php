@@ -79,23 +79,24 @@ class ProfileController extends Controller
         }
 
         $request->validate([
-            'hokh' => 'required|string|max:20',
-            'tenkh' => 'required|string|max:30',
-            'diachikh' => 'required|string|max:100',
-            'email' => 'required|email|unique:taikhoan,emailtk,' . Auth::id() . ',idtk',
+            'hokh' => 'required|string|max:50',
+            'tenkh' => 'required|string|max:50',
+            'diachikh' => 'required|string|max:200',
             'phone' => ['required', new VietnamesePhone, 'unique:taikhoan,sdttk,' . Auth::id() . ',idtk'],
             'current_password' => 'nullable|required_with:new_password',
             'new_password' => 'nullable|min:6|same:password_confirmation'
         ], [
+            'hokh.required' => 'Vui lòng nhập họ',
+            'tenkh.required' => 'Vui lòng nhập tên',
             'phone.required' => 'Vui lòng nhập số điện thoại',
             'phone.unique' => 'Số điện thoại đã được sử dụng'
         ]);
 
         try {
-            // Kiểm tra địa chỉ nếu có thay đổi
             $user = Auth::user();
             $customer = $user->khachHang;
 
+            // Kiểm tra địa chỉ nếu có thay đổi
             if ($request->diachikh !== $customer->diachikh) {
                 if (!$this->validateAddress($request->diachikh)) {
                     return back()
@@ -111,11 +112,10 @@ class ProfileController extends Controller
                 'diachikh' => $request->diachikh
             ]);
 
-            // Cập nhật thông tin tài khoản
-            $user->emailtk = $request->email;
+            // Cập nhật số điện thoại trong tài khoản
             $user->sdttk = $request->phone;
 
-            // Kiểm tra và cập nhật mật khẩu nếu có
+            // Cập nhật mật khẩu nếu có
             if ($request->filled('current_password')) {
                 if (!Hash::check($request->current_password, $user->matkhau)) {
                     return back()

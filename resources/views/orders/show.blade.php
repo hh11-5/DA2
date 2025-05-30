@@ -91,6 +91,65 @@
             </div>
         </div>
 
+        <!-- Thông tin thanh toán -->
+        @if($order->trangthai == 0)
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Thông tin thanh toán</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <img id="qrCode"
+                             src=""
+                             alt="QR Code"
+                             class="img-fluid mb-2"
+                             style="max-width: 400px; min-height: 400px; object-fit: contain;"
+                             onerror="this.src='{{ asset("images/qr-error.png") }}'">
+                        <button class="btn btn-sm btn-outline-primary" onclick="downloadQR()">
+                            <i class="fas fa-download me-2"></i>Tải QR
+                        </button>
+                    </div>
+                    <div class="bank-info">
+                        <p><strong>Thông tin chuyển khoản:</strong></p>
+                        <p class="mb-1"><strong>Ngân hàng:</strong> <span class="text-primary">MB Bank</span></p>
+                        <p class="mb-1"><strong>Số tài khoản:</strong> <span class="text-primary">999999999</span></p>
+                        <p class="mb-1"><strong>Chủ tài khoản:</strong> <span class="text-primary">WATCH STORE</span></p>
+                        <p class="mb-1"><strong>Số tiền:</strong> <span class="text-danger">{{ number_format($order->tongtien) }}đ</span></p>
+                        <p class="mb-1"><strong>Nội dung CK:</strong> <span class="text-primary">WS{{ $order->iddhang }}</span></p>
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Vui lòng chuyển khoản chính xác số tiền và nội dung để đơn hàng được xử lý nhanh nhất
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @else
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Trạng thái thanh toán</h5>
+                </div>
+                <div class="card-body">
+                    @if($order->trangthai == 4)
+                        <div class="text-center text-danger">
+                            <i class="fas fa-times-circle fa-3x mb-3"></i>
+                            <p class="mb-0">Đơn hàng đã bị hủy</p>
+                        </div>
+                    @elseif($order->trangthai >= 1)
+                        <div class="text-center text-success">
+                            <i class="fas fa-check-circle fa-3x mb-3"></i>
+                            <p class="mb-0">Đã thanh toán</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        @endif
+
         <!-- Chi tiết sản phẩm -->
         <div class="col-md-12">
             <div class="card">
@@ -341,5 +400,108 @@
         box-shadow: 0 0 0 0 rgba(251, 191, 36, 0);
     }
 }
+
+.bank-info p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.bank-info .text-primary {
+    color: #1a73e8 !important;
+    font-weight: 500;
+}
+
+.btn-outline-primary {
+    color: #1a73e8;
+    border-color: #1a73e8;
+}
+
+.btn-outline-primary:hover {
+    background-color: #1a73e8;
+    color: white;
+}
+
+#qrCode {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px;
+}
 </style>
+
+<script>
+@if($order->trangthai == 0)
+// Các hàm xử lý QR code giữ nguyên
+function initQRCode() {
+    const qrElement = document.getElementById('qrCode');
+    if (!qrElement) {
+        console.error('QR code element not found');
+        return;
+    }
+
+    generateQRCode();
+}
+
+function generateQRCode() {
+    const amount = {{ $order->tongtien }};
+    const orderId = '{{ $order->iddhang }}';
+    const addInfo = `WS${orderId}`;
+
+    // Sử dụng route trong Laravel thay vì gọi trực tiếp API
+    fetch(`{{ route('generate.qr') }}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+            amount: amount,
+            description: addInfo
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const qrElement = document.getElementById('qrCode');
+        if (!qrElement) return;
+
+        // Thay đổi cách kiểm tra response
+        if (data.code === 'success' && data.data) { // Thay vì data.code === '200'
+            qrElement.src = data.data;
+        } else {
+            console.error('Error generating QR code:', data);
+            qrElement.src = '{{ asset("images/qr-error.png") }}';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        const qrElement = document.getElementById('qrCode');
+        if (qrElement) {
+            qrElement.src = '{{ asset("images/qr-error.png") }}';
+        }
+    });
+}
+
+function downloadQR() {
+    const qrImage = document.getElementById('qrCode');
+    if (!qrImage || !qrImage.src) {
+        console.error('QR image not found or has no source');
+        return;
+    }
+
+    const orderId = '{{ $order->iddhang }}';
+    const link = document.createElement('a');
+    link.href = qrImage.src;
+    link.download = `QR_WS${orderId}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Khởi tạo QR code
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initQRCode);
+} else {
+    initQRCode();
+}
+@endif
+</script>
 @endsection

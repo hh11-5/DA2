@@ -13,6 +13,7 @@ use App\Models\NhanVien;
 use Illuminate\Support\Facades\Hash;
 use App\Models\ChiTietKho;
 use App\Models\ChiTietDonHang;
+use App\Models\KhachHang;
 use Carbon\Carbon;
 
 class AdminController extends Controller
@@ -522,5 +523,64 @@ class AdminController extends Controller
         $brand->delete();
         return redirect()->route('admin.brands')
             ->with('success', 'Xóa thương hiệu thành công');
+    }
+
+    public function customers()
+    {
+        if ($response = $this->checkAdminAccess()) {
+            return $response;
+        }
+
+        $customers = KhachHang::with('taiKhoan')
+            ->orderBy('idkh', 'desc')
+            ->paginate(10);
+
+        return view('admin.customers.index', compact('customers'));
+    }
+
+    public function toggleCustomerStatus($id)
+    {
+        if ($response = $this->checkAdminAccess()) {
+            return $response;
+        }
+
+        try {
+            $customer = KhachHang::findOrFail($id);
+            $taiKhoan = $customer->taiKhoan;
+            $taiKhoan->trangthai = !$taiKhoan->trangthai;
+            $taiKhoan->save();
+
+            return redirect()->route('admin.customers')
+                ->with('success', 'Cập nhật trạng thái tài khoản thành công');
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+        }
+    }
+
+    public function deleteCustomer($id)
+    {
+        if ($response = $this->checkAdminAccess()) {
+            return $response;
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $customer = KhachHang::findOrFail($id);
+
+            // Xóa các bản ghi liên quan
+            PhanQuyen::where('idtk', $customer->taiKhoan->idtk)->delete();
+            $customer->delete();
+            $customer->taiKhoan->delete();
+
+            DB::commit();
+            return redirect()->route('admin.customers')
+                ->with('success', 'Xóa khách hàng thành công');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+        }
     }
 }

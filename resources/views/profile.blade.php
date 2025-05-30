@@ -52,11 +52,9 @@
 
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
-                                   value="{{ old('email', $user->emailtk) }}" required disabled>
-                            @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <input type="email" name="email" class="form-control bg-light"
+                                   value="{{ old('email', $user->emailtk) }}"
+                                   readonly>
                         </div>
 
                         <div class="mb-3">
@@ -155,6 +153,13 @@
     background-color: #157347;
     border-color: #146c43;
 }
+
+.form-control[readonly] {
+    background-color: #f8f9fa !important;
+    cursor: not-allowed;
+    color: #6c757d;
+    border-color: #e9ecef;
+}
 </style>
 
 <script>
@@ -186,7 +191,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // Update toggleEdit function
 function toggleEdit() {
     const form = document.getElementById('profileForm');
-    const inputs = form.querySelectorAll('input:not([name^="password"])');
+    // Cho phép chỉnh sửa tất cả trường trừ email
+    const inputs = form.querySelectorAll('input:not([name="email"]):not([name^="password"])');
     const editButton = document.getElementById('editButton');
     const submitButton = document.getElementById('submitButton');
     const changePasswordBtn = document.getElementById('changePasswordBtn');
@@ -197,7 +203,7 @@ function toggleEdit() {
 
     editButton.style.display = 'none';
     submitButton.style.display = 'block';
-    changePasswordBtn.disabled = false; // Enable password change button
+    changePasswordBtn.disabled = false;
 }
 
 // Update cancelEdit function

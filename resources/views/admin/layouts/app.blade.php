@@ -97,6 +97,12 @@
                             <p>Quản lý nhân viên</p>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.customers') }}" class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-user-friends"></i>
+                            <p>Quản lý khách hàng</p>
+                        </a>
+                    </li>
                     @else
                     <!-- Menu cho Nhân viên -->
                     <li class="nav-item">
