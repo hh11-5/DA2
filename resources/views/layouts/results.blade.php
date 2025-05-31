@@ -33,37 +33,37 @@
                             <div class="price-options">
                                 <div class="form-check mb-2">
                                     <input class="form-check-input" type="radio" name="priceRange" 
-                                           id="price1" value="50000000-100000000">
+                                           id="price1" value="1000000-5000000">
                                     <label class="form-check-label" for="price1">
-                                        50 triệu - 100 triệu
+                                        1 triệu - 5 triệu
                                     </label>
                                 </div>
                                 <div class="form-check mb-2">
                                     <input class="form-check-input" type="radio" name="priceRange" 
-                                           id="price2" value="100000000-200000000">
+                                           id="price2" value="5000000-10000000">
                                     <label class="form-check-label" for="price2">
-                                        100 triệu - 200 triệu
+                                        5 triệu - 10 triệu
                                     </label>
                                 </div>
                                 <div class="form-check mb-2">
                                     <input class="form-check-input" type="radio" name="priceRange" 
-                                           id="price3" value="200000000-300000000">
+                                           id="price3" value="10000000-20000000">
                                     <label class="form-check-label" for="price3">
-                                        200 triệu - 300 triệu
+                                        10 triệu - 20 triệu
                                     </label>
                                 </div>
                                 <div class="form-check mb-2">
                                     <input class="form-check-input" type="radio" name="priceRange" 
-                                           id="price4" value="300000000-400000000">
+                                           id="price4" value="20000000-30000000">
                                     <label class="form-check-label" for="price4">
-                                        300 triệu - 400 triệu
+                                        20 triệu - 30 triệu
                                     </label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="priceRange" 
-                                           id="price5" value="400000000-500000000">
+                                           id="price5" value="30000000-50000000">
                                     <label class="form-check-label" for="price5">
-                                        400 triệu - 500 triệu
+                                        30 triệu - 50 triệu
                                     </label>
                                 </div>
                             </div>
@@ -73,31 +73,18 @@
                         <div class="filter-section">
                             <h6>Chất liệu vỏ</h6>
                             <div class="mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input filter-check" type="checkbox"
-                                           name="clieuvo" value="Thép không gỉ 904L">
-                                    <label class="form-check-label">Thép không gỉ 904L</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input filter-check" type="checkbox"
-                                           name="clieuvo" value="Thép không gỉ và vàng">
-                                    <label class="form-check-label">Thép không gỉ và vàng</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input filter-check" type="checkbox"
-                                           name="clieuvo" value="Thép không gỉ">
-                                    <label class="form-check-label">Thép không gỉ</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input filter-check" type="checkbox"
-                                           name="clieuvo" value="Vàng Everose 18k">
-                                    <label class="form-check-label">Vàng Everose 18k</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input filter-check" type="checkbox"
-                                           name="clieuvo" value="Vàng 18k">
-                                    <label class="form-check-label">Vàng 18k</label>
-                                </div>
+                                @foreach($chatLieuVos as $clieuvo)
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-check" 
+                                               type="checkbox"
+                                               name="clieuvo[]" 
+                                               value="{{ $clieuvo }}"
+                                               id="clieuvo_{{ Str::slug($clieuvo) }}">
+                                        <label class="form-check-label" for="clieuvo_{{ Str::slug($clieuvo) }}">
+                                            {{ $clieuvo }}
+                                        </label>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
 
@@ -369,19 +356,29 @@
 
 @section('scripts')
 <script>
+// Lưu trạng thái ban đầu khi tải trang
+const initialProductCount = {{ count($products) }};
+const query = @json($query);
+const initialProductsHTML = document.getElementById('productsContainer').innerHTML;
+
 document.getElementById('applyFilters').addEventListener('click', function() {
     const selectedPriceRange = document.querySelector('input[name="priceRange"]:checked');
-    const selectedMaterials = Array.from(document.querySelectorAll('input[name="clieuvo"]:checked'))
+    const selectedMaterials = Array.from(document.querySelectorAll('input[name="clieuvo[]"]:checked'))
         .map(cb => cb.value);
 
-    // Lấy label của khoảng giá được chọn
-    const priceRangeLabel = selectedPriceRange ? 
-        selectedPriceRange.nextElementSibling.textContent.trim() : '';
+    const filters = {};
+    
+    if (selectedPriceRange) {
+        filters.priceRange = selectedPriceRange.value;
+        console.log('Selected price range:', selectedPriceRange.value);
+    }
 
-    const filters = {
-        priceRange: selectedPriceRange ? selectedPriceRange.value : null,
-        clieuvo: selectedMaterials
-    };
+    if (selectedMaterials.length > 0) {
+        filters.clieuvo = selectedMaterials;
+    }
+
+    // Debug log
+    console.log('Sending filters:', filters);
 
     fetch('/filter-products', {
         method: 'POST',
@@ -397,48 +394,23 @@ document.getElementById('applyFilters').addEventListener('click', function() {
         }
         return response.json();
     })
-    .then(products => {
-        const container = document.getElementById('productsContainer');
-        const resultCount = document.querySelector('.d-flex h4');
+    .then(data => {
+        console.log('Received data:', data);
         
-        // Cập nhật số lượng kết quả và điều kiện lọc
-        let filterText = '';
-        if (priceRangeLabel) {
-            filterText += `khoảng giá ${priceRangeLabel}`;
-        }
-        if (selectedMaterials.length > 0) {
-            filterText += filterText ? ' và ' : '';
-            filterText += `chất liệu ${selectedMaterials.join(', ')}`;
-        }
-
-        resultCount.innerHTML = `Hiển thị ${products.length} sản phẩm${filterText ? ` với ${filterText}` : ''}`;
-        
-        if (products.length === 0) {
+        if (data.error) {
+            const container = document.getElementById('productsContainer');
             container.innerHTML = `
                 <div class="col-12">
                     <div class="alert alert-info">
                         <i class="fas fa-info-circle me-2"></i>
-                        Không tìm thấy sản phẩm nào${filterText ? ` với ${filterText}` : ''}
+                        ${data.error}
                     </div>
                 </div>
             `;
-        } else {
-            container.innerHTML = products.map(product => `
-                <div class="col">
-                    <a href="/products/${product.idsp}" class="text-decoration-none">
-                        <div class="card h-100">
-                            <img src="${product.hinhsp}" class="card-img-top" alt="${product.tensp}">
-                            <div class="card-body">
-                                <h5 class="card-title text-dark">${product.tensp}</h5>
-                                <p class="card-text product-price">
-                                    ${new Intl.NumberFormat('vi-VN').format(product.gia)}đ
-                                </p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            `).join('');
+            return;
         }
+        
+        updateProductDisplay(data, selectedPriceRange, selectedMaterials);
     })
     .catch(error => {
         console.error('Error:', error);
@@ -454,7 +426,68 @@ document.getElementById('applyFilters').addEventListener('click', function() {
     });
 });
 
-// Thêm xử lý cho nút đặt lại
+// Hàm cập nhật hiển thị sản phẩm
+function updateProductDisplay(products, selectedPriceRange, selectedMaterials) {
+    const container = document.getElementById('productsContainer');
+    const resultCount = document.querySelector('.d-flex h4');
+    
+    // Tạo text hiển thị bộ lọc
+    let filterText = '';
+    if (selectedPriceRange) {
+        const priceLabel = selectedPriceRange.nextElementSibling.textContent.trim();
+        filterText += `khoảng giá ${priceLabel}`;
+    }
+    if (selectedMaterials.length > 0) {
+        filterText += filterText ? ' và ' : '';
+        filterText += `chất liệu vỏ: ${selectedMaterials.join(', ')}`;
+    }
+
+    // Cập nhật số lượng kết quả
+    resultCount.innerHTML = `Hiển thị ${products.length} sản phẩm${filterText ? ` với ${filterText}` : ''}`;
+    
+    // Hiển thị sản phẩm
+    if (products.length === 0) {
+        container.innerHTML = `
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Không tìm thấy sản phẩm nào${filterText ? ` với ${filterText}` : ''}
+                </div>
+            </div>
+        `;
+    } else {
+        container.innerHTML = products.map(product => `
+            <div class="col">
+                <a href="/products/${product.idsp}" class="text-decoration-none">
+                    <div class="card h-100">
+                        <img src="${product.hinhsp}" class="card-img-top" alt="${product.tensp}">
+                        <div class="card-body">
+                            <h5 class="card-title text-dark">${product.tensp}</h5>
+                            <p class="card-text" style="color: #dc2626; font-weight: bold;">
+                                ${new Intl.NumberFormat('vi-VN').format(product.gia)}đ
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        `).join('');
+    }
+}
+
+// Hàm hiển thị lỗi
+function showError() {
+    const container = document.getElementById('productsContainer');
+    container.innerHTML = `
+        <div class="col-12">
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                Có lỗi xảy ra khi lọc sản phẩm
+            </div>
+        </div>
+    `;
+}
+
+// Xử lý nút đặt lại
 document.getElementById('resetFilters').addEventListener('click', function() {
     // Bỏ chọn tất cả radio buttons khoảng giá
     document.querySelectorAll('input[name="priceRange"]').forEach(radio => {
@@ -462,22 +495,18 @@ document.getElementById('resetFilters').addEventListener('click', function() {
     });
 
     // Bỏ chọn tất cả checkboxes chất liệu vỏ
-    document.querySelectorAll('input[name="clieuvo"]').forEach(checkbox => {
+    document.querySelectorAll('input[name="clieuvo[]"]').forEach(checkbox => {
         checkbox.checked = false;
     });
 
-    // Reset hiển thị kết quả về ban đầu
-    const resultCount = document.querySelector('.d-flex h4');
-    resultCount.innerHTML = `Hiển thị ${initialProductCount} kết quả cho "${query}"`;
+    // Reset hiển thị về ban đầu
+    const searchQuery = query || ''; // Nếu query là null thì gán chuỗi rỗng
+    const displayText = searchQuery 
+        ? `Hiển thị ${initialProductCount} kết quả cho "${searchQuery}"`
+        : `Hiển thị ${initialProductCount} sản phẩm`;
 
-    // Reset grid sản phẩm về trạng thái ban đầu
-    const container = document.getElementById('productsContainer');
-    container.innerHTML = initialProductsHTML;
+    document.querySelector('.d-flex h4').innerHTML = displayText;
+    document.getElementById('productsContainer').innerHTML = initialProductsHTML;
 });
-
-// Lưu trạng thái ban đầu khi tải trang
-const initialProductCount = {{ count($products) }};
-const query = "{{ $query }}";
-const initialProductsHTML = document.getElementById('productsContainer').innerHTML;
 </script>
 @endsection

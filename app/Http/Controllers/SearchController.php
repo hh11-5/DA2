@@ -19,49 +19,67 @@ class SearchController extends Controller
             ->with('nhasanxuat')
             ->get();
 
-        // Thêm dữ liệu thương hiệu
+        // Lấy danh sách chất liệu vỏ unique từ CSDL
+        $chatLieuVos = Sanpham::select('clieuvo')
+            ->whereNotNull('clieuvo')
+            ->distinct()
+            ->orderBy('clieuvo')
+            ->pluck('clieuvo');
+
+        // Lấy danh sách thương hiệu
         $thuonghieus = NhaSanXuat::all();
 
-        return view('layouts.results', compact('products', 'query', 'thuonghieus')); // Sửa đường dẫn view
+        return view('layouts.results', compact('products', 'query', 'thuonghieus', 'chatLieuVos'));
     }
 
     public function filter(Request $request)
     {
-        $query = Sanpham::query();
+        try {
+            $query = Sanpham::query();
 
-        // Lọc theo giá
-        if ($request->minPrice) {
-            $query->where('gia', '>=', $request->minPrice);
-        }
-        if ($request->maxPrice) {
-            $query->where('gia', '<=', $request->maxPrice);
-        }
+            // Debug log
+            \Log::info('Filter request:', $request->all());
 
-        // Lọc theo thương hiệu
-        if (!empty($request->brands)) {
-            $query->whereIn('idnhasx', $request->brands);
-        }
+            // Lọc theo giá
+            if ($request->priceRange) {
+                list($minPrice, $maxPrice) = explode('-', $request->priceRange);
+                // Đảm bảo giá trị là số
+                $minPrice = (int)$minPrice;
+                $maxPrice = (int)$maxPrice;
+                
+                \Log::info("Filtering price between {$minPrice} and {$maxPrice}");
 
-        // Lọc theo kiểu đồng hồ
-        if (!empty($request->types)) {
-            $query->whereIn('kieu', $request->types);
-        }
+                $query->whereBetween('gia', [$minPrice, $maxPrice]);
+            }
 
-        // Lọc theo chất liệu
-        if (!empty($request->materials)) {
-            $query->where(function($q) use ($request) {
-                $q->whereIn('clieuvo', $request->materials)
-                  ->orWhereIn('clieuday', $request->materials);
-            });
-        }
+            // Lọc theo chất liệu vỏ
+            if (!empty($request->clieuvo)) {
+                $query->whereIn('clieuvo', (array)$request->clieuvo);
+            }
 
-        // Lọc theo chất liệu vỏ
-        if (!empty($request->clieuvo)) {
-            $query->whereIn('clieuvo', $request->clieuvo);
-        }
+            // Debug log query
+            \Log::info('SQL Query:', [
+                'sql' => $query->toSql(),
+                'bindings' => $query->getBindings()
+            ]);
 
-        $products = $query->with('nhasanxuat')->get();
-        
-        return response()->json($products);
+            $products = $query->get();
+
+            if ($products->isEmpty()) {
+                return response()->json([
+                    'error' => 'Không tìm thấy sản phẩm phù hợp với khoảng giá đã chọn'
+                ]);
+            }
+
+            // Debug log results
+            \Log::info('Found products count: ' . $products->count());
+
+            return response()->json($products);
+        } catch (\Exception $e) {
+            \Log::error('Filter error: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Có lỗi xảy ra khi lọc sản phẩm'
+            ], 500);
+        }
     }
 }
