@@ -12,24 +12,23 @@ class SearchController extends Controller
     {
         $query = $request->input('query');
         
-        $products = Sanpham::where('tensp', 'ilike', "%{$query}%")
+        // Lấy sản phẩm theo từ khóa
+        $products = Sanpham::where('tensp', 'like', "%{$query}%")
             ->orWhereHas('nhasanxuat', function($q) use ($query) {
-                $q->where('tennhasx', 'ilike', "%{$query}%");
+                $q->where('tennhasx', 'like', "%{$query}%");
             })
             ->with('nhasanxuat')
             ->get();
 
-        // Lấy danh sách chất liệu vỏ unique từ CSDL
+        // Thêm dòng này để lấy danh sách chất liệu vỏ
         $chatLieuVos = Sanpham::select('clieuvo')
             ->whereNotNull('clieuvo')
             ->distinct()
             ->orderBy('clieuvo')
             ->pluck('clieuvo');
 
-        // Lấy danh sách thương hiệu
-        $thuonghieus = NhaSanXuat::all();
-
-        return view('layouts.results', compact('products', 'query', 'thuonghieus', 'chatLieuVos'));
+        // Truyền thêm biến $chatLieuVos vào view
+        return view('layouts.results', compact('products', 'query', 'chatLieuVos'));
     }
 
     public function filter(Request $request)
@@ -81,5 +80,23 @@ class SearchController extends Controller
                 'error' => 'Có lỗi xảy ra khi lọc sản phẩm'
             ], 500);
         }
+    }
+
+    public function index()
+    {
+        // Lấy tất cả sản phẩm
+        $products = Sanpham::with('nhasanxuat')->get();
+        
+        // Lấy danh sách chất liệu vỏ
+        $chatLieuVos = Sanpham::select('clieuvo')
+            ->whereNotNull('clieuvo')
+            ->distinct()
+            ->orderBy('clieuvo')
+            ->pluck('clieuvo');
+
+        // Truyền empty query vì đây không phải kết quả tìm kiếm
+        $query = '';
+
+        return view('layouts.results', compact('products', 'query', 'chatLieuVos'));
     }
 }

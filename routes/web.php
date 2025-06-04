@@ -208,3 +208,6 @@ Route::prefix('employee')->name('employee.')->group(function () {
 // Thêm route cho QR code
 Route::post('/generate-qr', [QRCodeController::class, 'generateQR'])->name('generate.qr');
 
+// Thêm route cho trang products
+Route::get('/products', [SearchController::class, 'index'])->name('products.index');
+
