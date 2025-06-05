@@ -261,9 +261,7 @@
     </ul>
 </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="/contact">Liên hệ</a>
-                        </li>
+                     
                     </ul>
 
                     <!-- Thanh tìm kiếm -->
