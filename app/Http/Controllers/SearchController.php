@@ -12,22 +12,26 @@ class SearchController extends Controller
     {
         $query = $request->input('query');
         
-        // Lấy sản phẩm theo từ khóa
-        $products = Sanpham::where('tensp', 'like', "%{$query}%")
-            ->orWhereHas('nhasanxuat', function($q) use ($query) {
-                $q->where('tennhasx', 'like', "%{$query}%");
-            })
-            ->with('nhasanxuat')
-            ->get();
+        // Chuẩn hóa từ khóa tìm kiếm
+        $searchTerm = '%' . trim(strtolower($query)) . '%';
+        
+        // Tìm kiếm sản phẩm
+        $products = Sanpham::where(function($q) use ($searchTerm) {
+            $q->whereRaw('LOWER(tensp) LIKE ?', [$searchTerm])
+              ->orWhereHas('nhasanxuat', function($q) use ($searchTerm) {
+                  $q->whereRaw('LOWER(tennhasx) LIKE ?', [$searchTerm]);
+              });
+        })
+        ->with('nhasanxuat')
+        ->get();
 
-        // Thêm dòng này để lấy danh sách chất liệu vỏ
+        // Lấy danh sách chất liệu vỏ
         $chatLieuVos = Sanpham::select('clieuvo')
             ->whereNotNull('clieuvo')
             ->distinct()
             ->orderBy('clieuvo')
             ->pluck('clieuvo');
 
-        // Truyền thêm biến $chatLieuVos vào view
         return view('layouts.results', compact('products', 'query', 'chatLieuVos'));
     }
 
