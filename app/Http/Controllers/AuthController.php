@@ -151,7 +151,7 @@ class AuthController extends Controller
         // Kiểm tra địa chỉ trước khi tạo tài khoản
         if (!$this->validateAddress($request->add)) {
             return redirect()->route('auth')
-                ->withErrors(['add' => 'Địa chỉ không hợp lệ hoặc không tìm thấy. Vui lòng nhập đầy đủ: Số nhà, Đường, Phường/Xã, Quận/Huyện, Tỉnh/Thành phố'])
+                ->withErrors(['add' => 'Địa chỉ không hợp lệ hoặc không tìm thấy. Vui lòng nhập đầy đủ: Phường/Xã, Quận/Huyện, Tỉnh/Thành phố'])
                 ->withInput();
         }
 
